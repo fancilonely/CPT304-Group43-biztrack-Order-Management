@@ -20,6 +20,7 @@ function closeForm() {
 
 
 let transactions = [];
+const financeSortState = {};
 let serialNumberCounter;
 
 window.onload = function () {
@@ -139,9 +140,13 @@ function renderTransactions(transactions) {
             <td class="tr-amount">${formattedAmount}</td>
             <td>${transaction.trNotes}</td>
             <td class="action">
-                <i title="Edit" onclick="editRow('${transaction.trID}')" class="edit-icon fa-solid fa-pen-to-square"></i>
-                <i onclick="deleteTransaction('${transaction.trID}')" class="delete-icon fas fa-trash-alt"></i>
-            </td> 
+                <button type="button" class="icon-button action-button" aria-label="Edit expense ${transaction.trID}" onclick="editRow('${transaction.trID}')">
+                    <i class="edit-icon fa-solid fa-pen-to-square" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="icon-button action-button" aria-label="Delete expense ${transaction.trID}" onclick="deleteTransaction('${transaction.trID}')">
+                    <i class="delete-icon fas fa-trash-alt" aria-hidden="true"></i>
+                </button>
+            </td>
         `;
         transactionTableBody.appendChild(transactionRow);
   });
@@ -208,27 +213,35 @@ function deleteTransaction(trID) {
     }
 }
 
-function sortTable(column) {
+function sortTable(column, triggerButton) {
     const tbody = document.getElementById("tableBody");
     const rows = Array.from(tbody.querySelectorAll("tr"));
+    const sortKey = column;
 
     const isNumeric = column === "trID" || column === "trAmount";
+
+    financeSortState[sortKey] = financeSortState[sortKey] === "asc" ? "desc" : "asc";
+    const direction = financeSortState[sortKey];
 
     const sortedRows = rows.sort((a, b) => {
         const aValue = isNumeric ? parseFloat(a.dataset[column]) : a.dataset[column];
         const bValue = isNumeric ? parseFloat(b.dataset[column]) : b.dataset[column];
 
         if (typeof aValue === "string" && typeof bValue === "string") {
-            // Case-insensitive string comparison for text columns
-            return aValue.localeCompare(bValue, undefined, { sensitivity: "base" });
+            return direction === "asc"
+                ? aValue.localeCompare(bValue, undefined, { sensitivity: "base" })
+                : bValue.localeCompare(aValue, undefined, { sensitivity: "base" });
         } else {
-            return aValue - bValue;
+            return direction === "asc" ? aValue - bValue : bValue - aValue;
         }
     });
 
     rows.forEach(row => tbody.removeChild(row));
-
     sortedRows.forEach(row => tbody.appendChild(row));
+
+    const table = triggerButton.closest("table");
+    table.querySelectorAll("th").forEach(th => th.removeAttribute("aria-sort"));
+    triggerButton.closest("th").setAttribute("aria-sort", direction === "asc" ? "ascending" : "descending");
 }
 
 document.getElementById("searchInput").addEventListener("keyup", function(event) {

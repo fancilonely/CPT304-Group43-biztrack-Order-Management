@@ -19,7 +19,7 @@ function closeForm() {
 }
 
 let orders = [];
-
+const orderSortState = {};
 window.onload = function () {
     const storedOrders = localStorage.getItem("bizTrackOrders");
     if (storedOrders) {
@@ -182,9 +182,13 @@ function renderOrders(orders) {
             <div class="status ${statusMap[order.orderStatus]}"><span>${order.orderStatus}</span></div>
         </td>
         <td class="action">
-            <i title="Edit" onclick="editRow('${order.orderID}')" class="edit-icon fa-solid fa-pen-to-square"></i>
-            <i onclick="deleteOrder('${order.orderID}')" class="delete-icon fas fa-trash-alt"></i>
-          </td> 
+            <button type="button" class="icon-button action-button" aria-label="Edit order ${order.orderID}" onclick="editRow('${order.orderID}')">
+                <i class="edit-icon fa-solid fa-pen-to-square" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="icon-button action-button" aria-label="Delete order ${order.orderID}" onclick="deleteOrder('${order.orderID}')">
+                <i class="delete-icon fas fa-trash-alt" aria-hidden="true"></i>
+            </button>
+        </td>
       `;
       orderTableBody.appendChild(orderRow);
   });
@@ -272,27 +276,35 @@ function isDuplicateID(orderID, currentID) {
     return orders.some(order => order.orderID === orderID && order.orderID !== currentID);
 }
 
-function sortTable(column) {
+function sortTable(column, triggerButton) {
     const tbody = document.getElementById("tableBody");
     const rows = Array.from(tbody.querySelectorAll("tr"));
+    const sortKey = column;
 
-    const isNumeric = column === "itemPrice" || column === "qtyBought" || column === "shipping"|| column === "taxes"|| column === "orderTotal";
+    const isNumeric = column === "itemPrice" || column === "qtyBought" || column === "shipping" || column === "taxes" || column === "orderTotal";
+
+    orderSortState[sortKey] = orderSortState[sortKey] === "asc" ? "desc" : "asc";
+    const direction = orderSortState[sortKey];
 
     const sortedRows = rows.sort((a, b) => {
         const aValue = isNumeric ? parseFloat(a.dataset[column]) : a.dataset[column];
         const bValue = isNumeric ? parseFloat(b.dataset[column]) : b.dataset[column];
 
         if (typeof aValue === "string" && typeof bValue === "string") {
-            // Case-insensitive string comparison for text columns
-            return aValue.localeCompare(bValue, undefined, { sensitivity: "base" });
+            return direction === "asc"
+                ? aValue.localeCompare(bValue, undefined, { sensitivity: "base" })
+                : bValue.localeCompare(aValue, undefined, { sensitivity: "base" });
         } else {
-            return aValue - bValue;
+            return direction === "asc" ? aValue - bValue : bValue - aValue;
         }
     });
 
     rows.forEach(row => tbody.removeChild(row));
-
     sortedRows.forEach(row => tbody.appendChild(row));
+
+    const table = triggerButton.closest("table");
+    table.querySelectorAll("th").forEach(th => th.removeAttribute("aria-sort"));
+    triggerButton.closest("th").setAttribute("aria-sort", direction === "asc" ? "ascending" : "descending");
 }
 
 document.getElementById("searchInput").addEventListener("keyup", function(event) {

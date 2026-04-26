@@ -20,7 +20,7 @@ function closeForm() {
 
 
 let products = [];
-
+const productSortState = {};
 function init() {
   const storedProducts = localStorage.getItem("bizTrackProducts");
   if (storedProducts) {
@@ -142,8 +142,12 @@ function renderProducts(products) {
           <td>$${product.prodPrice.toFixed(2)}</td>
           <td>${product.prodSold}</td>
           <td class="action">
-            <i title="Edit" onclick="editRow('${product.prodID}')" class="edit-icon fa-solid fa-pen-to-square"></i>
-            <i onclick="deleteProduct('${product.prodID}')" class="delete-icon fas fa-trash-alt"></i>
+            <button type="button" class="icon-button action-button" aria-label="Edit product ${product.prodID}" onclick="editRow('${product.prodID}')">
+              <i class="edit-icon fa-solid fa-pen-to-square" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="icon-button action-button" aria-label="Delete product ${product.prodID}" onclick="deleteProduct('${product.prodID}')">
+              <i class="delete-icon fas fa-trash-alt" aria-hidden="true"></i>
+            </button>
           </td>
       `;
       prodTableBody.appendChild(prodRow);
@@ -210,34 +214,36 @@ function isDuplicateID(prodID, currentID) {
     return products.some(product => product.prodID === prodID && product.prodID !== currentID);
 }
 
-function sortTable(column) {
+function sortTable(column, triggerButton) {
     const tbody = document.getElementById("tableBody");
     const rows = Array.from(tbody.querySelectorAll("tr"));
+    const sortKey = column;
 
     const isNumeric = column === "prodPrice" || column === "prodSold";
+
+    productSortState[sortKey] = productSortState[sortKey] === "asc" ? "desc" : "asc";
+    const direction = productSortState[sortKey];
 
     const sortedRows = rows.sort((a, b) => {
         const aValue = isNumeric ? parseFloat(a.dataset[column]) : a.dataset[column];
         const bValue = isNumeric ? parseFloat(b.dataset[column]) : b.dataset[column];
 
         if (typeof aValue === "string" && typeof bValue === "string") {
-            return aValue.localeCompare(bValue, undefined, { sensitivity: "base" });
+            return direction === "asc"
+                ? aValue.localeCompare(bValue, undefined, { sensitivity: "base" })
+                : bValue.localeCompare(aValue, undefined, { sensitivity: "base" });
         } else {
-            return aValue - bValue;
+            return direction === "asc" ? aValue - bValue : bValue - aValue;
         }
     });
 
     rows.forEach(row => tbody.removeChild(row));
-
     sortedRows.forEach(row => tbody.appendChild(row));
+
+    const table = triggerButton.closest("table");
+    table.querySelectorAll("th").forEach(th => th.removeAttribute("aria-sort"));
+    triggerButton.closest("th").setAttribute("aria-sort", direction === "asc" ? "ascending" : "descending");
 }
-
-document.getElementById("searchInput").addEventListener("keyup", function(event) {
-    if (event.key === "Enter") {
-        performSearch();
-    }
-});
-
 
 function performSearch() {
     const searchInput = document.getElementById("searchInput").value.toLowerCase();
