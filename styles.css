@@ -125,7 +125,15 @@ body {
 .menu a i {
     font-size: 1.5rem;
 }
+.menu li:focus-within {
+    background: var(--orange-color);
+}
 
+.menu a:focus-visible {
+    outline: 3px solid #ffffff;
+    outline-offset: 4px;
+    border-radius: 8px;
+}
 /* semantic controls */
 .icon-button,
 .menu-icon,
@@ -392,7 +400,6 @@ label {
 .open-button:hover {
     opacity: 1;
 }
-
 .card-wrapper {
     display: flex;
     flex-wrap: wrap;
@@ -400,7 +407,8 @@ label {
     gap: 1rem;
 }
 
-.card-wrapper a {
+.card-wrapper a,
+.summary-card-static {
     text-decoration: none;
     color: var(--black-color);
     display: flex;
@@ -412,26 +420,34 @@ label {
     transition: all 0.5s ease-in-out;
 }
 
-.card-wrapper a:hover {
+.card-wrapper a:hover,
+.summary-card-static:hover {
     transform: translateY(-5px);
 }
 
-.card-wrapper a:first-child {
+.summary-card-link:focus-visible {
+    outline: 3px solid var(--blue-color);
+    outline-offset: 4px;
+    border-radius: 10px;
+    transform: translateY(-5px);
+}
+
+.card-wrapper > :first-child {
     background-color: #24967259;
     border-left: 8px solid #249672;
 }
 
-.card-wrapper a:nth-child(2) {
+.card-wrapper > :nth-child(2) {
     background-color: #A37A7459;
     border-left: 8px solid #A37A74;
 }
 
-.card-wrapper a:nth-child(3) {
+.card-wrapper > :nth-child(3) {
     background-color: #247BA059;
     border-left: 8px solid #247BA0;
 }
 
-.card-wrapper a:nth-child(4) {
+.card-wrapper > :nth-child(4) {
     background-color: #e4927359;
     border-left: 8px solid #e49273;
 }
@@ -442,7 +458,6 @@ label {
     align-items: center;
     margin-bottom: 20px;
 }
-
 .amount {
     display: flex;
     flex-direction: column;
