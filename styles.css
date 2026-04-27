@@ -131,8 +131,8 @@ body {
 
 .menu a:focus-visible {
     outline: 3px solid #ffffff;
-    outline-offset: 4px;
-    border-radius: 8px;
+    outline-offset: 6px;
+    border-radius: 10px;
 }
 /* semantic controls */
 .icon-button,
@@ -725,8 +725,19 @@ ol {
 .contact-icon a {
     text-decoration: none;
     color: var(--blue-color);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
 }
 
+.contact-icon a:focus-visible {
+    outline: none;
+    border-radius: 12px;
+    box-shadow: 0 0 0 3px var(--blue-color), 0 0 0 6px #ffffff;
+}
 .fa-linkedin,
 .fa-square-github,
 .fa-envelope {
