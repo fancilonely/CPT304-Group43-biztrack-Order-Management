@@ -137,10 +137,35 @@ function newOrder(event) {
   document.getElementById("order-form").reset();
 }
 
+function appendTextCell(row, value, className) {
+    const cell = document.createElement("td");
+    if (className) {
+        cell.className = className;
+    }
+    cell.textContent = value;
+    row.appendChild(cell);
+    return cell;
+}
+
+function createActionButton(label, iconClassName, clickHandler) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "icon-button action-button";
+    button.setAttribute("aria-label", label);
+    button.addEventListener("click", clickHandler);
+
+    const icon = document.createElement("i");
+    icon.className = iconClassName;
+    icon.setAttribute("aria-hidden", "true");
+    button.appendChild(icon);
+
+    return button;
+}
+
 
 function renderOrders(orders) {
     const orderTableBody = document.getElementById("tableBody");
-    orderTableBody.innerHTML = "";
+    orderTableBody.replaceChildren();
 
     const orderToRender = orders;
     const statusMap = {
@@ -169,27 +194,38 @@ function renderOrders(orders) {
       const formattedTaxes = typeof order.taxes === 'number' ? `$${order.taxes.toFixed(2)}` : '';
       const formattedTotal = typeof order.orderTotal === 'number' ? `$${order.orderTotal.toFixed(2)}` : '';
 
-      orderRow.innerHTML = `
-        <td>${order.orderID}</td>
-        <td>${order.orderDate}</td>
-        <td>${order.itemName}</td>
-        <td>${formattedPrice}</td>
-        <td>${order.qtyBought}</td>
-        <td>${formattedShipping}</td>
-        <td>${formattedTaxes}</td>
-        <td class="order-total">${formattedTotal}</td>
-        <td>
-            <div class="status ${statusMap[order.orderStatus]}"><span>${order.orderStatus}</span></div>
-        </td>
-        <td class="action">
-            <button type="button" class="icon-button action-button" aria-label="Edit order ${order.orderID}" onclick="editRow('${order.orderID}')">
-                <i class="edit-icon fa-solid fa-pen-to-square" aria-hidden="true"></i>
-            </button>
-            <button type="button" class="icon-button action-button" aria-label="Delete order ${order.orderID}" onclick="deleteOrder('${order.orderID}')">
-                <i class="delete-icon fas fa-trash-alt" aria-hidden="true"></i>
-            </button>
-        </td>
-      `;
+      appendTextCell(orderRow, order.orderID);
+      appendTextCell(orderRow, order.orderDate);
+      appendTextCell(orderRow, order.itemName);
+      appendTextCell(orderRow, formattedPrice);
+      appendTextCell(orderRow, order.qtyBought);
+      appendTextCell(orderRow, formattedShipping);
+      appendTextCell(orderRow, formattedTaxes);
+      appendTextCell(orderRow, formattedTotal, "order-total");
+
+      const statusCell = appendTextCell(orderRow, "");
+      const statusWrapper = document.createElement("div");
+      statusWrapper.classList.add("status");
+      if (statusMap[order.orderStatus]) {
+          statusWrapper.classList.add(statusMap[order.orderStatus]);
+      }
+      const statusText = document.createElement("span");
+      statusText.textContent = order.orderStatus;
+      statusWrapper.appendChild(statusText);
+      statusCell.appendChild(statusWrapper);
+
+      const actionCell = appendTextCell(orderRow, "", "action");
+      actionCell.appendChild(createActionButton(
+          `Edit order ${order.orderID}`,
+          "edit-icon fa-solid fa-pen-to-square",
+          () => editRow(order.orderID)
+      ));
+      actionCell.appendChild(createActionButton(
+          `Delete order ${order.orderID}`,
+          "delete-icon fas fa-trash-alt",
+          () => deleteOrder(order.orderID)
+      ));
+
       orderTableBody.appendChild(orderRow);
   });
   displayRevenue();
@@ -201,9 +237,7 @@ function displayRevenue() {
     const totalRevenue = orders
         .reduce((total, order) => total + order.orderTotal, 0);
 
-    resultElement.innerHTML = `
-        <span>Total Revenue: $${totalRevenue.toFixed(2)}</span>
-    `;
+    resultElement.textContent = `Total Revenue: $${totalRevenue.toFixed(2)}`;
 }
 
 function editRow(orderID) {

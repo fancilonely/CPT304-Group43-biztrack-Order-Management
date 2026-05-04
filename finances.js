@@ -114,10 +114,35 @@ function newTransaction(event) {
     document.getElementById("transaction-form").reset();
 }
 
+function appendTextCell(row, value, className) {
+    const cell = document.createElement("td");
+    if (className) {
+        cell.className = className;
+    }
+    cell.textContent = value;
+    row.appendChild(cell);
+    return cell;
+}
+
+function createActionButton(label, iconClassName, clickHandler) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "icon-button action-button";
+    button.setAttribute("aria-label", label);
+    button.addEventListener("click", clickHandler);
+
+    const icon = document.createElement("i");
+    icon.className = iconClassName;
+    icon.setAttribute("aria-hidden", "true");
+    button.appendChild(icon);
+
+    return button;
+}
+
 
 function renderTransactions(transactions) {
     const transactionTableBody = document.getElementById("tableBody");
-    transactionTableBody.innerHTML = "";
+    transactionTableBody.replaceChildren();
 
     const transactionToRender = transactions;
 
@@ -133,21 +158,24 @@ function renderTransactions(transactions) {
 
         const formattedAmount = typeof transaction.trAmount === 'number' ? `$${transaction.trAmount.toFixed(2)}` : '';
 
-        transactionRow.innerHTML = `
-            <td>${transaction.trID}</td>
-            <td>${transaction.trDate}</td>
-            <td>${transaction.trCategory}</td>
-            <td class="tr-amount">${formattedAmount}</td>
-            <td>${transaction.trNotes}</td>
-            <td class="action">
-                <button type="button" class="icon-button action-button" aria-label="Edit expense ${transaction.trID}" onclick="editRow('${transaction.trID}')">
-                    <i class="edit-icon fa-solid fa-pen-to-square" aria-hidden="true"></i>
-                </button>
-                <button type="button" class="icon-button action-button" aria-label="Delete expense ${transaction.trID}" onclick="deleteTransaction('${transaction.trID}')">
-                    <i class="delete-icon fas fa-trash-alt" aria-hidden="true"></i>
-                </button>
-            </td>
-        `;
+        appendTextCell(transactionRow, transaction.trID);
+        appendTextCell(transactionRow, transaction.trDate);
+        appendTextCell(transactionRow, transaction.trCategory);
+        appendTextCell(transactionRow, formattedAmount, "tr-amount");
+        appendTextCell(transactionRow, transaction.trNotes);
+
+        const actionCell = appendTextCell(transactionRow, "", "action");
+        actionCell.appendChild(createActionButton(
+            `Edit expense ${transaction.trID}`,
+            "edit-icon fa-solid fa-pen-to-square",
+            () => editRow(transaction.trID)
+        ));
+        actionCell.appendChild(createActionButton(
+            `Delete expense ${transaction.trID}`,
+            "delete-icon fas fa-trash-alt",
+            () => deleteTransaction(transaction.trID)
+        ));
+
         transactionTableBody.appendChild(transactionRow);
   });
   displayExpenses();
@@ -159,9 +187,7 @@ function displayExpenses() {
     const totalExpenses = transactions
         .reduce((total, transaction) => total + transaction.trAmount,0);
 
-    resultElement.innerHTML = `
-        <span>Total Expenses: $${totalExpenses.toFixed(2)}</span>
-    `;
+    resultElement.textContent = `Total Expenses: $${totalExpenses.toFixed(2)}`;
 }
 
 function editRow(trID) {

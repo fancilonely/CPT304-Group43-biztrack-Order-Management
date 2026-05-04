@@ -116,10 +116,34 @@ function newProduct(event) {
   document.getElementById("product-form").reset();
 }
 
+function appendTextCell(row, value, className) {
+  const cell = document.createElement("td");
+  if (className) {
+    cell.className = className;
+  }
+  cell.textContent = value;
+  row.appendChild(cell);
+  return cell;
+}
+
+function createActionButton(label, iconClassName, clickHandler) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "icon-button action-button";
+  button.setAttribute("aria-label", label);
+  button.addEventListener("click", clickHandler);
+
+  const icon = document.createElement("i");
+  icon.className = iconClassName;
+  icon.setAttribute("aria-hidden", "true");
+  button.appendChild(icon);
+
+  return button;
+}
 
 function renderProducts(products) {
   const prodTableBody = document.getElementById("tableBody");
-  prodTableBody.innerHTML = "";
+  prodTableBody.replaceChildren();
 
   const prodToRender = products;
 
@@ -134,22 +158,25 @@ function renderProducts(products) {
       prodRow.dataset.prodPrice = product.prodPrice;
       prodRow.dataset.prodSold = product.prodSold;
 
-      prodRow.innerHTML = `
-          <td>${product.prodID}</td>
-          <td>${product.prodName}</td>
-          <td>${product.prodDesc}</td>
-          <td>${product.prodCat}</td>
-          <td>$${product.prodPrice.toFixed(2)}</td>
-          <td>${product.prodSold}</td>
-          <td class="action">
-            <button type="button" class="icon-button action-button" aria-label="Edit product ${product.prodID}" onclick="editRow('${product.prodID}')">
-              <i class="edit-icon fa-solid fa-pen-to-square" aria-hidden="true"></i>
-            </button>
-            <button type="button" class="icon-button action-button" aria-label="Delete product ${product.prodID}" onclick="deleteProduct('${product.prodID}')">
-              <i class="delete-icon fas fa-trash-alt" aria-hidden="true"></i>
-            </button>
-          </td>
-      `;
+      appendTextCell(prodRow, product.prodID);
+      appendTextCell(prodRow, product.prodName);
+      appendTextCell(prodRow, product.prodDesc);
+      appendTextCell(prodRow, product.prodCat);
+      appendTextCell(prodRow, `$${product.prodPrice.toFixed(2)}`);
+      appendTextCell(prodRow, product.prodSold);
+
+      const actionCell = appendTextCell(prodRow, "", "action");
+      actionCell.appendChild(createActionButton(
+        `Edit product ${product.prodID}`,
+        "edit-icon fa-solid fa-pen-to-square",
+        () => editRow(product.prodID)
+      ));
+      actionCell.appendChild(createActionButton(
+        `Delete product ${product.prodID}`,
+        "delete-icon fas fa-trash-alt",
+        () => deleteProduct(product.prodID)
+      ));
+
       prodTableBody.appendChild(prodRow);
   });
 }
