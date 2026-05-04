@@ -19,7 +19,7 @@ function closeForm() {
 }
 
 let orders = [];
-
+const orderSortState = {};
 window.onload = function () {
     const storedOrders = localStorage.getItem("bizTrackOrders");
     if (storedOrders) {
@@ -137,10 +137,35 @@ function newOrder(event) {
   document.getElementById("order-form").reset();
 }
 
+function appendTextCell(row, value, className) {
+    const cell = document.createElement("td");
+    if (className) {
+        cell.className = className;
+    }
+    cell.textContent = value;
+    row.appendChild(cell);
+    return cell;
+}
+
+function createActionButton(label, iconClassName, clickHandler) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "icon-button action-button";
+    button.setAttribute("aria-label", label);
+    button.addEventListener("click", clickHandler);
+
+    const icon = document.createElement("i");
+    icon.className = iconClassName;
+    icon.setAttribute("aria-hidden", "true");
+    button.appendChild(icon);
+
+    return button;
+}
+
 
 function renderOrders(orders) {
     const orderTableBody = document.getElementById("tableBody");
-    orderTableBody.innerHTML = "";
+    orderTableBody.replaceChildren();
 
     const orderToRender = orders;
     const statusMap = {
@@ -169,23 +194,38 @@ function renderOrders(orders) {
       const formattedTaxes = typeof order.taxes === 'number' ? `$${order.taxes.toFixed(2)}` : '';
       const formattedTotal = typeof order.orderTotal === 'number' ? `$${order.orderTotal.toFixed(2)}` : '';
 
-      orderRow.innerHTML = `
-        <td>${order.orderID}</td>
-        <td>${order.orderDate}</td>
-        <td>${order.itemName}</td>
-        <td>${formattedPrice}</td>
-        <td>${order.qtyBought}</td>
-        <td>${formattedShipping}</td>
-        <td>${formattedTaxes}</td>
-        <td class="order-total">${formattedTotal}</td>
-        <td>
-            <div class="status ${statusMap[order.orderStatus]}"><span>${order.orderStatus}</span></div>
-        </td>
-        <td class="action">
-            <i title="Edit" onclick="editRow('${order.orderID}')" class="edit-icon fa-solid fa-pen-to-square"></i>
-            <i onclick="deleteOrder('${order.orderID}')" class="delete-icon fas fa-trash-alt"></i>
-          </td> 
-      `;
+      appendTextCell(orderRow, order.orderID);
+      appendTextCell(orderRow, order.orderDate);
+      appendTextCell(orderRow, order.itemName);
+      appendTextCell(orderRow, formattedPrice);
+      appendTextCell(orderRow, order.qtyBought);
+      appendTextCell(orderRow, formattedShipping);
+      appendTextCell(orderRow, formattedTaxes);
+      appendTextCell(orderRow, formattedTotal, "order-total");
+
+      const statusCell = appendTextCell(orderRow, "");
+      const statusWrapper = document.createElement("div");
+      statusWrapper.classList.add("status");
+      if (statusMap[order.orderStatus]) {
+          statusWrapper.classList.add(statusMap[order.orderStatus]);
+      }
+      const statusText = document.createElement("span");
+      statusText.textContent = order.orderStatus;
+      statusWrapper.appendChild(statusText);
+      statusCell.appendChild(statusWrapper);
+
+      const actionCell = appendTextCell(orderRow, "", "action");
+      actionCell.appendChild(createActionButton(
+          `Edit order ${order.orderID}`,
+          "edit-icon fa-solid fa-pen-to-square",
+          () => editRow(order.orderID)
+      ));
+      actionCell.appendChild(createActionButton(
+          `Delete order ${order.orderID}`,
+          "delete-icon fas fa-trash-alt",
+          () => deleteOrder(order.orderID)
+      ));
+
       orderTableBody.appendChild(orderRow);
   });
   displayRevenue();
@@ -197,9 +237,7 @@ function displayRevenue() {
     const totalRevenue = orders
         .reduce((total, order) => total + order.orderTotal, 0);
 
-    resultElement.innerHTML = `
-        <span>Total Revenue: $${totalRevenue.toFixed(2)}</span>
-    `;
+    resultElement.textContent = `Total Revenue: $${totalRevenue.toFixed(2)}`;
 }
 
 function editRow(orderID) {
@@ -272,27 +310,35 @@ function isDuplicateID(orderID, currentID) {
     return orders.some(order => order.orderID === orderID && order.orderID !== currentID);
 }
 
-function sortTable(column) {
+function sortTable(column, triggerButton) {
     const tbody = document.getElementById("tableBody");
     const rows = Array.from(tbody.querySelectorAll("tr"));
+    const sortKey = column;
 
-    const isNumeric = column === "itemPrice" || column === "qtyBought" || column === "shipping"|| column === "taxes"|| column === "orderTotal";
+    const isNumeric = column === "itemPrice" || column === "qtyBought" || column === "shipping" || column === "taxes" || column === "orderTotal";
+
+    orderSortState[sortKey] = orderSortState[sortKey] === "asc" ? "desc" : "asc";
+    const direction = orderSortState[sortKey];
 
     const sortedRows = rows.sort((a, b) => {
         const aValue = isNumeric ? parseFloat(a.dataset[column]) : a.dataset[column];
         const bValue = isNumeric ? parseFloat(b.dataset[column]) : b.dataset[column];
 
         if (typeof aValue === "string" && typeof bValue === "string") {
-            // Case-insensitive string comparison for text columns
-            return aValue.localeCompare(bValue, undefined, { sensitivity: "base" });
+            return direction === "asc"
+                ? aValue.localeCompare(bValue, undefined, { sensitivity: "base" })
+                : bValue.localeCompare(aValue, undefined, { sensitivity: "base" });
         } else {
-            return aValue - bValue;
+            return direction === "asc" ? aValue - bValue : bValue - aValue;
         }
     });
 
     rows.forEach(row => tbody.removeChild(row));
-
     sortedRows.forEach(row => tbody.appendChild(row));
+
+    const table = triggerButton.closest("table");
+    table.querySelectorAll("th").forEach(th => th.removeAttribute("aria-sort"));
+    triggerButton.closest("th").setAttribute("aria-sort", direction === "asc" ? "ascending" : "descending");
 }
 
 document.getElementById("searchInput").addEventListener("keyup", function(event) {

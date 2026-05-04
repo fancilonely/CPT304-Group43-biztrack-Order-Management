@@ -20,7 +20,7 @@ function closeForm() {
 
 
 let products = [];
-
+const productSortState = {};
 function init() {
   const storedProducts = localStorage.getItem("bizTrackProducts");
   if (storedProducts) {
@@ -116,10 +116,34 @@ function newProduct(event) {
   document.getElementById("product-form").reset();
 }
 
+function appendTextCell(row, value, className) {
+  const cell = document.createElement("td");
+  if (className) {
+    cell.className = className;
+  }
+  cell.textContent = value;
+  row.appendChild(cell);
+  return cell;
+}
+
+function createActionButton(label, iconClassName, clickHandler) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "icon-button action-button";
+  button.setAttribute("aria-label", label);
+  button.addEventListener("click", clickHandler);
+
+  const icon = document.createElement("i");
+  icon.className = iconClassName;
+  icon.setAttribute("aria-hidden", "true");
+  button.appendChild(icon);
+
+  return button;
+}
 
 function renderProducts(products) {
   const prodTableBody = document.getElementById("tableBody");
-  prodTableBody.innerHTML = "";
+  prodTableBody.replaceChildren();
 
   const prodToRender = products;
 
@@ -134,18 +158,25 @@ function renderProducts(products) {
       prodRow.dataset.prodPrice = product.prodPrice;
       prodRow.dataset.prodSold = product.prodSold;
 
-      prodRow.innerHTML = `
-          <td>${product.prodID}</td>
-          <td>${product.prodName}</td>
-          <td>${product.prodDesc}</td>
-          <td>${product.prodCat}</td>
-          <td>$${product.prodPrice.toFixed(2)}</td>
-          <td>${product.prodSold}</td>
-          <td class="action">
-            <i title="Edit" onclick="editRow('${product.prodID}')" class="edit-icon fa-solid fa-pen-to-square"></i>
-            <i onclick="deleteProduct('${product.prodID}')" class="delete-icon fas fa-trash-alt"></i>
-          </td>
-      `;
+      appendTextCell(prodRow, product.prodID);
+      appendTextCell(prodRow, product.prodName);
+      appendTextCell(prodRow, product.prodDesc);
+      appendTextCell(prodRow, product.prodCat);
+      appendTextCell(prodRow, `$${product.prodPrice.toFixed(2)}`);
+      appendTextCell(prodRow, product.prodSold);
+
+      const actionCell = appendTextCell(prodRow, "", "action");
+      actionCell.appendChild(createActionButton(
+        `Edit product ${product.prodID}`,
+        "edit-icon fa-solid fa-pen-to-square",
+        () => editRow(product.prodID)
+      ));
+      actionCell.appendChild(createActionButton(
+        `Delete product ${product.prodID}`,
+        "delete-icon fas fa-trash-alt",
+        () => deleteProduct(product.prodID)
+      ));
+
       prodTableBody.appendChild(prodRow);
   });
 }
@@ -210,34 +241,36 @@ function isDuplicateID(prodID, currentID) {
     return products.some(product => product.prodID === prodID && product.prodID !== currentID);
 }
 
-function sortTable(column) {
+function sortTable(column, triggerButton) {
     const tbody = document.getElementById("tableBody");
     const rows = Array.from(tbody.querySelectorAll("tr"));
+    const sortKey = column;
 
     const isNumeric = column === "prodPrice" || column === "prodSold";
+
+    productSortState[sortKey] = productSortState[sortKey] === "asc" ? "desc" : "asc";
+    const direction = productSortState[sortKey];
 
     const sortedRows = rows.sort((a, b) => {
         const aValue = isNumeric ? parseFloat(a.dataset[column]) : a.dataset[column];
         const bValue = isNumeric ? parseFloat(b.dataset[column]) : b.dataset[column];
 
         if (typeof aValue === "string" && typeof bValue === "string") {
-            return aValue.localeCompare(bValue, undefined, { sensitivity: "base" });
+            return direction === "asc"
+                ? aValue.localeCompare(bValue, undefined, { sensitivity: "base" })
+                : bValue.localeCompare(aValue, undefined, { sensitivity: "base" });
         } else {
-            return aValue - bValue;
+            return direction === "asc" ? aValue - bValue : bValue - aValue;
         }
     });
 
     rows.forEach(row => tbody.removeChild(row));
-
     sortedRows.forEach(row => tbody.appendChild(row));
+
+    const table = triggerButton.closest("table");
+    table.querySelectorAll("th").forEach(th => th.removeAttribute("aria-sort"));
+    triggerButton.closest("th").setAttribute("aria-sort", direction === "asc" ? "ascending" : "descending");
 }
-
-document.getElementById("searchInput").addEventListener("keyup", function(event) {
-    if (event.key === "Enter") {
-        performSearch();
-    }
-});
-
 
 function performSearch() {
     const searchInput = document.getElementById("searchInput").value.toLowerCase();
