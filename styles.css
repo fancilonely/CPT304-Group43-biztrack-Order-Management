@@ -27,15 +27,16 @@ body {
 .sidebar {
     position: absolute;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
     top: 0;
     left: 0;
     bottom: 0;
     width: 220px;
     height: 100vh;
     padding: 0 1rem;
+    box-sizing: border-box;
     overflow: hidden;
     overflow-y: auto;
     transition: all 0.5s linear;
@@ -51,13 +52,15 @@ body {
     top: 15px;
     height: 70px;
     padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
     font-size: 20px;
     font-weight: 700;
     position: relative;
     display: flex;
     align-items: center;
-    justify-content: space-evenly;
-    gap: 40px;
+    justify-content: space-between;
+    gap: 12px;
 }
 
 .logo a {
@@ -76,14 +79,16 @@ body {
     text-decoration: none;
     display: flex;
     align-items: first baseline;
-    justify-content: space-around;
+    justify-content: flex-start;
     gap: 0.7rem;
     padding-right: 7px;
+    min-width: 0;
 }
 
 .logo a span {
     overflow: hidden;
     line-height: 1;
+    white-space: nowrap;
 }
 
 .logo a span:hover {
@@ -171,6 +176,7 @@ body {
     width: 40px;
     height: 40px;
     border-radius: 8px;
+    flex-shrink: 0;
 }
 
 .sidebar-close .fa-xmark {
