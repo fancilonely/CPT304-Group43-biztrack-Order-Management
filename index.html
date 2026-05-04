@@ -13,7 +13,7 @@
     <title>Dashboard - BizTrack</title>
 </head>
 <body>
-    <div id="sidebar" class="sidebar">
+    <nav id="sidebar" class="sidebar" aria-label="Primary navigation">
         <div class="logo">
             <a href="./index.html" aria-current="page">
                 <i class="fas fa-b"></i>
@@ -61,10 +61,10 @@
                 </a>
             </li>
         </ul>
-    </div>
+    </nav>
 
-    <div class="main-content">
-        <div class="header-wrapper">
+    <main class="main-content">
+        <header class="header-wrapper">
             <button type="button" class="menu-icon" aria-label="Open sidebar" onclick="openSidebar()">
                 <i class="fa-solid fa-bars" aria-hidden="true"></i>
             </button>
@@ -80,7 +80,7 @@
                 </div> -->
                 <!-- <i class="fas fa-user-alt fa-xl"></i> -->
             </div>
-        </div>
+        </header>
 
         <div class="card-container">
             <h3 class="main-title">Summary</h3>
@@ -127,17 +127,19 @@
         <div class="charts-container">
             <h3 class="main-title">Analytics</h3>
             <div class="charts-wrapper">
-                <div class="charts-card">
-                    <span class="chart-title">Sales by Product Category</span>
-                    <div id="bar-chart"></div>
+                <div class="charts-card" role="img" aria-labelledby="bar-chart-title bar-chart-desc">
+                    <span class="chart-title" id="bar-chart-title">Sales by Product Category</span>
+                    <p class="visually-hidden" id="bar-chart-desc">Bar chart showing total sales grouped by product category, based on saved product data.</p>
+                    <div id="bar-chart" aria-hidden="true"></div>
                 </div>
-                <div class="charts-card">
-                    <span class="chart-title">Expenses</span>
-                    <div id="donut-chart"></div>
+                <div class="charts-card" role="img" aria-labelledby="donut-chart-title donut-chart-desc">
+                    <span class="chart-title" id="donut-chart-title">Expenses</span>
+                    <p class="visually-hidden" id="donut-chart-desc">Donut chart showing expense totals grouped by transaction category, based on saved expense data.</p>
+                    <div id="donut-chart" aria-hidden="true"></div>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 
     <!-- Apex Charts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.45.2/apexcharts.min.js"></script>
