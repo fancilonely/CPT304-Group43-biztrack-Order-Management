@@ -51,7 +51,7 @@ body {
 .logo {
     top: 15px;
     height: 70px;
-    padding: 10px;
+    padding: 10px 0;
     width: 100%;
     box-sizing: border-box;
     font-size: 20px;
@@ -60,7 +60,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
+    gap: 8px;
 }
 
 .logo a {
@@ -78,15 +78,16 @@ body {
     -webkit-text-fill-color: transparent;
     text-decoration: none;
     display: flex;
-    align-items: first baseline;
+    align-items: center;
     justify-content: flex-start;
-    gap: 0.7rem;
-    padding-right: 7px;
+    gap: 0.5rem;
+    padding-left: 10px;
+    padding-right: 0;
     min-width: 0;
 }
 
 .logo a span {
-    overflow: hidden;
+    overflow: visible;
     line-height: 1;
     white-space: nowrap;
 }
@@ -173,8 +174,8 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     border-radius: 8px;
     flex-shrink: 0;
 }
