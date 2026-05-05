@@ -313,9 +313,31 @@ function exportToCSV() {
     document.body.removeChild(link);
 }
   
-function generateCSV(data) {
-    const headers = Object.keys(data[0]).join(',');
-    const rows = data.map(order => Object.values(order).join(','));
+function escapeCSVValue(value) {
+    if (value === null || value === undefined) {
+        return "";
+    }
 
-    return `${headers}\n${rows.join('\n')}`;
+    let stringValue = String(value);
+
+    // Prevent CSV formula injection when opened in spreadsheet tools.
+    if (/^[=+\-@]/.test(stringValue)) {
+        stringValue = "'" + stringValue;
+    }
+
+    // Escape double quotes and wrap every value in quotes to preserve commas/new lines.
+    return `"${stringValue.replace(/"/g, '""')}"`;
+}
+
+function generateCSV(data) {
+    if (!data || data.length === 0) {
+        return "";
+    }
+
+    const headers = Object.keys(data[0]).map(escapeCSVValue).join(",");
+    const rows = data.map(row =>
+        Object.values(row).map(escapeCSVValue).join(",")
+    );
+
+    return `${headers}\n${rows.join("\n")}`;
 }
