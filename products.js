@@ -160,8 +160,8 @@ function renderProducts(products) {
 
       appendTextCell(prodRow, product.prodID);
       appendTextCell(prodRow, product.prodName);
-      appendTextCell(prodRow, product.prodDesc);
-      appendTextCell(prodRow, product.prodCat);
+      appendTextCell(prodRow, translateValue(product.prodDesc));
+      appendTextCell(prodRow, translateValue(product.prodCat));
       appendTextCell(prodRow, `$${product.prodPrice.toFixed(2)}`);
       appendTextCell(prodRow, product.prodSold);
 
@@ -315,5 +315,9 @@ function generateCSV(data) {
 
   return `${headers}\n${rows.join('\n')}`;
 }
+
+document.addEventListener("languageChanged", () => {
+  renderProducts(products);
+});
 
 init();
