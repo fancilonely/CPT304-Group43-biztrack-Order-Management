@@ -124,6 +124,25 @@ function appendTextCell(row, value, className) {
     return cell;
 }
 
+function translateCategory(category) {
+    const categoryKeys = {
+        "Rent": "rent",
+        "Order Fulfillment": "orderFulfillment",
+        "Utilities": "utilities",
+        "Supplies": "supplies",
+        "Miscellaneous": "miscellaneous"
+    };
+
+    const language = getCurrentLanguage();
+    const key = categoryKeys[category];
+
+    if (key && translations[language][key]) {
+        return translations[language][key];
+    }
+
+    return category;
+}
+
 function createActionButton(label, iconClassName, clickHandler) {
     const button = document.createElement("button");
     button.type = "button";
@@ -160,7 +179,7 @@ function renderTransactions(transactions) {
 
         appendTextCell(transactionRow, transaction.trID);
         appendTextCell(transactionRow, transaction.trDate);
-        appendTextCell(transactionRow, transaction.trCategory);
+        appendTextCell(transactionRow, translateCategory(transaction.trCategory));
         appendTextCell(transactionRow, formattedAmount, "tr-amount");
         appendTextCell(transactionRow, transaction.trNotes);
 
@@ -187,7 +206,8 @@ function displayExpenses() {
     const totalExpenses = transactions
         .reduce((total, transaction) => total + transaction.trAmount,0);
 
-    resultElement.textContent = `Total Expenses: $${totalExpenses.toFixed(2)}`;
+    const language = getCurrentLanguage();
+    resultElement.textContent = `${translations[language].totalExpenses}: $${totalExpenses.toFixed(2)}`;
 }
 
 function editRow(trID) {
@@ -341,3 +361,6 @@ function generateCSV(data) {
 
     return `${headers}\n${rows.join("\n")}`;
 }
+document.addEventListener("languageChanged", () => {
+    renderTransactions(transactions);
+});

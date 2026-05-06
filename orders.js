@@ -147,6 +147,24 @@ function appendTextCell(row, value, className) {
     return cell;
 }
 
+function translateStatus(status) {
+    const statusKeys = {
+        Pending: "pending",
+        Processing: "processing",
+        Shipped: "shipped",
+        Delivered: "delivered"
+    };
+
+    const language = getCurrentLanguage();
+    const key = statusKeys[status];
+
+    if (key && translations[language][key]) {
+        return translations[language][key];
+    }
+
+    return status;
+}
+
 function createActionButton(label, iconClassName, clickHandler) {
     const button = document.createElement("button");
     button.type = "button";
@@ -210,7 +228,7 @@ function renderOrders(orders) {
           statusWrapper.classList.add(statusMap[order.orderStatus]);
       }
       const statusText = document.createElement("span");
-      statusText.textContent = order.orderStatus;
+      statusText.textContent = translateStatus(order.orderStatus);
       statusWrapper.appendChild(statusText);
       statusCell.appendChild(statusWrapper);
 
@@ -237,7 +255,8 @@ function displayRevenue() {
     const totalRevenue = orders
         .reduce((total, order) => total + order.orderTotal, 0);
 
-    resultElement.textContent = `Total Revenue: $${totalRevenue.toFixed(2)}`;
+    const language = getCurrentLanguage();
+    resultElement.textContent = `${translations[language].totalRevenue}: $${totalRevenue.toFixed(2)}`;
 }
 
 function editRow(orderID) {
@@ -416,3 +435,7 @@ function generateCSV(data) {
 
     return `${headers}\n${rows.join("\n")}`;
 }
+
+document.addEventListener("languageChanged", () => {
+    renderOrders(orders);
+});

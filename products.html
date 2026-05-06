@@ -27,38 +27,43 @@
             <li>
                 <a href="./index.html">
                     <i class="fa-solid fa-gauge-high"></i>
-                    <span>Dashboard</span>
+                    <span data-i18n="dashboard">Dashboard</span>
                 </a>
             </li>
             <li class="active">
                 <a href="./products.html" aria-current="page">
                     <i class="fas fa-dolly"></i>
-                    <span>Products</span>
+                    <span data-i18n="products">Products</span>
                 </a>
             </li>
             <li>
                 <a href="./orders.html">
                     <i class="fas fa-shopping-cart"></i>
-                    <span>Orders</span>
+                    <span data-i18n="orders">Orders</span>
                 </a>
             </li>
             <li>
                 <a href="./finances.html">
                     <i class="fas fa-sack-dollar"></i>
-                    <span>Expenses</span>
+                    <span data-i18n="expenses">Expenses</span>
                 </a>
             </li>
             <li>
                 <a href="./help.html">
                     <i class="fas fa-question-circle"></i>
-                    <span>Help</span>
+                    <span data-i18n="help">Help</span>
                 </a>
             </li>
             <li class="logout">
                 <a href="./about.html">
                     <i class="fa-solid fa-users-line"></i>
-                    <span>Meet the Developer</span>
+                    <span data-i18n="meetDeveloper">Meet the Developer</span>
                 </a>
+            </li>
+            <li>
+                 <button type="button" id="language-toggle" class="language-toggle" onclick="toggleLanguage()" aria-label="Switch language to Chinese">
+                中文
+                 </button>
             </li>
         </ul>
     </nav>
@@ -70,12 +75,12 @@
             </button>
             <div class="header-title">
                 <!-- <span>Primary</span> -->
-                <h2>Products</h2>
+                <h2 data-i18n="products">Products</h2>
             </div>
             <div class="user-info">
                 <div class="search-box">
                     <i class="fas fa-search"></i>
-                    <input type="search" id="searchInput" placeholder="Search">
+                    <input type="search" id="searchInput" placeholder="Search" data-i18n-placeholder="search">
                 </div>
                 <!-- <i class="fas fa-user-alt fa-xl"></i> -->
             </div>
@@ -83,22 +88,22 @@
 
         <div class="table-wrapper">
             <div class="product-title">
-                <h3 class="main-title">Products</h3>
+                <h3 class="main-title" data-i18n="products">Products</h3>
                 <div class="product-button">
-                    <button class="add-button" onclick="openForm()">Add Product</button>
-                    <button class="download-button" onclick="exportToCSV()">Download CSV</button>
+                    <button class="add-button" onclick="openForm()" data-i18n="addProduct">Add Product</button>
+                    <button class="download-button" onclick="exportToCSV()" data-i18n="downloadCSV">Download CSV</button>
                 </div>
             </div>
             <div class="form-popup">
                 <form class="form-container" id="product-form" onsubmit="addOrUpdate(event)">
                     <div class="form-columns">
                         <div class="first-col">
-                            <label for="product-id"><b>Product ID: </b></label>
+                            <label for="product-id" data-i18n="productID"><b>Product ID: </b></label>
                             <input type="text" id="product-id" placeholder="PD001" required>
                         
-                            <label for="product-name"><b>Product Name</b></label>
+                            <label for="product-name" data-i18n="productName"><b>Product Name</b></label>
                             <select name="product-name" id="product-name" required>
-                                <option value="" disabled selected hidden>Choose a product</option>
+                                <option value="" disabled selected hidden data-i18n="chooseProduct">Choose a product</option>
                                 <optgroup label="Hats">
                                     <option value="Baseball caps">Baseball caps</option>
                                     <option value="Snapbacks">Snapbacks</option>
@@ -127,13 +132,13 @@
                                 </optgroup>
                             </select>
     
-                            <label for="product-desc"><b>Product Description:</b></label>
+                            <label for="product-desc" data-i18n="productDescription"><b>Product Description:</b></label>
                             <input type="text" id="product-desc" placeholder="Travel Mug" required>
                         </div>
                         <div class="second-col">
-                            <label for="product-cat"><b>Product Category:</b></label>
+                            <label for="product-cat" data-i18n="productCategory"><b>Product Category:</b></label>
                             <select name="product-cat" id="product-cat" required>
-                                <option value="" disabled selected>Choose a category</option>
+                                <option value="" disabled selected data-i18n="chooseCategory">Choose a category</option>
                                 <option value="Clothing">Clothing</option>
                                 <option value="Drinkware">Drinkware</option>
                                 <option value="Accessories">Accessories</option>
@@ -141,17 +146,17 @@
                                 <option value="Home decor">Home decor</option>
                             </select>
     
-                            <label for="product-price"><b>Product Price:</b></label>
+                            <label for="product-price" data-i18n="productPrice"><b>Product Price:</b></label>
                             <input type="number" id="product-price" placeholder="$0.00" min="0.00" max="10000.00" step="0.01" required>
     
-                            <label for="product-sold"><b>Number of Units Sold:</b></label>
+                            <label for="product-sold" data-i18n="unitsSold"><b>Number of Units Sold:</b></label>
                             <input type="number" id="product-sold" placeholder="10" required>
                         </div>
                     </div>
                     
                     <div class="button-col">
-                        <button type="submit" class="btn" id="submitBtn">Add</button>
-                        <button type="button" class="btn cancel" onclick="closeForm()">Cancel</button>
+                        <button type="submit" class="btn" id="submitBtn" data-i18n="add">Add</button>
+                        <button type="button" class="btn cancel" onclick="closeForm()" data-i18n="cancel">Cancel</button>
                     </div>
                 </form>
             </div>
@@ -159,13 +164,25 @@
                 <table id="product-table">
                     <thead>
                         <tr>
-                            <th scope="col"><button type="button" class="sort-button" onclick="sortTable('prodID', this)">Product ID</button></th>
-                            <th scope="col"><button type="button" class="sort-button" onclick="sortTable('prodName', this)">Product Name</button></th>
-                            <th scope="col"><button type="button" class="sort-button" onclick="sortTable('prodDesc', this)">Description</button></th>
-                            <th scope="col"><button type="button" class="sort-button" onclick="sortTable('prodCat', this)">Category</button></th>
-                            <th scope="col"><button type="button" class="sort-button" onclick="sortTable('prodPrice', this)">Price</button></th>
-                            <th scope="col"><button type="button" class="sort-button" onclick="sortTable('prodSold', this)">Units Sold</button></th>
-                            <th scope="col">Action</th>
+                            <th scope="col">
+                                <button type="button" class="sort-button" onclick="sortTable('prodID', this)" data-i18n="productIDShort">Product ID</button>
+                            </th>
+                            <th scope="col">
+                                <button type="button" class="sort-button" onclick="sortTable('prodName', this)" data-i18n="productName">Product Name</button>
+                            </th>
+                            <th scope="col">
+                                <button type="button" class="sort-button" onclick="sortTable('prodDesc', this)" data-i18n="description">Description</button>
+                            </th>
+                            <th scope="col">
+                                <button type="button" class="sort-button" onclick="sortTable('prodCat', this)" data-i18n="category">Category</button>
+                            </th>
+                            <th scope="col">
+                                <button type="button" class="sort-button" onclick="sortTable('prodPrice', this)" data-i18n="price">Price</button>
+                            </th>
+                            <th scope="col">
+                                <button type="button" class="sort-button" onclick="sortTable('prodSold', this)" data-i18n="unitsSoldShort">Units Sold</button>
+                            </th>
+                            <th scope="col" data-i18n="action">Action</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody">
@@ -179,7 +196,7 @@
             </div>
         </div>
     </main>
-
+    <script src="./i18n.js"></script>
     <script src="./products.js"></script>
 </body>
 </html>
