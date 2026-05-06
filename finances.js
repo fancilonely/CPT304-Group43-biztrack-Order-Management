@@ -1,4 +1,3 @@
-
 function openSidebar() {
     var side = document.getElementById('sidebar');
     side.style.display = (side.style.display === "block") ? "none" : "block";
@@ -72,14 +71,30 @@ window.onload = function () {
     }
   
     renderTransactions(transactions);
+    resetSubmitButtonMode();
+}
+
+function resetSubmitButtonMode() {
+    const submitBtn = document.getElementById("submitBtn");
+
+    if (!submitBtn) {
+        return;
+    }
+
+    submitBtn.dataset.mode = "add";
+    delete submitBtn.dataset.editingId;
+    submitBtn.setAttribute("data-i18n", "add");
+    submitBtn.textContent = "Add";
 }
 
 function addOrUpdate(event) {
-    let type = document.getElementById("submitBtn").textContent;
-    if (type === 'Add') {
+    const submitBtn = document.getElementById("submitBtn");
+    const mode = submitBtn.dataset.mode || "add";
+
+    if (mode === "add") {
         newTransaction(event);
-    } else if (type === 'Update'){
-        const trId = document.getElementById("tr-id").value;
+    } else if (mode === "update") {
+        const trId = submitBtn.dataset.editingId;
         updateTransaction(+trId); // convert to number
     }
 }
@@ -112,6 +127,7 @@ function newTransaction(event) {
     displayExpenses();
   
     document.getElementById("transaction-form").reset();
+    resetSubmitButtonMode();
 }
 
 function appendTextCell(row, value, className) {
@@ -219,7 +235,11 @@ function editRow(trID) {
     document.getElementById("tr-amount").value = trToEdit.trAmount;
     document.getElementById("tr-notes").value = trToEdit.trNotes;
   
-    document.getElementById("submitBtn").textContent = "Update";
+    const submitBtn = document.getElementById("submitBtn");
+    submitBtn.dataset.mode = "update";
+    submitBtn.dataset.editingId = trID;
+    submitBtn.setAttribute("data-i18n", "update");
+    submitBtn.textContent = "Update";
 
     document.getElementById("transaction-form").style.display = "block";
   }
@@ -255,7 +275,7 @@ function deleteTransaction(trID) {
         renderTransactions(transactions);
 
         document.getElementById("transaction-form").reset();
-        document.getElementById("submitBtn").textContent = "Add";
+        resetSubmitButtonMode();
     }
 }
 
