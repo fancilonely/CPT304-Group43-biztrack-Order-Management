@@ -1,4 +1,3 @@
-
 function openSidebar() {
     var side = document.getElementById('sidebar');
     side.style.display = (side.style.display === "block") ? "none" : "block";
@@ -87,14 +86,30 @@ window.onload = function () {
     }
 
     renderOrders(orders);
+    resetSubmitButtonMode();
+}
+
+function resetSubmitButtonMode() {
+    const submitBtn = document.getElementById("submitBtn");
+
+    if (!submitBtn) {
+        return;
+    }
+
+    submitBtn.dataset.mode = "add";
+    delete submitBtn.dataset.editingId;
+    submitBtn.setAttribute("data-i18n", "add");
+    submitBtn.textContent = "Add";
 }
 
 function addOrUpdate(event) {
-    let type = document.getElementById("submitBtn").textContent;
-    if (type === 'Add') {
+    const submitBtn = document.getElementById("submitBtn");
+    const mode = submitBtn.dataset.mode || "add";
+
+    if (mode === "add") {
         newOrder(event);
-    } else if (type === 'Update'){
-        const orderID = document.getElementById("order-id").value;
+    } else if (mode === "update") {
+        const orderID = submitBtn.dataset.editingId;
         updateOrder(orderID);
     }
 }
@@ -135,6 +150,7 @@ function newOrder(event) {
   localStorage.setItem("bizTrackOrders", JSON.stringify(orders));
 
   document.getElementById("order-form").reset();
+  resetSubmitButtonMode();
 }
 
 function appendTextCell(row, value, className) {
@@ -272,7 +288,11 @@ function editRow(orderID) {
     document.getElementById("order-total").value = orderToEdit.orderTotal;
     document.getElementById("order-status").value = orderToEdit.orderStatus;
 
-    document.getElementById("submitBtn").textContent = "Update";
+    const submitBtn = document.getElementById("submitBtn");
+    submitBtn.dataset.mode = "update";
+    submitBtn.dataset.editingId = orderID;
+    submitBtn.setAttribute("data-i18n", "update");
+    submitBtn.textContent = "Update";
 
     document.getElementById("order-form").style.display = "block";
 }
@@ -321,7 +341,7 @@ function updateOrder(orderID) {
         renderOrders(orders);
 
         document.getElementById("order-form").reset();
-        document.getElementById("submitBtn").textContent = "Add";
+        resetSubmitButtonMode();
     }
 }
 
