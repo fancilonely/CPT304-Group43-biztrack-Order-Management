@@ -212,6 +212,11 @@ function createActionButton(label, iconClassName, clickHandler) {
     return button;
 }
 
+function getActionLabel(key, id) {
+    const label = typeof getText === "function" ? getText(key) : key;
+    return `${label} ${id}`;
+}
+
 
 function renderTransactions(transactions) {
     const transactionTableBody = document.getElementById("tableBody");
@@ -239,12 +244,12 @@ function renderTransactions(transactions) {
 
         const actionCell = appendTextCell(transactionRow, "", "action");
         actionCell.appendChild(createActionButton(
-            `Edit expense ${transaction.trID}`,
+            getActionLabel("editExpense", transaction.trID),
             "edit-icon fa-solid fa-pen-to-square",
             () => editRow(transaction.trID)
         ));
         actionCell.appendChild(createActionButton(
-            `Delete expense ${transaction.trID}`,
+            getActionLabel("deleteExpense", transaction.trID),
             "delete-icon fas fa-trash-alt",
             () => deleteTransaction(transaction.trID)
         ));

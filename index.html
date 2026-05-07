@@ -13,13 +13,13 @@
     <title>Dashboard - BizTrack</title>
 </head>
 <body>
-    <nav id="sidebar" class="sidebar" aria-label="Primary navigation">
+    <nav id="sidebar" class="sidebar" aria-label="Primary navigation" data-i18n-aria-label="primaryNavigation">
         <div class="logo">
             <a href="./index.html" aria-current="page">
                 <i class="fas fa-b"></i>
                 <span>BizTrack</span>
             </a>
-            <button type="button" class="icon-button sidebar-close" aria-label="Close sidebar" onclick="closeSidebar()">
+            <button type="button" class="icon-button sidebar-close" aria-label="Close sidebar" data-i18n-aria-label="closeSidebar" onclick="closeSidebar()">
                 <i class="fa-solid fa-xmark" aria-hidden="true"></i>
             </button>
         </div>
@@ -70,7 +70,7 @@
 
     <main class="main-content">
         <header class="header-wrapper">
-            <button type="button" class="menu-icon" aria-label="Open sidebar" onclick="openSidebar()">
+            <button type="button" class="menu-icon" aria-label="Open sidebar" data-i18n-aria-label="openSidebar" onclick="openSidebar()">
                 <i class="fa-solid fa-bars" aria-hidden="true"></i>
             </button>
 
@@ -90,7 +90,7 @@
         <div class="card-container">
             <h3 class="main-title" data-i18n="summary">Summary</h3>
             <div class="card-wrapper">
-                <a href="./orders.html" class="summary-card-link" aria-label="View revenue details on the Orders page">
+                <a href="./orders.html" class="summary-card-link" aria-label="View revenue details on the Orders page" data-i18n-aria-label="viewRevenueDetails">
                     <div class="payment-card">
                         <div class="card-header">
                             <div class="amount" id="rev-amount"></div>
@@ -100,7 +100,7 @@
                     </div>
                 </a>
 
-                <a href="./finances.html" class="summary-card-link" aria-label="View expense details on the Expenses page">
+                <a href="./finances.html" class="summary-card-link" aria-label="View expense details on the Expenses page" data-i18n-aria-label="viewExpenseDetails">
                     <div class="payment-card">
                         <div class="card-header">
                             <div class="amount" id="exp-amount"></div>
@@ -110,7 +110,7 @@
                     </div>
                 </a>
 
-                <a href="./orders.html" class="summary-card-link" aria-label="View orders on the Orders page">
+                <a href="./orders.html" class="summary-card-link" aria-label="View orders on the Orders page" data-i18n-aria-label="viewOrdersDetails">
                     <div class="payment-card">
                         <div class="card-header">
                             <div class="amount" id="num-orders"></div>
@@ -120,7 +120,7 @@
                     </div>
                 </a>
 
-                <div class="payment-card summary-card-static" aria-label="Current balance summary">
+                <div class="payment-card summary-card-static" aria-label="Current balance summary" data-i18n-aria-label="currentBalanceSummary">
                     <div class="card-header">
                         <div class="amount" id="balance"></div>
                         <i class="fas fa-arrow-up-right-dots icon" aria-hidden="true"></i>
@@ -134,12 +134,12 @@
             <div class="charts-wrapper">
                 <div class="charts-card" role="img" aria-labelledby="bar-chart-title bar-chart-desc">
                     <span class="chart-title" id="bar-chart-title" data-i18n="salesByCategory">Sales by Product Category</span>
-                    <p class="visually-hidden" id="bar-chart-desc">Bar chart showing total sales grouped by product category, based on saved product data.</p>
+                    <p class="visually-hidden" id="bar-chart-desc" data-i18n="salesChartDesc">Bar chart showing total sales grouped by product category, based on saved product data.</p>
                     <div id="bar-chart" aria-hidden="true"></div>
                 </div>
                 <div class="charts-card" role="img" aria-labelledby="donut-chart-title donut-chart-desc">
                     <span class="chart-title" id="donut-chart-title" data-i18n="expenses">Expenses</span>
-                    <p class="visually-hidden" id="donut-chart-desc">Donut chart showing expense totals grouped by transaction category, based on saved expense data.</p>
+                    <p class="visually-hidden" id="donut-chart-desc" data-i18n="expensesChartDesc">Donut chart showing expense totals grouped by transaction category, based on saved expense data.</p>
                     <div id="donut-chart" aria-hidden="true"></div>
                 </div>
             </div>

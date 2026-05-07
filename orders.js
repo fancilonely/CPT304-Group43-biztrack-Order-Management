@@ -234,6 +234,11 @@ function createActionButton(label, iconClassName, clickHandler) {
     return button;
 }
 
+function getActionLabel(key, id) {
+    const label = typeof getText === "function" ? getText(key) : key;
+    return `${label} ${id}`;
+}
+
 
 function renderOrders(orders) {
     const orderTableBody = document.getElementById("tableBody");
@@ -288,12 +293,12 @@ function renderOrders(orders) {
 
       const actionCell = appendTextCell(orderRow, "", "action");
       actionCell.appendChild(createActionButton(
-          `Edit order ${order.orderID}`,
+          getActionLabel("editOrder", order.orderID),
           "edit-icon fa-solid fa-pen-to-square",
           () => editRow(order.orderID)
       ));
       actionCell.appendChild(createActionButton(
-          `Delete order ${order.orderID}`,
+          getActionLabel("deleteOrder", order.orderID),
           "delete-icon fas fa-trash-alt",
           () => deleteOrder(order.orderID)
       ));

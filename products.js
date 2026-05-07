@@ -195,6 +195,11 @@ function createActionButton(label, iconClassName, clickHandler) {
   return button;
 }
 
+function getActionLabel(key, id) {
+  const label = typeof getText === "function" ? getText(key) : key;
+  return `${label} ${id}`;
+}
+
 function renderProducts(products) {
   const prodTableBody = document.getElementById("tableBody");
   prodTableBody.replaceChildren();
@@ -221,12 +226,12 @@ function renderProducts(products) {
 
       const actionCell = appendTextCell(prodRow, "", "action");
       actionCell.appendChild(createActionButton(
-        `Edit product ${product.prodID}`,
+        getActionLabel("editProduct", product.prodID),
         "edit-icon fa-solid fa-pen-to-square",
         () => editRow(product.prodID)
       ));
       actionCell.appendChild(createActionButton(
-        `Delete product ${product.prodID}`,
+        getActionLabel("deleteProduct", product.prodID),
         "delete-icon fas fa-trash-alt",
         () => deleteProduct(product.prodID)
       ));
