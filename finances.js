@@ -75,33 +75,77 @@ window.onload = function () {
 }
 
 function addOrUpdate(event) {
+    event.preventDefault();
     let type = document.getElementById("submitBtn").textContent;
     if (type === 'Add') {
-        newTransaction(event);
+        newTransaction();
     } else if (type === 'Update'){
         const trId = document.getElementById("tr-id").value;
         updateTransaction(+trId); // convert to number
     }
 }
 
+function clearFormErrors(form) {
+    form.querySelectorAll("input, select").forEach(field => field.setCustomValidity(""));
+}
 
-function newTransaction(event) {
-    event.preventDefault();
+function invalidateField(field, message) {
+    field.setCustomValidity(message);
+}
+
+function getTrimmedValue(id) {
+    const field = document.getElementById(id);
+    field.value = field.value.trim();
+    return field.value;
+}
+
+function validateNumberField(id, min, max, label) {
+    const field = document.getElementById(id);
+    const value = Number(field.value);
+
+    if (!Number.isFinite(value) || value < min || value > max) {
+        invalidateField(field, `${label} must be between ${min} and ${max}.`);
+        return null;
+    }
+
+    return value;
+}
+
+function validateTransactionForm(trID) {
+    const form = document.getElementById("transaction-form");
+    clearFormErrors(form);
+
     const trDate = document.getElementById("tr-date").value;
     const trCategory = document.getElementById("tr-category").value;
-    const trAmount = parseFloat(document.getElementById("tr-amount").value);
-    const trNotes = document.getElementById("tr-notes").value;
+    const trAmount = validateNumberField("tr-amount", 0, 10000, "Amount");
+    const trNotes = getTrimmedValue("tr-notes");
 
+    if (trNotes.length === 0 || trNotes.length > 120) {
+        invalidateField(document.getElementById("tr-notes"), "Notes must be 1 to 120 characters.");
+    }
+
+    if (!form.checkValidity() || trAmount === null) {
+        form.reportValidity();
+        return null;
+    }
+
+    return {
+        trID,
+        trDate,
+        trCategory,
+        trAmount,
+        trNotes,
+    };
+}
+
+function newTransaction() {
     serialNumberCounter = transactions.length + 1;
     let trID = serialNumberCounter;
-    
-    const transaction = {
-      trID,
-      trDate,
-      trCategory,
-      trAmount,
-      trNotes,
-    };
+    const transaction = validateTransactionForm(trID);
+
+    if (!transaction) {
+        return;
+    }
     
     transactions.push(transaction);
   
@@ -220,13 +264,11 @@ function deleteTransaction(trID) {
     const indexToUpdate = transactions.findIndex(transaction => transaction.trID === trID);
 
     if (indexToUpdate !== -1) {
-        const updatedTransaction = {
-            trID: trID,
-            trDate: document.getElementById("tr-date").value,
-            trCategory: document.getElementById("tr-category").value,
-            trAmount: parseFloat(document.getElementById("tr-amount").value),
-            trNotes: document.getElementById("tr-notes").value,
-        };
+        const updatedTransaction = validateTransactionForm(trID);
+
+        if (!updatedTransaction) {
+            return;
+        }
 
         transactions[indexToUpdate] = updatedTransaction;
 

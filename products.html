@@ -94,7 +94,7 @@
                     <div class="form-columns">
                         <div class="first-col">
                             <label for="product-id"><b>Product ID: </b></label>
-                            <input type="text" id="product-id" placeholder="PD001" required>
+                            <input type="text" id="product-id" placeholder="PD001" pattern="PD[0-9]{3}" maxlength="5" title="Use the format PD001." required>
                         
                             <label for="product-name"><b>Product Name</b></label>
                             <select name="product-name" id="product-name" required>
@@ -128,7 +128,7 @@
                             </select>
     
                             <label for="product-desc"><b>Product Description:</b></label>
-                            <input type="text" id="product-desc" placeholder="Travel Mug" required>
+                            <input type="text" id="product-desc" placeholder="Travel Mug" maxlength="80" required>
                         </div>
                         <div class="second-col">
                             <label for="product-cat"><b>Product Category:</b></label>
@@ -145,7 +145,7 @@
                             <input type="number" id="product-price" placeholder="$0.00" min="0.00" max="10000.00" step="0.01" required>
     
                             <label for="product-sold"><b>Number of Units Sold:</b></label>
-                            <input type="number" id="product-sold" placeholder="10" required>
+                            <input type="number" id="product-sold" placeholder="10" min="0" max="100000" step="1" required>
                         </div>
                     </div>
                     

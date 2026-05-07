@@ -76,30 +76,82 @@ function init() {
 }
 
 function addOrUpdate(event) {
+  event.preventDefault();
   let type = document.getElementById("submitBtn").textContent;
   if (type === 'Add') {
-      newProduct(event);
+      newProduct();
   } else if (type === 'Update'){
-      const prodID = document.getElementById("product-id").value;
-      updateProduct(prodID);
+      const currentID = document.getElementById("product-form").dataset.currentProductId;
+      updateProduct(currentID);
   }
 }
 
-function newProduct(event) {
-  event.preventDefault();
-  const prodID = document.getElementById("product-id").value;
-  const prodName = document.getElementById("product-name").value;
-  const prodDesc = document.getElementById("product-desc").value;
-  const prodCat = document.getElementById("product-cat").value;
-  const prodPrice = parseFloat(document.getElementById("product-price").value);
-  const prodSold = parseInt(document.getElementById("product-sold").value);
+function clearFormErrors(form) {
+  form.querySelectorAll("input, select").forEach(field => field.setCustomValidity(""));
+}
 
-  if (isDuplicateID(prodID, null)) {
-    alert("Product ID already exists. Please use a unique ID.");
-    return;
+function invalidateField(field, message) {
+  field.setCustomValidity(message);
+}
+
+function getTrimmedValue(id) {
+  const field = document.getElementById(id);
+  field.value = field.value.trim();
+  return field.value;
+}
+
+function validateNumberField(id, min, max, label) {
+  const field = document.getElementById(id);
+  const value = Number(field.value);
+
+  if (!Number.isFinite(value) || value < min || value > max) {
+    invalidateField(field, `${label} must be between ${min} and ${max}.`);
+    return null;
   }
 
-  const product = {
+  return value;
+}
+
+function validateIntegerField(id, min, max, label) {
+  const field = document.getElementById(id);
+  const value = Number(field.value);
+
+  if (!Number.isInteger(value) || value < min || value > max) {
+    invalidateField(field, `${label} must be a whole number between ${min} and ${max}.`);
+    return null;
+  }
+
+  return value;
+}
+
+function validateProductForm(currentID) {
+  const form = document.getElementById("product-form");
+  clearFormErrors(form);
+
+  const prodID = getTrimmedValue("product-id").toUpperCase();
+  document.getElementById("product-id").value = prodID;
+  const prodName = document.getElementById("product-name").value;
+  const prodDesc = getTrimmedValue("product-desc");
+  const prodCat = document.getElementById("product-cat").value;
+  const prodPrice = validateNumberField("product-price", 0, 10000, "Product price");
+  const prodSold = validateIntegerField("product-sold", 0, 100000, "Units sold");
+
+  if (!/^PD\d{3}$/.test(prodID)) {
+    invalidateField(document.getElementById("product-id"), "Product ID must use the format PD001.");
+  } else if (isDuplicateID(prodID, currentID)) {
+    invalidateField(document.getElementById("product-id"), "Product ID already exists. Please use a unique ID.");
+  }
+
+  if (prodDesc.length === 0 || prodDesc.length > 80) {
+    invalidateField(document.getElementById("product-desc"), "Product description must be 1 to 80 characters.");
+  }
+
+  if (!form.checkValidity() || prodPrice === null || prodSold === null) {
+    form.reportValidity();
+    return null;
+  }
+
+  return {
     prodID,
     prodName,
     prodDesc,
@@ -107,6 +159,14 @@ function newProduct(event) {
     prodPrice,
     prodSold,
   };
+}
+
+function newProduct() {
+  const product = validateProductForm(null);
+
+  if (!product) {
+    return;
+  }
 
   products.push(product);
 
@@ -114,6 +174,7 @@ function newProduct(event) {
   localStorage.setItem("bizTrackProducts", JSON.stringify(products));
 
   document.getElementById("product-form").reset();
+  delete document.getElementById("product-form").dataset.currentProductId;
 }
 
 function appendTextCell(row, value, className) {
@@ -190,6 +251,7 @@ function editRow(prodID) {
   document.getElementById("product-cat").value = productToEdit.prodCat;
   document.getElementById("product-price").value = productToEdit.prodPrice;
   document.getElementById("product-sold").value = productToEdit.prodSold;
+  document.getElementById("product-form").dataset.currentProductId = prodID;
 
   document.getElementById("submitBtn").textContent = "Update";
 
@@ -212,17 +274,9 @@ function updateProduct(prodID) {
     const indexToUpdate = products.findIndex(product => product.prodID === prodID);
 
     if (indexToUpdate !== -1) {
-        const updatedProduct = {
-            prodID: document.getElementById("product-id").value,
-            prodName: document.getElementById("product-name").value,
-            prodDesc: document.getElementById("product-desc").value,
-            prodCat: document.getElementById("product-cat").value,
-            prodPrice: parseFloat(document.getElementById("product-price").value),
-            prodSold: parseInt(document.getElementById("product-sold").value),
-        };
+        const updatedProduct = validateProductForm(prodID);
 
-        if (isDuplicateID(updatedProduct.prodID, prodID)) {
-            alert("Product ID already exists. Please use a unique ID.");
+        if (!updatedProduct) {
             return;
         }
 
@@ -234,6 +288,7 @@ function updateProduct(prodID) {
 
         document.getElementById("product-form").reset();
         document.getElementById("submitBtn").textContent = "Add";
+        delete document.getElementById("product-form").dataset.currentProductId;
     }
 }
 

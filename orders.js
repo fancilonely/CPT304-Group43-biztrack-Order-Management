@@ -90,44 +90,97 @@ window.onload = function () {
 }
 
 function addOrUpdate(event) {
+    event.preventDefault();
     let type = document.getElementById("submitBtn").textContent;
     if (type === 'Add') {
-        newOrder(event);
+        newOrder();
     } else if (type === 'Update'){
-        const orderID = document.getElementById("order-id").value;
-        updateOrder(orderID);
+        const currentID = document.getElementById("order-form").dataset.currentOrderId;
+        updateOrder(currentID);
     }
 }
 
+function clearFormErrors(form) {
+    form.querySelectorAll("input, select").forEach(field => field.setCustomValidity(""));
+}
 
-function newOrder(event) {
-  event.preventDefault();
-  const orderID = document.getElementById("order-id").value;
-  const orderDate = document.getElementById("order-date").value;
-  const itemName = document.getElementById("item-name").value;
-  const itemPrice = parseFloat(document.getElementById("item-price").value);
-  const qtyBought = parseInt(document.getElementById("qty-bought").value);
-  const shipping = parseFloat(document.getElementById("shipping").value);
-  const taxes = parseFloat(document.getElementById("taxes").value);
-  const orderTotal = ((itemPrice * qtyBought) + shipping + taxes);
-  const orderStatus = document.getElementById("order-status").value;
+function invalidateField(field, message) {
+    field.setCustomValidity(message);
+}
 
-  if (isDuplicateID(orderID, null)) {
-    alert("Order ID already exists. Please use a unique ID.");
+function getTrimmedValue(id) {
+    const field = document.getElementById(id);
+    field.value = field.value.trim();
+    return field.value;
+}
+
+function validateNumberField(id, min, max, label) {
+    const field = document.getElementById(id);
+    const value = Number(field.value);
+
+    if (!Number.isFinite(value) || value < min || value > max) {
+        invalidateField(field, `${label} must be between ${min} and ${max}.`);
+        return null;
+    }
+
+    return value;
+}
+
+function validateIntegerField(id, min, max, label) {
+    const field = document.getElementById(id);
+    const value = Number(field.value);
+
+    if (!Number.isInteger(value) || value < min || value > max) {
+        invalidateField(field, `${label} must be a whole number between ${min} and ${max}.`);
+        return null;
+    }
+
+    return value;
+}
+
+function validateOrderForm(currentID) {
+    const form = document.getElementById("order-form");
+    clearFormErrors(form);
+
+    const orderID = getTrimmedValue("order-id");
+    const orderDate = document.getElementById("order-date").value;
+    const itemName = document.getElementById("item-name").value;
+    const itemPrice = validateNumberField("item-price", 0, 10000, "Item price");
+    const qtyBought = validateIntegerField("qty-bought", 1, 100000, "Quantity bought");
+    const shipping = validateNumberField("shipping", 0, 10000, "Shipping fee");
+    const taxes = validateNumberField("taxes", 0, 10000, "Taxes");
+    const orderStatus = document.getElementById("order-status").value;
+
+    if (!/^\d{4,8}$/.test(orderID)) {
+        invalidateField(document.getElementById("order-id"), "Order ID must be 4 to 8 digits.");
+    } else if (isDuplicateID(orderID, currentID)) {
+        invalidateField(document.getElementById("order-id"), "Order ID already exists. Please use a unique ID.");
+    }
+
+    if (!form.checkValidity() || itemPrice === null || qtyBought === null || shipping === null || taxes === null) {
+        form.reportValidity();
+        return null;
+    }
+
+    return {
+        orderID,
+        orderDate,
+        itemName,
+        itemPrice,
+        qtyBought,
+        shipping,
+        taxes,
+        orderTotal: ((itemPrice * qtyBought) + shipping + taxes),
+        orderStatus,
+    };
+}
+
+function newOrder() {
+  const order = validateOrderForm(null);
+
+  if (!order) {
     return;
   }
-
-  const order = {
-    orderID,
-    orderDate,
-    itemName,
-    itemPrice,
-    qtyBought,
-    shipping,
-    taxes,
-    orderTotal,
-    orderStatus,
-  };
 
   orders.push(order);
 
@@ -135,6 +188,7 @@ function newOrder(event) {
   localStorage.setItem("bizTrackOrders", JSON.stringify(orders));
 
   document.getElementById("order-form").reset();
+  delete document.getElementById("order-form").dataset.currentOrderId;
 }
 
 function appendTextCell(row, value, className) {
@@ -252,6 +306,7 @@ function editRow(orderID) {
     document.getElementById("taxes").value = orderToEdit.taxes;
     document.getElementById("order-total").value = orderToEdit.orderTotal;
     document.getElementById("order-status").value = orderToEdit.orderStatus;
+    document.getElementById("order-form").dataset.currentOrderId = orderID;
 
     document.getElementById("submitBtn").textContent = "Update";
 
@@ -274,24 +329,9 @@ function updateOrder(orderID) {
     const indexToUpdate = orders.findIndex(order => order.orderID === orderID);
 
     if (indexToUpdate !== -1) {
-        const itemPrice = parseFloat(document.getElementById("item-price").value);
-        const qtyBought = parseInt(document.getElementById("qty-bought").value);
-        const shipping = parseFloat(document.getElementById("shipping").value);
-        const taxes = parseFloat(document.getElementById("taxes").value);
-        const updatedOrder = {
-            orderID: document.getElementById("order-id").value,
-            orderDate: document.getElementById("order-date").value,
-            itemName: document.getElementById("item-name").value,
-            itemPrice: itemPrice,
-            qtyBought: qtyBought,
-            shipping: shipping,
-            taxes: taxes,
-            orderTotal: ((itemPrice * qtyBought) + shipping + taxes),
-            orderStatus: document.getElementById("order-status").value,
-        };
+        const updatedOrder = validateOrderForm(orderID);
 
-        if (isDuplicateID(updatedOrder.orderID, orderID)) {
-            alert("Order ID already exists. Please use a unique ID.");
+        if (!updatedOrder) {
             return;
         }
 
@@ -303,6 +343,7 @@ function updateOrder(orderID) {
 
         document.getElementById("order-form").reset();
         document.getElementById("submitBtn").textContent = "Add";
+        delete document.getElementById("order-form").dataset.currentOrderId;
     }
 }
 
