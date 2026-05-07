@@ -11,7 +11,7 @@ function closeSidebar() {
 
 
 window.onload = function () {
-  const expenses = JSON.parse(localStorage.getItem('bizTrackTransactions')) || [
+  const expenses = loadBizTrackCollection('bizTrackTransactions', [
     {
       trID: 1,
       trDate: "2024-01-05",
@@ -47,8 +47,8 @@ window.onload = function () {
       trAmount: 20.00,
       trNotes: "Pizza"
   },
-  ];
-  const revenues = JSON.parse(localStorage.getItem('bizTrackOrders')) || [
+  ], isBizTrackTransaction);
+  const revenues = loadBizTrackCollection('bizTrackOrders', [
     {
       orderID: "1001",
       orderDate: "2024-01-05",
@@ -104,7 +104,7 @@ window.onload = function () {
       orderTotal: 37.90,
       orderStatus: "Pending"
   },
-  ];
+  ], isBizTrackOrder);
 
   const totalExpenses = calculateExpTotal(expenses);
   const totalRevenues = calculateRevTotal(revenues);
@@ -167,7 +167,7 @@ function calculateCategorySales(products) {
 
 
 function initializeChart() {
-  const items = JSON.parse(localStorage.getItem('bizTrackProducts')) || [
+  const items = loadBizTrackCollection('bizTrackProducts', [
     {
       prodID: "PD001",
       prodName: "Baseball caps",
@@ -208,7 +208,7 @@ function initializeChart() {
       prodPrice: 17.00,
       prodSold: 40
     },
-  ];
+  ], isBizTrackProduct);
   const categorySalesData = calculateCategorySales(items);
 
   const sortedCategorySales = Object.entries(categorySalesData)
@@ -293,7 +293,7 @@ function initializeChart() {
     return categoryExpenses;
   }
 
-  const expItems = JSON.parse(localStorage.getItem('bizTrackTransactions')) || [
+  const expItems = loadBizTrackCollection('bizTrackTransactions', [
     {
       trID: 1,
       trDate: "2024-01-05",
@@ -329,7 +329,7 @@ function initializeChart() {
       trAmount: 20.00,
       trNotes: "Pizza"
   },
-  ];
+  ], isBizTrackTransaction);
   const categoryExpData = calculateCategoryExp(expItems);
 
   const donutChartOptions = {
