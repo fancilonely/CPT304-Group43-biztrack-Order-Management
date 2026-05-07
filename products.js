@@ -10,12 +10,23 @@ function closeSidebar() {
 
 
 function openForm() {
-    var form = document.getElementById("product-form")
-    form.style.display = (form.style.display === "block") ? "none" : "block";
+    var form = document.getElementById("product-form");
+
+    if (form.style.display === "block") {
+        closeForm();
+        return;
+    }
+
+    form.reset();
+    resetSubmitButtonMode();
+    form.style.display = "block";
 }
 
 function closeForm() {
-    document.getElementById("product-form").style.display = "none";
+    const form = document.getElementById("product-form");
+    form.reset();
+    resetSubmitButtonMode();
+    form.style.display = "none";
 }
 
 
@@ -73,20 +84,62 @@ function init() {
     }
 
     renderProducts(products);
+    resetSubmitButtonMode();
 }
 
-function addOrUpdate(event) {
-  let type = document.getElementById("submitBtn").textContent;
-  if (type === 'Add') {
-      newProduct(event);
-  } else if (type === 'Update'){
-      const prodID = document.getElementById("product-id").value;
-      updateProduct(prodID);
+function getSubmitButtonText(mode) {
+  const language = typeof getCurrentLanguage === "function" ? getCurrentLanguage() : "en";
+  const key = mode === "update" ? "update" : "add";
+
+  if (typeof getText === "function") {
+    return getText(key);
+  }
+
+  if (typeof translations !== "undefined" && translations[language] && translations[language][key]) {
+    return translations[language][key];
+  }
+
+  return mode === "update" ? "Update" : "Add";
+}
+
+function setSubmitButtonMode(mode, editingId) {
+  const submitBtn = document.getElementById("submitBtn");
+
+  if (!submitBtn) {
+    return;
+  }
+
+  const normalizedMode = mode === "update" ? "update" : "add";
+  submitBtn.dataset.mode = normalizedMode;
+  submitBtn.setAttribute("data-i18n", normalizedMode);
+  submitBtn.textContent = getSubmitButtonText(normalizedMode);
+
+  if (normalizedMode === "update") {
+    submitBtn.dataset.editingId = editingId;
+  } else {
+    delete submitBtn.dataset.editingId;
   }
 }
 
-function newProduct(event) {
+function resetSubmitButtonMode() {
+  setSubmitButtonMode("add");
+}
+
+function addOrUpdate(event) {
   event.preventDefault();
+
+  const submitBtn = document.getElementById("submitBtn");
+  const mode = submitBtn.dataset.mode || "add";
+
+  if (mode === "add") {
+    newProduct();
+  } else if (mode === "update") {
+    const prodID = submitBtn.dataset.editingId;
+    updateProduct(prodID);
+  }
+}
+
+function newProduct() {
   const prodID = document.getElementById("product-id").value;
   const prodName = document.getElementById("product-name").value;
   const prodDesc = document.getElementById("product-desc").value;
@@ -114,6 +167,7 @@ function newProduct(event) {
   localStorage.setItem("bizTrackProducts", JSON.stringify(products));
 
   document.getElementById("product-form").reset();
+  resetSubmitButtonMode();
 }
 
 function appendTextCell(row, value, className) {
@@ -159,7 +213,7 @@ function renderProducts(products) {
       prodRow.dataset.prodSold = product.prodSold;
 
       appendTextCell(prodRow, product.prodID);
-      appendTextCell(prodRow, product.prodName);
+      appendTextCell(prodRow, translateValue(product.prodName));
       appendTextCell(prodRow, translateValue(product.prodDesc));
       appendTextCell(prodRow, translateValue(product.prodCat));
       appendTextCell(prodRow, `$${product.prodPrice.toFixed(2)}`);
@@ -191,7 +245,7 @@ function editRow(prodID) {
   document.getElementById("product-price").value = productToEdit.prodPrice;
   document.getElementById("product-sold").value = productToEdit.prodSold;
 
-  document.getElementById("submitBtn").textContent = "Update";
+  setSubmitButtonMode("update", prodID);
 
   document.getElementById("product-form").style.display = "block";
 }
@@ -233,7 +287,7 @@ function updateProduct(prodID) {
         renderProducts(products);
 
         document.getElementById("product-form").reset();
-        document.getElementById("submitBtn").textContent = "Add";
+        resetSubmitButtonMode();
     }
 }
 
@@ -318,6 +372,11 @@ function generateCSV(data) {
 
 document.addEventListener("languageChanged", () => {
   renderProducts(products);
+  const submitBtn = document.getElementById("submitBtn");
+
+  if (submitBtn) {
+    setSubmitButtonMode(submitBtn.dataset.mode, submitBtn.dataset.editingId);
+  }
 });
 
 init();

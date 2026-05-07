@@ -10,12 +10,23 @@ function closeSidebar() {
 
 
 function openForm() {
-    var form = document.getElementById("order-form")
-    form.style.display = (form.style.display === "block") ? "none" : "block";
+    var form = document.getElementById("order-form");
+
+    if (form.style.display === "block") {
+        closeForm();
+        return;
+    }
+
+    form.reset();
+    resetSubmitButtonMode();
+    form.style.display = "block";
 }
 
 function closeForm() {
-    document.getElementById("order-form").style.display = "none";
+    const form = document.getElementById("order-form");
+    form.reset();
+    resetSubmitButtonMode();
+    form.style.display = "none";
 }
 
 let orders = [];
@@ -87,21 +98,63 @@ window.onload = function () {
     }
 
     renderOrders(orders);
+    resetSubmitButtonMode();
+}
+
+function getSubmitButtonText(mode) {
+    const language = typeof getCurrentLanguage === "function" ? getCurrentLanguage() : "en";
+    const key = mode === "update" ? "update" : "add";
+
+    if (typeof getText === "function") {
+        return getText(key);
+    }
+
+    if (typeof translations !== "undefined" && translations[language] && translations[language][key]) {
+        return translations[language][key];
+    }
+
+    return mode === "update" ? "Update" : "Add";
+}
+
+function setSubmitButtonMode(mode, editingId) {
+    const submitBtn = document.getElementById("submitBtn");
+
+    if (!submitBtn) {
+        return;
+    }
+
+    const normalizedMode = mode === "update" ? "update" : "add";
+    submitBtn.dataset.mode = normalizedMode;
+    submitBtn.setAttribute("data-i18n", normalizedMode);
+    submitBtn.textContent = getSubmitButtonText(normalizedMode);
+
+    if (normalizedMode === "update") {
+        submitBtn.dataset.editingId = editingId;
+    } else {
+        delete submitBtn.dataset.editingId;
+    }
+}
+
+function resetSubmitButtonMode() {
+    setSubmitButtonMode("add");
 }
 
 function addOrUpdate(event) {
-    let type = document.getElementById("submitBtn").textContent;
-    if (type === 'Add') {
-        newOrder(event);
-    } else if (type === 'Update'){
-        const orderID = document.getElementById("order-id").value;
+    event.preventDefault();
+
+    const submitBtn = document.getElementById("submitBtn");
+    const mode = submitBtn.dataset.mode || "add";
+
+    if (mode === "add") {
+        newOrder();
+    } else if (mode === "update") {
+        const orderID = submitBtn.dataset.editingId;
         updateOrder(orderID);
     }
 }
 
 
-function newOrder(event) {
-  event.preventDefault();
+function newOrder() {
   const orderID = document.getElementById("order-id").value;
   const orderDate = document.getElementById("order-date").value;
   const itemName = document.getElementById("item-name").value;
@@ -135,6 +188,7 @@ function newOrder(event) {
   localStorage.setItem("bizTrackOrders", JSON.stringify(orders));
 
   document.getElementById("order-form").reset();
+  resetSubmitButtonMode();
 }
 
 function appendTextCell(row, value, className) {
@@ -214,7 +268,7 @@ function renderOrders(orders) {
 
       appendTextCell(orderRow, order.orderID);
       appendTextCell(orderRow, order.orderDate);
-      appendTextCell(orderRow, order.itemName);
+      appendTextCell(orderRow, translateValue(order.itemName));
       appendTextCell(orderRow, formattedPrice);
       appendTextCell(orderRow, order.qtyBought);
       appendTextCell(orderRow, formattedShipping);
@@ -272,7 +326,7 @@ function editRow(orderID) {
     document.getElementById("order-total").value = orderToEdit.orderTotal;
     document.getElementById("order-status").value = orderToEdit.orderStatus;
 
-    document.getElementById("submitBtn").textContent = "Update";
+    setSubmitButtonMode("update", orderID);
 
     document.getElementById("order-form").style.display = "block";
 }
@@ -321,7 +375,7 @@ function updateOrder(orderID) {
         renderOrders(orders);
 
         document.getElementById("order-form").reset();
-        document.getElementById("submitBtn").textContent = "Add";
+        resetSubmitButtonMode();
     }
 }
 
@@ -416,4 +470,9 @@ function generateCSV(data) {
 
 document.addEventListener("languageChanged", () => {
     renderOrders(orders);
+    const submitBtn = document.getElementById("submitBtn");
+
+    if (submitBtn) {
+        setSubmitButtonMode(submitBtn.dataset.mode, submitBtn.dataset.editingId);
+    }
 });

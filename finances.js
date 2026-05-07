@@ -10,12 +10,23 @@ function closeSidebar() {
 
 
 function openForm() {
-    var form = document.getElementById("transaction-form")
-    form.style.display = (form.style.display === "block") ? "none" : "block";
+    var form = document.getElementById("transaction-form");
+
+    if (form.style.display === "block") {
+        closeForm();
+        return;
+    }
+
+    form.reset();
+    resetSubmitButtonMode();
+    form.style.display = "block";
 }
 
 function closeForm() {
-    document.getElementById("transaction-form").style.display = "none";
+    const form = document.getElementById("transaction-form");
+    form.reset();
+    resetSubmitButtonMode();
+    form.style.display = "none";
 }
 
 
@@ -72,21 +83,63 @@ window.onload = function () {
     }
   
     renderTransactions(transactions);
+    resetSubmitButtonMode();
+}
+
+function getSubmitButtonText(mode) {
+    const language = typeof getCurrentLanguage === "function" ? getCurrentLanguage() : "en";
+    const key = mode === "update" ? "update" : "add";
+
+    if (typeof getText === "function") {
+        return getText(key);
+    }
+
+    if (typeof translations !== "undefined" && translations[language] && translations[language][key]) {
+        return translations[language][key];
+    }
+
+    return mode === "update" ? "Update" : "Add";
+}
+
+function setSubmitButtonMode(mode, editingId) {
+    const submitBtn = document.getElementById("submitBtn");
+
+    if (!submitBtn) {
+        return;
+    }
+
+    const normalizedMode = mode === "update" ? "update" : "add";
+    submitBtn.dataset.mode = normalizedMode;
+    submitBtn.setAttribute("data-i18n", normalizedMode);
+    submitBtn.textContent = getSubmitButtonText(normalizedMode);
+
+    if (normalizedMode === "update") {
+        submitBtn.dataset.editingId = editingId;
+    } else {
+        delete submitBtn.dataset.editingId;
+    }
+}
+
+function resetSubmitButtonMode() {
+    setSubmitButtonMode("add");
 }
 
 function addOrUpdate(event) {
-    let type = document.getElementById("submitBtn").textContent;
-    if (type === 'Add') {
-        newTransaction(event);
-    } else if (type === 'Update'){
-        const trId = document.getElementById("tr-id").value;
+    event.preventDefault();
+
+    const submitBtn = document.getElementById("submitBtn");
+    const mode = submitBtn.dataset.mode || "add";
+
+    if (mode === "add") {
+        newTransaction();
+    } else if (mode === "update") {
+        const trId = submitBtn.dataset.editingId;
         updateTransaction(+trId); // convert to number
     }
 }
 
 
-function newTransaction(event) {
-    event.preventDefault();
+function newTransaction() {
     const trDate = document.getElementById("tr-date").value;
     const trCategory = document.getElementById("tr-category").value;
     const trAmount = parseFloat(document.getElementById("tr-amount").value);
@@ -112,6 +165,7 @@ function newTransaction(event) {
     displayExpenses();
   
     document.getElementById("transaction-form").reset();
+    resetSubmitButtonMode();
 }
 
 function appendTextCell(row, value, className) {
@@ -219,7 +273,7 @@ function editRow(trID) {
     document.getElementById("tr-amount").value = trToEdit.trAmount;
     document.getElementById("tr-notes").value = trToEdit.trNotes;
   
-    document.getElementById("submitBtn").textContent = "Update";
+    setSubmitButtonMode("update", trID);
 
     document.getElementById("transaction-form").style.display = "block";
   }
@@ -255,7 +309,7 @@ function deleteTransaction(trID) {
         renderTransactions(transactions);
 
         document.getElementById("transaction-form").reset();
-        document.getElementById("submitBtn").textContent = "Add";
+        resetSubmitButtonMode();
     }
 }
 
@@ -342,4 +396,9 @@ function generateCSV(data) {
 
 document.addEventListener("languageChanged", () => {
     renderTransactions(transactions);
+    const submitBtn = document.getElementById("submitBtn");
+
+    if (submitBtn) {
+        setSubmitButtonMode(submitBtn.dataset.mode, submitBtn.dataset.editingId);
+    }
 });
