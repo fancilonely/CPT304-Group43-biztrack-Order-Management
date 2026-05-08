@@ -20,22 +20,33 @@
     font-family: "Lato", sans-serif;
 }
 
+html,
+body {
+    min-height: 100%;
+}
+
 body {
     display: flex;
+    min-width: 0;
+    overflow-x: hidden;
+    background-color: #313131;
 }
 
 .sidebar {
-    position: absolute;
+    position: sticky;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: stretch;
     top: 0;
     left: 0;
+    flex: 0 0 220px;
     bottom: 0;
     width: 220px;
+    min-width: 220px;
     height: 100vh;
     padding: 0 1rem;
+    z-index: 20;
     box-sizing: border-box;
     overflow: hidden;
     overflow-y: auto;
@@ -44,7 +55,9 @@ body {
 }
 
 .sidebar:hover {
+    flex-basis: 235px;
     width: 235px;
+    min-width: 235px;
     transition: 0.5s;
 }
 
@@ -199,8 +212,11 @@ body {
 .main-content {
     position: relative;
     background-color: #313131;
-    width: 100vw;
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 0;
     padding: 1rem;
+    overflow-x: hidden;
 }
 
 .header-wrapper {
@@ -425,7 +441,8 @@ label {
     flex-direction: column;
     justify-content: space-between;
     padding: 1.2rem;
-    width: 290px;
+    width: min(100%, 290px);
+    min-width: 0;
     border-radius: 10px;
     transition: all 0.5s ease-in-out;
 }
@@ -531,7 +548,8 @@ label {
 
 .charts-card {
     background-color: #FFF5EE;
-    width: 600px;
+    width: min(100%, 600px);
+    min-width: 0;
     padding: 25px;
     border-radius: 10px;
     box-shadow: -7px 4px 7px -2px rgba(0, 0, 0, 0.2);
@@ -824,16 +842,90 @@ ol {
     .sidebar {
         display: none;
         position: fixed;
-        width: 190px;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: min(78vw, 220px);
+        min-width: 0;
+        height: 100vh;
+        z-index: 1000;
+        box-shadow: 8px 0 24px rgba(0, 0, 0, 0.25);
     }
 
     .sidebar:hover {
-        width: 210px;
+        width: min(78vw, 220px);
+        min-width: 0;
     }
 
     .main-content {
+        width: 100%;
+        min-width: 0;
         margin-left: 0;
-        position: inherit;
+        position: relative;
+    }
+
+    .header-wrapper {
+        height: auto;
+        min-height: 70px;
+        padding: 10px 1rem;
+    }
+
+    .card-container,
+    .charts-container,
+    .table-wrapper,
+    .guide-container,
+    .about-container {
+        padding: 1rem;
+    }
+
+    .card-wrapper,
+    .charts-wrapper {
+        justify-content: center;
+    }
+
+    .card-wrapper a,
+    .summary-card-static,
+    .charts-card {
+        width: 100%;
+    }
+
+    .card-detail {
+        font-size: 14px;
+        letter-spacing: 1.5px;
+        overflow-wrap: anywhere;
+    }
+
+    .form-columns {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .first-col,
+    .second-col,
+    .third-col,
+    .order-first-col,
+    .order-second-col,
+    .order-third-col {
+        width: 100%;
+    }
+
+    .product-title {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+
+    .product-button,
+    .finance-button,
+    .order-button,
+    .button-col {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
+
+    .form-container .btn {
+        width: auto;
+        min-width: 120px;
     }
 }
 
