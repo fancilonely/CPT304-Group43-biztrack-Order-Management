@@ -187,11 +187,10 @@ function translateCategory(category) {
         "Miscellaneous": "miscellaneous"
     };
 
-    const language = getCurrentLanguage();
     const key = categoryKeys[category];
 
-    if (key && translations[language][key]) {
-        return translations[language][key];
+    if (key) {
+        return getText(key);
     }
 
     return category;
@@ -265,8 +264,7 @@ function displayExpenses() {
     const totalExpenses = transactions
         .reduce((total, transaction) => total + transaction.trAmount,0);
 
-    const language = getCurrentLanguage();
-    resultElement.textContent = `${translations[language].totalExpenses}: $${totalExpenses.toFixed(2)}`;
+    resultElement.textContent = `${getText("totalExpenses")}: $${totalExpenses.toFixed(2)}`;
 }
 
 function editRow(trID) {

@@ -9,11 +9,6 @@ function closeSidebar() {
   document.getElementById('sidebar').style.display = 'none';
 }
 
-function getText(key) {
-  const language = getCurrentLanguage();
-  return translations[language][key] || key;
-}
-
 function getExpenseCategoryKey(category) {
   const categoryKeys = {
     "Rent": "rent",

@@ -838,20 +838,50 @@ ol {
 }
 
 .language-toggle {
-  width: 100%;
-  border: 0;
-  border-radius: 8px;
-  padding: 0.8rem 1rem;
-  background: #ffffff;
-  color: #2c3e50;
-  font-weight: 700;
-  cursor: pointer;
-  text-align: center;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    border: 0;
+    border-radius: 8px;
+    padding: 12px 8px;
+    background: transparent;
+    color: var(--white-color);
+    font: inherit;
+    font-size: 14px;
+    cursor: pointer;
+    text-align: center;
 }
 
-.language-toggle:hover,
+.menu li.language-menu-item:focus-within {
+    background: transparent;
+}
+
+.menu li.language-menu-item:hover {
+    background: var(--orange-color);
+}
+
+.language-toggle:hover {
+    background: transparent;
+}
+
 .language-toggle:focus-visible {
-  outline: 3px solid #ffffff;
-  outline-offset: 2px;
-  background: #f1f5f9;
+    background: transparent;
+    color: var(--white-color);
+    outline: 3px solid #ffffff;
+    outline-offset: 4px;
+}
+
+.language-toggle .lang-option {
+    font-weight: 400;
+}
+
+.language-toggle[data-current-language="en"] [data-lang-option="en"],
+.language-toggle[data-current-language="zh"] [data-lang-option="zh"] {
+    font-weight: 800;
+}
+
+.language-toggle .lang-separator {
+    opacity: 0.75;
 }

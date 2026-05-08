@@ -209,11 +209,10 @@ function translateStatus(status) {
         Delivered: "delivered"
     };
 
-    const language = getCurrentLanguage();
     const key = statusKeys[status];
 
-    if (key && translations[language][key]) {
-        return translations[language][key];
+    if (key) {
+        return getText(key);
     }
 
     return status;
@@ -314,8 +313,7 @@ function displayRevenue() {
     const totalRevenue = orders
         .reduce((total, order) => total + order.orderTotal, 0);
 
-    const language = getCurrentLanguage();
-    resultElement.textContent = `${translations[language].totalRevenue}: $${totalRevenue.toFixed(2)}`;
+    resultElement.textContent = `${getText("totalRevenue")}: $${totalRevenue.toFixed(2)}`;
 }
 
 function editRow(orderID) {
