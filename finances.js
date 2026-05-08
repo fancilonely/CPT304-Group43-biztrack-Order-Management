@@ -1,12 +1,44 @@
 
 function openSidebar() {
-    var side = document.getElementById('sidebar');
-    side.style.display = (side.style.display === "block") ? "none" : "block";
+    const sidebar = document.getElementById("sidebar");
+    if (!sidebar) {
+        return;
+    }
+
+    if (isMobileSidebarMode()) {
+        sidebar.classList.add("is-open");
+    } else {
+        document.body.classList.remove("sidebar-collapsed");
+    }
 }
 
 function closeSidebar() {
-    document.getElementById('sidebar').style.display = 'none';
+    const sidebar = document.getElementById("sidebar");
+    if (!sidebar) {
+        return;
+    }
+
+    if (isMobileSidebarMode()) {
+        sidebar.classList.remove("is-open");
+    } else {
+        document.body.classList.add("sidebar-collapsed");
+    }
 }
+
+function isMobileSidebarMode() {
+    return window.matchMedia("(max-width: 768px)").matches;
+}
+
+window.addEventListener("resize", () => {
+    const sidebar = document.getElementById("sidebar");
+    if (!sidebar) {
+        return;
+    }
+
+    if (!isMobileSidebarMode()) {
+        sidebar.classList.remove("is-open");
+    }
+});
 
 
 function openForm() {
@@ -187,11 +219,10 @@ function translateCategory(category) {
         "Miscellaneous": "miscellaneous"
     };
 
-    const language = getCurrentLanguage();
     const key = categoryKeys[category];
 
-    if (key && translations[language][key]) {
-        return translations[language][key];
+    if (key) {
+        return getText(key);
     }
 
     return category;
@@ -265,8 +296,7 @@ function displayExpenses() {
     const totalExpenses = transactions
         .reduce((total, transaction) => total + transaction.trAmount,0);
 
-    const language = getCurrentLanguage();
-    resultElement.textContent = `${translations[language].totalExpenses}: $${totalExpenses.toFixed(2)}`;
+    resultElement.textContent = `${getText("totalExpenses")}: $${totalExpenses.toFixed(2)}`;
 }
 
 function editRow(trID) {
