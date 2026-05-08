@@ -381,7 +381,15 @@ function translateValue(value) {
 }
 
 function applyTranslatedText(element, translatedText) {
-  if (element.children.length === 1 && element.children[0].tagName === "B") {
+  const hasOnlyOneBoldElement =
+    element.children.length === 1 &&
+    element.children[0].tagName === "B";
+
+  const hasExtraTextOutsideBold = Array.from(element.childNodes).some((node) => {
+    return node.nodeType === Node.TEXT_NODE && node.textContent.trim() !== "";
+  });
+
+  if (hasOnlyOneBoldElement && !hasExtraTextOutsideBold) {
     const boldText = element.children[0];
     const smallText = boldText.querySelector("small");
 
