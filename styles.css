@@ -114,22 +114,28 @@ body {
 }
 
 .menu {
-    height: 88%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
     padding-top: 10px;
-    position: relative;
     list-style: none;
+    min-height: 0;
 }
 
 .menu li {
-    padding: 20px;
     margin: 13px 0;
     border-radius: 8px;
-    transition: all 0.3s ease-in-out;
+    transition: background-color 0.3s ease-in-out;
+    overflow: hidden;
 }
 
 .menu li:hover,
-.active {
+.menu li.active {
     background: var(--orange-color);
+}
+
+.menu li.menu-bottom-toggle:hover {
+    background: transparent;
 }
 
 .menu a {
@@ -139,18 +145,55 @@ body {
     display: flex;
     align-items: center;
     gap: 1.5rem;
-    padding: 6px 8px;
-    border-radius: 10px;
+    width: 100%;
+    padding: 26px 28px;
+    border-radius: 8px;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.menu a i {
+    width: 20px;
+    text-align: center;
+    flex-shrink: 0;
 }
 
 .menu li:focus-within {
     background: var(--orange-color);
 }
 
+.menu li.menu-bottom-toggle:focus-within {
+    background: transparent;
+}
+
 .menu a:focus-visible {
     outline: 3px solid #ffffff;
-    outline-offset: 6px;
-    border-radius: 12px;
+    outline-offset: -3px;
+    border-radius: 8px;
+}
+
+.menu a[aria-current="page"] {
+    font-weight: 700;
+}
+
+.menu a i {
+    width: 20px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.menu li:focus-within {
+    background: var(--orange-color);
+}
+
+.menu li.menu-bottom-toggle:focus-within {
+    background: transparent;
+}
+
+.menu a:focus-visible {
+    outline: 3px solid #ffffff;
+    outline-offset: -3px;
+    border-radius: 8px;
 }
 
 .menu a[aria-current="page"] {
@@ -203,10 +246,13 @@ body {
 }
 
 .logout {
-    position: absolute;
-    bottom: 0;
-    left: 0;
+    position: static;
     width: 100%;
+    margin-top: 0.5rem;
+}
+
+.menu-bottom-toggle {
+    margin-top: auto;
 }
 
 .main-content {
