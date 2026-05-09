@@ -351,12 +351,12 @@ function performSearch() {
 function exportToCSV() {
   const productsToExport = products.map(product => {
       return {
-        prodID: product.prodID,
-        prodName: product.prodName,
-        prodDesc: product.prodDesc,
-        prodCategory: product.prodCat,
-        prodPrice: product.prodPrice.toFixed(2),
-        QtySold: product.prodSold,
+        [getText("productIDShort")]: product.prodID,
+        [getText("productName")]: translateValue(product.prodName),
+        [getText("description")]: translateValue(product.prodDesc),
+        [getText("category")]: translateValue(product.prodCat),
+        [getText("price")]: product.prodPrice.toFixed(2),
+        [getText("unitsSoldShort")]: product.prodSold,
       };
   });
 
@@ -366,7 +366,7 @@ function exportToCSV() {
 
   const link = document.createElement('a');
   link.href = window.URL.createObjectURL(blob);
-  link.download = 'biztrack_product_table.csv';
+  link.download = 'biztrack_product_table_' + getCurrentLanguage() + '.csv';
 
   document.body.appendChild(link);
   link.click();

@@ -476,15 +476,15 @@ function performSearch() {
 function exportToCSV() {
     const ordersToExport = orders.map(order => {
         return {
-            orderID: order.orderID,
-            orderDate: order.orderDate,
-            itemName: order.itemName,
-            itemPrice: order.itemPrice.toFixed(2),
-            qtyBought: order.qtyBought,
-            shipping: order.shipping.toFixed(2),
-            taxes: order.taxes.toFixed(2),
-            orderTotal: order.orderTotal.toFixed(2),
-            orderStatus: order.orderStatus,
+            [getText("orderIDShort")]: order.orderID,
+            [getText("orderDateShort")]: order.orderDate,
+            [getText("itemNameShort")]: translateValue(order.itemName),
+            [getText("itemPriceShort")]: order.itemPrice.toFixed(2),
+            [getText("qty")]: order.qtyBought,
+            [getText("shippingFeeShort")]: order.shipping.toFixed(2),
+            [getText("taxesShort")]: order.taxes.toFixed(2),
+            [getText("orderTotalShort")]: order.orderTotal.toFixed(2),
+            [getText("orderStatusShort")]: translateStatus(order.orderStatus),
         };
     });
   
@@ -494,7 +494,7 @@ function exportToCSV() {
   
     const link = document.createElement('a');
     link.href = window.URL.createObjectURL(blob);
-    link.download = 'biztrack_order_table.csv';
+    link.download = 'biztrack_order_table_' + getCurrentLanguage() + '.csv';
   
     document.body.appendChild(link);
     link.click();

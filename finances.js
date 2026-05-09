@@ -375,12 +375,12 @@ function performSearch() {
 
 function exportToCSV() {
     const transactionsToExport = transactions.map(transaction => {
-        return {
-            trID: transaction.trID,
-            trDate: transaction.trDate,
-            trCategory: transaction.trCategory,
-            trAmount: transaction.trAmount.toFixed(2),
-            trNotes: transaction.trNotes,
+         return {
+            [getText("serialNumber")]: transaction.trID,
+            [getText("dateShort")]: transaction.trDate,
+            [getText("categoryLabel")]: translateCategory(transaction.trCategory),
+            [getText("amountShort")]: transaction.trAmount.toFixed(2),
+            [getText("notesShort")]: transaction.trNotes,
         };
     });
   
@@ -390,7 +390,7 @@ function exportToCSV() {
   
     const link = document.createElement('a');
     link.href = window.URL.createObjectURL(blob);
-    link.download = 'biztrack_expense_table.csv';
+    link.download = 'biztrack_expense_table_' + getCurrentLanguage() + '.csv';
   
     document.body.appendChild(link);
     link.click();
