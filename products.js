@@ -1,21 +1,64 @@
 
 function openSidebar() {
-  var side = document.getElementById('sidebar');
-  side.style.display = (side.style.display === "block") ? "none" : "block";
+  const sidebar = document.getElementById("sidebar");
+  if (!sidebar) {
+    return;
+  }
+
+  if (isMobileSidebarMode()) {
+    sidebar.classList.add("is-open");
+  } else {
+    document.body.classList.remove("sidebar-collapsed");
+  }
 }
 
 function closeSidebar() {
-  document.getElementById('sidebar').style.display = 'none';
+  const sidebar = document.getElementById("sidebar");
+  if (!sidebar) {
+    return;
+  }
+
+  if (isMobileSidebarMode()) {
+    sidebar.classList.remove("is-open");
+  } else {
+    document.body.classList.add("sidebar-collapsed");
+  }
 }
+
+function isMobileSidebarMode() {
+  return window.matchMedia("(max-width: 768px)").matches;
+}
+
+window.addEventListener("resize", () => {
+  const sidebar = document.getElementById("sidebar");
+  if (!sidebar) {
+    return;
+  }
+
+  if (!isMobileSidebarMode()) {
+    sidebar.classList.remove("is-open");
+  }
+});
 
 
 function openForm() {
-    var form = document.getElementById("product-form")
-    form.style.display = (form.style.display === "block") ? "none" : "block";
+    var form = document.getElementById("product-form");
+
+    if (form.style.display === "block") {
+        closeForm();
+        return;
+    }
+
+    form.reset();
+    resetSubmitButtonMode();
+    form.style.display = "block";
 }
 
 function closeForm() {
-    document.getElementById("product-form").style.display = "none";
+    const form = document.getElementById("product-form");
+    form.reset();
+    resetSubmitButtonMode();
+    form.style.display = "none";
 }
 
 
@@ -69,63 +112,63 @@ function init() {
     products = loadBizTrackCollection(PRODUCT_STORAGE_KEY, DEFAULT_PRODUCTS, isBizTrackProduct);
 
     renderProducts(products);
+    resetSubmitButtonMode();
+}
+
+function getSubmitButtonText(mode) {
+  const language = typeof getCurrentLanguage === "function" ? getCurrentLanguage() : "en";
+  const key = mode === "update" ? "update" : "add";
+
+  if (typeof getText === "function") {
+    return getText(key);
+  }
+
+  if (typeof translations !== "undefined" && translations[language] && translations[language][key]) {
+    return translations[language][key];
+  }
+
+  return mode === "update" ? "Update" : "Add";
+}
+
+function setSubmitButtonMode(mode, editingId) {
+  const submitBtn = document.getElementById("submitBtn");
+
+  if (!submitBtn) {
+    return;
+  }
+
+  const normalizedMode = mode === "update" ? "update" : "add";
+  submitBtn.dataset.mode = normalizedMode;
+  submitBtn.setAttribute("data-i18n", normalizedMode);
+  submitBtn.textContent = getSubmitButtonText(normalizedMode);
+
+  if (normalizedMode === "update") {
+    submitBtn.dataset.editingId = editingId;
+  } else {
+    delete submitBtn.dataset.editingId;
+  }
+}
+
+function resetSubmitButtonMode() {
+  setSubmitButtonMode("add");
 }
 
 function addOrUpdate(event) {
   event.preventDefault();
-  let type = document.getElementById("submitBtn").textContent;
-  if (type === 'Add') {
-      newProduct();
-  } else if (type === 'Update'){
-      const currentID = document.getElementById("product-form").dataset.currentProductId;
-      updateProduct(currentID);
+
+  const submitBtn = document.getElementById("submitBtn");
+  const mode = submitBtn.dataset.mode || "add";
+
+  if (mode === "add") {
+    newProduct();
+  } else if (mode === "update") {
+    const prodID = submitBtn.dataset.editingId;
+    updateProduct(prodID);
   }
 }
 
-function clearFormErrors(form) {
-  form.querySelectorAll("input, select").forEach(field => field.setCustomValidity(""));
-}
-
-function invalidateField(field, message) {
-  field.setCustomValidity(message);
-}
-
-function getTrimmedValue(id) {
-  const field = document.getElementById(id);
-  field.value = field.value.trim();
-  return field.value;
-}
-
-function validateNumberField(id, min, max, label) {
-  const field = document.getElementById(id);
-  const value = Number(field.value);
-
-  if (!Number.isFinite(value) || value < min || value > max) {
-    invalidateField(field, `${label} must be between ${min} and ${max}.`);
-    return null;
-  }
-
-  return value;
-}
-
-function validateIntegerField(id, min, max, label) {
-  const field = document.getElementById(id);
-  const value = Number(field.value);
-
-  if (!Number.isInteger(value) || value < min || value > max) {
-    invalidateField(field, `${label} must be a whole number between ${min} and ${max}.`);
-    return null;
-  }
-
-  return value;
-}
-
-function validateProductForm(currentID) {
-  const form = document.getElementById("product-form");
-  clearFormErrors(form);
-
-  const prodID = getTrimmedValue("product-id").toUpperCase();
-  document.getElementById("product-id").value = prodID;
+function newProduct() {
+  const prodID = document.getElementById("product-id").value;
   const prodName = document.getElementById("product-name").value;
   const prodDesc = getTrimmedValue("product-desc");
   const prodCat = document.getElementById("product-cat").value;
@@ -170,7 +213,7 @@ function newProduct() {
   saveBizTrackCollection(PRODUCT_STORAGE_KEY, products);
 
   document.getElementById("product-form").reset();
-  delete document.getElementById("product-form").dataset.currentProductId;
+  resetSubmitButtonMode();
 }
 
 function appendTextCell(row, value, className) {
@@ -198,6 +241,11 @@ function createActionButton(label, iconClassName, clickHandler) {
   return button;
 }
 
+function getActionLabel(key, id) {
+  const label = typeof getText === "function" ? getText(key) : key;
+  return `${label} ${id}`;
+}
+
 function renderProducts(products) {
   const prodTableBody = document.getElementById("tableBody");
   prodTableBody.replaceChildren();
@@ -216,20 +264,20 @@ function renderProducts(products) {
       prodRow.dataset.prodSold = product.prodSold;
 
       appendTextCell(prodRow, product.prodID);
-      appendTextCell(prodRow, product.prodName);
-      appendTextCell(prodRow, product.prodDesc);
-      appendTextCell(prodRow, product.prodCat);
+      appendTextCell(prodRow, translateValue(product.prodName));
+      appendTextCell(prodRow, translateValue(product.prodDesc));
+      appendTextCell(prodRow, translateValue(product.prodCat));
       appendTextCell(prodRow, `$${product.prodPrice.toFixed(2)}`);
       appendTextCell(prodRow, product.prodSold);
 
       const actionCell = appendTextCell(prodRow, "", "action");
       actionCell.appendChild(createActionButton(
-        `Edit product ${product.prodID}`,
+        getActionLabel("editProduct", product.prodID),
         "edit-icon fa-solid fa-pen-to-square",
         () => editRow(product.prodID)
       ));
       actionCell.appendChild(createActionButton(
-        `Delete product ${product.prodID}`,
+        getActionLabel("deleteProduct", product.prodID),
         "delete-icon fas fa-trash-alt",
         () => deleteProduct(product.prodID)
       ));
@@ -249,7 +297,7 @@ function editRow(prodID) {
   document.getElementById("product-sold").value = productToEdit.prodSold;
   document.getElementById("product-form").dataset.currentProductId = prodID;
 
-  document.getElementById("submitBtn").textContent = "Update";
+  setSubmitButtonMode("update", prodID);
 
   document.getElementById("product-form").style.display = "block";
 }
@@ -283,8 +331,7 @@ function updateProduct(prodID) {
         renderProducts(products);
 
         document.getElementById("product-form").reset();
-        document.getElementById("submitBtn").textContent = "Add";
-        delete document.getElementById("product-form").dataset.currentProductId;
+        resetSubmitButtonMode();
     }
 }
 
@@ -366,5 +413,14 @@ function generateCSV(data) {
 
   return `${headers}\n${rows.join('\n')}`;
 }
+
+document.addEventListener("languageChanged", () => {
+  renderProducts(products);
+  const submitBtn = document.getElementById("submitBtn");
+
+  if (submitBtn) {
+    setSubmitButtonMode(submitBtn.dataset.mode, submitBtn.dataset.editingId);
+  }
+});
 
 init();

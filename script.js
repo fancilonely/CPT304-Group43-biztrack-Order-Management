@@ -1,17 +1,82 @@
 // SIDEBAR TOGGLE
 
 function openSidebar() {
-  var side = document.getElementById('sidebar');
-  side.style.display = (side.style.display === "block") ? "none" : "block";
+  const sidebar = document.getElementById("sidebar");
+  if (!sidebar) {
+    return;
+  }
+
+  if (isMobileSidebarMode()) {
+    sidebar.classList.add("is-open");
+  } else {
+    document.body.classList.remove("sidebar-collapsed");
+  }
 }
 
 function closeSidebar() {
-  document.getElementById('sidebar').style.display = 'none';
+  const sidebar = document.getElementById("sidebar");
+  if (!sidebar) {
+    return;
+  }
+
+  if (isMobileSidebarMode()) {
+    sidebar.classList.remove("is-open");
+  } else {
+    document.body.classList.add("sidebar-collapsed");
+  }
 }
 
+function isMobileSidebarMode() {
+  return window.matchMedia("(max-width: 768px)").matches;
+}
 
-window.onload = function () {
-  const expenses = loadBizTrackCollection('bizTrackTransactions', [
+window.addEventListener("resize", () => {
+  const sidebar = document.getElementById("sidebar");
+  if (!sidebar) {
+    return;
+  }
+
+  if (!isMobileSidebarMode()) {
+    sidebar.classList.remove("is-open");
+  }
+});
+
+function getExpenseCategoryKey(category) {
+  const categoryKeys = {
+    "Rent": "rent",
+    "Order Fulfillment": "orderFulfillment",
+    "Utilities": "utilities",
+    "Supplies": "supplies",
+    "Miscellaneous": "miscellaneous"
+  };
+
+  return categoryKeys[category] || category;
+}
+
+function translateExpenseCategory(category) {
+  const key = getExpenseCategoryKey(category);
+  return getText(key);
+}
+
+function getProductCategoryKey(category) {
+  const categoryKeys = {
+    "Hats": "hats",
+    "Drinkware": "drinkware",
+    "Clothing": "clothing",
+    "Accessories": "accessories",
+    "Home decor": "homeDecor"
+  };
+
+  return categoryKeys[category] || category;
+}
+
+function translateProductCategory(category) {
+  const key = getProductCategoryKey(category);
+  return getText(key);
+}
+
+function renderDashboardSummary() {
+  const expenses = JSON.parse(localStorage.getItem('bizTrackTransactions')) || [
     {
       trID: 1,
       trDate: "2024-01-05",
@@ -117,25 +182,25 @@ window.onload = function () {
   const ordDiv = document.getElementById('num-orders');
 
   revDiv.innerHTML = `
-      <span class="title">Revenue</span>
+      <span class="title">${getText("revenue")}</span>
       <span class="amount-value">$${totalRevenues.toFixed(2)}</span> 
   `;
 
   expDiv.innerHTML = `
-    <span class="title">Expenses</span>
+    <span class="title">${getText("expenses")}</span>
     <span class="amount-value">$${totalExpenses.toFixed(2)}</span>
   `;
 
   balDiv.innerHTML = `
-    <span class="title">Balance</span>
+    <span class="title">${getText("balance")}</span>
     <span class="amount-value">$${totalBalance.toFixed(2)}</span>
   `;
 
   ordDiv.innerHTML = `
-    <span class="title">Orders</span>
+    <span class="title">${getText("ordersCount")}</span>
     <span class="amount-value">${numOrders}</span>
   `;
-};
+}
 
 function calculateExpTotal(transactions) {
   return transactions.reduce((total, transaction) => total + transaction.trAmount, 0);
@@ -146,6 +211,8 @@ function calculateRevTotal(orders) {
 
 
 // ---------- CHARTS ----------
+let barChartInstance = null;
+let donutChartInstance = null;
 
 // BAR CHART
 
@@ -217,7 +284,7 @@ function initializeChart() {
 
   const barChartOptions = {
       series: [{
-          name: "Total Sales",
+          name: getText("totalSales"),
           data: Object.values(sortedCategorySales),
       }],
       chart: {
@@ -247,14 +314,14 @@ function initializeChart() {
         opacity: 0.7,
       },
       xaxis: {
-        categories: Object.keys(sortedCategorySales),
+        categories: Object.keys(sortedCategorySales).map(category => translateProductCategory(category)),
         axisTicks: {
           show: false,
         },
       },
       yaxis: {
         title: {
-          text: 'Total Sales ($)',
+          text: getText("totalSalesDollars"),
         },
         axisTicks: {
           show: false,
@@ -269,10 +336,14 @@ function initializeChart() {
       }
     };
     
-  const barChart = new ApexCharts(
+  if (barChartInstance) {
+    barChartInstance.destroy();
+  }
+
+  barChartInstance = new ApexCharts(
     document.querySelector('#bar-chart'), barChartOptions
   );
-  barChart.render();
+  barChartInstance.render();
 
 
   // DONUT CHART
@@ -334,7 +405,7 @@ function initializeChart() {
 
   const donutChartOptions = {
     series: Object.values(categoryExpData),
-    labels: Object.keys(categoryExpData),
+    labels: Object.keys(categoryExpData).map(category => translateExpenseCategory(category)),
     chart: {
       // height: 350,
       type: 'donut',
@@ -379,9 +450,23 @@ function initializeChart() {
     },
   };
   
-  const donutChart = new ApexCharts(
+  if (donutChartInstance) {
+    donutChartInstance.destroy();
+  }
+
+  donutChartInstance = new ApexCharts(
     document.querySelector('#donut-chart'),
     donutChartOptions
   );
-  donutChart.render();
+  donutChartInstance.render();
 };
+
+window.addEventListener("load", () => {
+  renderDashboardSummary();
+  initializeChart();
+});
+
+document.addEventListener("languageChanged", () => {
+  renderDashboardSummary();
+  initializeChart();
+});

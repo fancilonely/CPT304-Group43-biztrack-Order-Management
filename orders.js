@@ -1,21 +1,64 @@
 
 function openSidebar() {
-    var side = document.getElementById('sidebar');
-    side.style.display = (side.style.display === "block") ? "none" : "block";
+    const sidebar = document.getElementById("sidebar");
+    if (!sidebar) {
+        return;
+    }
+
+    if (isMobileSidebarMode()) {
+        sidebar.classList.add("is-open");
+    } else {
+        document.body.classList.remove("sidebar-collapsed");
+    }
 }
 
 function closeSidebar() {
-    document.getElementById('sidebar').style.display = 'none';
+    const sidebar = document.getElementById("sidebar");
+    if (!sidebar) {
+        return;
+    }
+
+    if (isMobileSidebarMode()) {
+        sidebar.classList.remove("is-open");
+    } else {
+        document.body.classList.add("sidebar-collapsed");
+    }
 }
+
+function isMobileSidebarMode() {
+    return window.matchMedia("(max-width: 768px)").matches;
+}
+
+window.addEventListener("resize", () => {
+    const sidebar = document.getElementById("sidebar");
+    if (!sidebar) {
+        return;
+    }
+
+    if (!isMobileSidebarMode()) {
+        sidebar.classList.remove("is-open");
+    }
+});
 
 
 function openForm() {
-    var form = document.getElementById("order-form")
-    form.style.display = (form.style.display === "block") ? "none" : "block";
+    var form = document.getElementById("order-form");
+
+    if (form.style.display === "block") {
+        closeForm();
+        return;
+    }
+
+    form.reset();
+    resetSubmitButtonMode();
+    form.style.display = "block";
 }
 
 function closeForm() {
-    document.getElementById("order-form").style.display = "none";
+    const form = document.getElementById("order-form");
+    form.reset();
+    resetSubmitButtonMode();
+    form.style.display = "none";
 }
 
 const ORDER_STORAGE_KEY = "bizTrackOrders";
@@ -83,52 +126,58 @@ window.onload = function () {
     orders = loadBizTrackCollection(ORDER_STORAGE_KEY, DEFAULT_ORDERS, isBizTrackOrder);
 
     renderOrders(orders);
+    resetSubmitButtonMode();
+}
+
+function getSubmitButtonText(mode) {
+    const language = typeof getCurrentLanguage === "function" ? getCurrentLanguage() : "en";
+    const key = mode === "update" ? "update" : "add";
+
+    if (typeof getText === "function") {
+        return getText(key);
+    }
+
+    if (typeof translations !== "undefined" && translations[language] && translations[language][key]) {
+        return translations[language][key];
+    }
+
+    return mode === "update" ? "Update" : "Add";
+}
+
+function setSubmitButtonMode(mode, editingId) {
+    const submitBtn = document.getElementById("submitBtn");
+
+    if (!submitBtn) {
+        return;
+    }
+
+    const normalizedMode = mode === "update" ? "update" : "add";
+    submitBtn.dataset.mode = normalizedMode;
+    submitBtn.setAttribute("data-i18n", normalizedMode);
+    submitBtn.textContent = getSubmitButtonText(normalizedMode);
+
+    if (normalizedMode === "update") {
+        submitBtn.dataset.editingId = editingId;
+    } else {
+        delete submitBtn.dataset.editingId;
+    }
+}
+
+function resetSubmitButtonMode() {
+    setSubmitButtonMode("add");
 }
 
 function addOrUpdate(event) {
     event.preventDefault();
-    let type = document.getElementById("submitBtn").textContent;
-    if (type === 'Add') {
+
+    const submitBtn = document.getElementById("submitBtn");
+    const mode = submitBtn.dataset.mode || "add";
+
+    if (mode === "add") {
         newOrder();
-    } else if (type === 'Update'){
-        const currentID = document.getElementById("order-form").dataset.currentOrderId;
-        updateOrder(currentID);
-    }
-}
-
-function clearFormErrors(form) {
-    form.querySelectorAll("input, select").forEach(field => field.setCustomValidity(""));
-}
-
-function invalidateField(field, message) {
-    field.setCustomValidity(message);
-}
-
-function getTrimmedValue(id) {
-    const field = document.getElementById(id);
-    field.value = field.value.trim();
-    return field.value;
-}
-
-function validateNumberField(id, min, max, label) {
-    const field = document.getElementById(id);
-    const value = Number(field.value);
-
-    if (!Number.isFinite(value) || value < min || value > max) {
-        invalidateField(field, `${label} must be between ${min} and ${max}.`);
-        return null;
-    }
-
-    return value;
-}
-
-function validateIntegerField(id, min, max, label) {
-    const field = document.getElementById(id);
-    const value = Number(field.value);
-
-    if (!Number.isInteger(value) || value < min || value > max) {
-        invalidateField(field, `${label} must be a whole number between ${min} and ${max}.`);
-        return null;
+    } else if (mode === "update") {
+        const orderID = submitBtn.dataset.editingId;
+        updateOrder(orderID);
     }
 
     return value;
@@ -153,28 +202,19 @@ function validateOrderForm(currentID) {
         invalidateField(document.getElementById("order-id"), "Order ID already exists. Please use a unique ID.");
     }
 
-    if (!form.checkValidity() || itemPrice === null || qtyBought === null || shipping === null || taxes === null) {
-        form.reportValidity();
-        return null;
-    }
-
-    return {
-        orderID,
-        orderDate,
-        itemName,
-        itemPrice,
-        qtyBought,
-        shipping,
-        taxes,
-        orderTotal: ((itemPrice * qtyBought) + shipping + taxes),
-        orderStatus,
-    };
-}
-
 function newOrder() {
-  const order = validateOrderForm(null);
+  const orderID = document.getElementById("order-id").value;
+  const orderDate = document.getElementById("order-date").value;
+  const itemName = document.getElementById("item-name").value;
+  const itemPrice = parseFloat(document.getElementById("item-price").value);
+  const qtyBought = parseInt(document.getElementById("qty-bought").value);
+  const shipping = parseFloat(document.getElementById("shipping").value);
+  const taxes = parseFloat(document.getElementById("taxes").value);
+  const orderTotal = ((itemPrice * qtyBought) + shipping + taxes);
+  const orderStatus = document.getElementById("order-status").value;
 
-  if (!order) {
+  if (isDuplicateID(orderID, null)) {
+    alert("Order ID already exists. Please use a unique ID.");
     return;
   }
 
@@ -184,7 +224,7 @@ function newOrder() {
   saveBizTrackCollection(ORDER_STORAGE_KEY, orders);
 
   document.getElementById("order-form").reset();
-  delete document.getElementById("order-form").dataset.currentOrderId;
+  resetSubmitButtonMode();
 }
 
 function appendTextCell(row, value, className) {
@@ -195,6 +235,23 @@ function appendTextCell(row, value, className) {
     cell.textContent = value;
     row.appendChild(cell);
     return cell;
+}
+
+function translateStatus(status) {
+    const statusKeys = {
+        Pending: "pending",
+        Processing: "processing",
+        Shipped: "shipped",
+        Delivered: "delivered"
+    };
+
+    const key = statusKeys[status];
+
+    if (key) {
+        return getText(key);
+    }
+
+    return status;
 }
 
 function createActionButton(label, iconClassName, clickHandler) {
@@ -210,6 +267,11 @@ function createActionButton(label, iconClassName, clickHandler) {
     button.appendChild(icon);
 
     return button;
+}
+
+function getActionLabel(key, id) {
+    const label = typeof getText === "function" ? getText(key) : key;
+    return `${label} ${id}`;
 }
 
 
@@ -246,7 +308,7 @@ function renderOrders(orders) {
 
       appendTextCell(orderRow, order.orderID);
       appendTextCell(orderRow, order.orderDate);
-      appendTextCell(orderRow, order.itemName);
+      appendTextCell(orderRow, translateValue(order.itemName));
       appendTextCell(orderRow, formattedPrice);
       appendTextCell(orderRow, order.qtyBought);
       appendTextCell(orderRow, formattedShipping);
@@ -260,18 +322,18 @@ function renderOrders(orders) {
           statusWrapper.classList.add(statusMap[order.orderStatus]);
       }
       const statusText = document.createElement("span");
-      statusText.textContent = order.orderStatus;
+      statusText.textContent = translateStatus(order.orderStatus);
       statusWrapper.appendChild(statusText);
       statusCell.appendChild(statusWrapper);
 
       const actionCell = appendTextCell(orderRow, "", "action");
       actionCell.appendChild(createActionButton(
-          `Edit order ${order.orderID}`,
+          getActionLabel("editOrder", order.orderID),
           "edit-icon fa-solid fa-pen-to-square",
           () => editRow(order.orderID)
       ));
       actionCell.appendChild(createActionButton(
-          `Delete order ${order.orderID}`,
+          getActionLabel("deleteOrder", order.orderID),
           "delete-icon fas fa-trash-alt",
           () => deleteOrder(order.orderID)
       ));
@@ -287,7 +349,7 @@ function displayRevenue() {
     const totalRevenue = orders
         .reduce((total, order) => total + order.orderTotal, 0);
 
-    resultElement.textContent = `Total Revenue: $${totalRevenue.toFixed(2)}`;
+    resultElement.textContent = `${getText("totalRevenue")}: $${totalRevenue.toFixed(2)}`;
 }
 
 function editRow(orderID) {
@@ -304,7 +366,7 @@ function editRow(orderID) {
     document.getElementById("order-status").value = orderToEdit.orderStatus;
     document.getElementById("order-form").dataset.currentOrderId = orderID;
 
-    document.getElementById("submitBtn").textContent = "Update";
+    setSubmitButtonMode("update", orderID);
 
     document.getElementById("order-form").style.display = "block";
 }
@@ -338,8 +400,7 @@ function updateOrder(orderID) {
         renderOrders(orders);
 
         document.getElementById("order-form").reset();
-        document.getElementById("submitBtn").textContent = "Add";
-        delete document.getElementById("order-form").dataset.currentOrderId;
+        resetSubmitButtonMode();
     }
 }
 
@@ -431,3 +492,12 @@ function generateCSV(data) {
 
     return `${headers}\n${rows.join('\n')}`;
 }
+
+document.addEventListener("languageChanged", () => {
+    renderOrders(orders);
+    const submitBtn = document.getElementById("submitBtn");
+
+    if (submitBtn) {
+        setSubmitButtonMode(submitBtn.dataset.mode, submitBtn.dataset.editingId);
+    }
+});

@@ -1,21 +1,64 @@
 
 function openSidebar() {
-    var side = document.getElementById('sidebar');
-    side.style.display = (side.style.display === "block") ? "none" : "block";
+    const sidebar = document.getElementById("sidebar");
+    if (!sidebar) {
+        return;
+    }
+
+    if (isMobileSidebarMode()) {
+        sidebar.classList.add("is-open");
+    } else {
+        document.body.classList.remove("sidebar-collapsed");
+    }
 }
 
 function closeSidebar() {
-    document.getElementById('sidebar').style.display = 'none';
+    const sidebar = document.getElementById("sidebar");
+    if (!sidebar) {
+        return;
+    }
+
+    if (isMobileSidebarMode()) {
+        sidebar.classList.remove("is-open");
+    } else {
+        document.body.classList.add("sidebar-collapsed");
+    }
 }
+
+function isMobileSidebarMode() {
+    return window.matchMedia("(max-width: 768px)").matches;
+}
+
+window.addEventListener("resize", () => {
+    const sidebar = document.getElementById("sidebar");
+    if (!sidebar) {
+        return;
+    }
+
+    if (!isMobileSidebarMode()) {
+        sidebar.classList.remove("is-open");
+    }
+});
 
 
 function openForm() {
-    var form = document.getElementById("transaction-form")
-    form.style.display = (form.style.display === "block") ? "none" : "block";
+    var form = document.getElementById("transaction-form");
+
+    if (form.style.display === "block") {
+        closeForm();
+        return;
+    }
+
+    form.reset();
+    resetSubmitButtonMode();
+    form.style.display = "block";
 }
 
 function closeForm() {
-    document.getElementById("transaction-form").style.display = "none";
+    const form = document.getElementById("transaction-form");
+    form.reset();
+    resetSubmitButtonMode();
+    form.style.display = "none";
 }
 
 
@@ -67,15 +110,57 @@ window.onload = function () {
     serialNumberCounter = transactions.length + 1
   
     renderTransactions(transactions);
+    resetSubmitButtonMode();
+}
+
+function getSubmitButtonText(mode) {
+    const language = typeof getCurrentLanguage === "function" ? getCurrentLanguage() : "en";
+    const key = mode === "update" ? "update" : "add";
+
+    if (typeof getText === "function") {
+        return getText(key);
+    }
+
+    if (typeof translations !== "undefined" && translations[language] && translations[language][key]) {
+        return translations[language][key];
+    }
+
+    return mode === "update" ? "Update" : "Add";
+}
+
+function setSubmitButtonMode(mode, editingId) {
+    const submitBtn = document.getElementById("submitBtn");
+
+    if (!submitBtn) {
+        return;
+    }
+
+    const normalizedMode = mode === "update" ? "update" : "add";
+    submitBtn.dataset.mode = normalizedMode;
+    submitBtn.setAttribute("data-i18n", normalizedMode);
+    submitBtn.textContent = getSubmitButtonText(normalizedMode);
+
+    if (normalizedMode === "update") {
+        submitBtn.dataset.editingId = editingId;
+    } else {
+        delete submitBtn.dataset.editingId;
+    }
+}
+
+function resetSubmitButtonMode() {
+    setSubmitButtonMode("add");
 }
 
 function addOrUpdate(event) {
     event.preventDefault();
-    let type = document.getElementById("submitBtn").textContent;
-    if (type === 'Add') {
+
+    const submitBtn = document.getElementById("submitBtn");
+    const mode = submitBtn.dataset.mode || "add";
+
+    if (mode === "add") {
         newTransaction();
-    } else if (type === 'Update'){
-        const trId = document.getElementById("tr-id").value;
+    } else if (mode === "update") {
+        const trId = submitBtn.dataset.editingId;
         updateTransaction(+trId); // convert to number
     }
 }
@@ -110,6 +195,7 @@ function validateTransactionForm(trID) {
     const form = document.getElementById("transaction-form");
     clearFormErrors(form);
 
+function newTransaction() {
     const trDate = document.getElementById("tr-date").value;
     const trCategory = document.getElementById("tr-category").value;
     const trAmount = validateNumberField("tr-amount", 0, 10000, "Amount");
@@ -151,6 +237,7 @@ function newTransaction() {
     displayExpenses();
   
     document.getElementById("transaction-form").reset();
+    resetSubmitButtonMode();
 }
 
 function appendTextCell(row, value, className) {
@@ -161,6 +248,24 @@ function appendTextCell(row, value, className) {
     cell.textContent = value;
     row.appendChild(cell);
     return cell;
+}
+
+function translateCategory(category) {
+    const categoryKeys = {
+        "Rent": "rent",
+        "Order Fulfillment": "orderFulfillment",
+        "Utilities": "utilities",
+        "Supplies": "supplies",
+        "Miscellaneous": "miscellaneous"
+    };
+
+    const key = categoryKeys[category];
+
+    if (key) {
+        return getText(key);
+    }
+
+    return category;
 }
 
 function createActionButton(label, iconClassName, clickHandler) {
@@ -176,6 +281,11 @@ function createActionButton(label, iconClassName, clickHandler) {
     button.appendChild(icon);
 
     return button;
+}
+
+function getActionLabel(key, id) {
+    const label = typeof getText === "function" ? getText(key) : key;
+    return `${label} ${id}`;
 }
 
 
@@ -199,18 +309,18 @@ function renderTransactions(transactions) {
 
         appendTextCell(transactionRow, transaction.trID);
         appendTextCell(transactionRow, transaction.trDate);
-        appendTextCell(transactionRow, transaction.trCategory);
+        appendTextCell(transactionRow, translateCategory(transaction.trCategory));
         appendTextCell(transactionRow, formattedAmount, "tr-amount");
         appendTextCell(transactionRow, transaction.trNotes);
 
         const actionCell = appendTextCell(transactionRow, "", "action");
         actionCell.appendChild(createActionButton(
-            `Edit expense ${transaction.trID}`,
+            getActionLabel("editExpense", transaction.trID),
             "edit-icon fa-solid fa-pen-to-square",
             () => editRow(transaction.trID)
         ));
         actionCell.appendChild(createActionButton(
-            `Delete expense ${transaction.trID}`,
+            getActionLabel("deleteExpense", transaction.trID),
             "delete-icon fas fa-trash-alt",
             () => deleteTransaction(transaction.trID)
         ));
@@ -226,7 +336,7 @@ function displayExpenses() {
     const totalExpenses = transactions
         .reduce((total, transaction) => total + transaction.trAmount,0);
 
-    resultElement.textContent = `Total Expenses: $${totalExpenses.toFixed(2)}`;
+    resultElement.textContent = `${getText("totalExpenses")}: $${totalExpenses.toFixed(2)}`;
 }
 
 function editRow(trID) {
@@ -238,7 +348,7 @@ function editRow(trID) {
     document.getElementById("tr-amount").value = trToEdit.trAmount;
     document.getElementById("tr-notes").value = trToEdit.trNotes;
   
-    document.getElementById("submitBtn").textContent = "Update";
+    setSubmitButtonMode("update", trID);
 
     document.getElementById("transaction-form").style.display = "block";
   }
@@ -272,7 +382,7 @@ function deleteTransaction(trID) {
         renderTransactions(transactions);
 
         document.getElementById("transaction-form").reset();
-        document.getElementById("submitBtn").textContent = "Add";
+        resetSubmitButtonMode();
     }
 }
 
@@ -356,3 +466,12 @@ function generateCSV(data) {
 
     return `${headers}\n${rows.join('\n')}`;
 }
+
+document.addEventListener("languageChanged", () => {
+    renderTransactions(transactions);
+    const submitBtn = document.getElementById("submitBtn");
+
+    if (submitBtn) {
+        setSubmitButtonMode(submitBtn.dataset.mode, submitBtn.dataset.editingId);
+    }
+});
