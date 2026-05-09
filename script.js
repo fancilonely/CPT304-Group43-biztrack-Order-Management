@@ -1,18 +1,45 @@
 // SIDEBAR TOGGLE
 
 function openSidebar() {
-  var side = document.getElementById('sidebar');
-  side.style.display = (side.style.display === "block") ? "none" : "block";
+  const sidebar = document.getElementById("sidebar");
+  if (!sidebar) {
+    return;
+  }
+
+  if (isMobileSidebarMode()) {
+    sidebar.classList.add("is-open");
+  } else {
+    document.body.classList.remove("sidebar-collapsed");
+  }
 }
 
 function closeSidebar() {
-  document.getElementById('sidebar').style.display = 'none';
+  const sidebar = document.getElementById("sidebar");
+  if (!sidebar) {
+    return;
+  }
+
+  if (isMobileSidebarMode()) {
+    sidebar.classList.remove("is-open");
+  } else {
+    document.body.classList.add("sidebar-collapsed");
+  }
 }
 
-function getText(key) {
-  const language = getCurrentLanguage();
-  return translations[language][key] || key;
+function isMobileSidebarMode() {
+  return window.matchMedia("(max-width: 768px)").matches;
 }
+
+window.addEventListener("resize", () => {
+  const sidebar = document.getElementById("sidebar");
+  if (!sidebar) {
+    return;
+  }
+
+  if (!isMobileSidebarMode()) {
+    sidebar.classList.remove("is-open");
+  }
+});
 
 function getExpenseCategoryKey(category) {
   const categoryKeys = {
