@@ -1,44 +1,18 @@
 
 function openSidebar() {
-  const sidebar = document.getElementById("sidebar");
-  if (!sidebar) {
-    return;
-  }
+    const side = document.getElementById("sidebar");
 
-  if (isMobileSidebarMode()) {
-    sidebar.classList.add("is-open");
-  } else {
-    document.body.classList.remove("sidebar-collapsed");
-  }
+    if (!side) {
+        return;
+    }
+
+    const isOpen = window.getComputedStyle(side).display !== "none";
+    side.style.display = isOpen ? "none" : "flex";
 }
 
 function closeSidebar() {
-  const sidebar = document.getElementById("sidebar");
-  if (!sidebar) {
-    return;
-  }
-
-  if (isMobileSidebarMode()) {
-    sidebar.classList.remove("is-open");
-  } else {
-    document.body.classList.add("sidebar-collapsed");
-  }
+  document.getElementById('sidebar').style.display = 'none';
 }
-
-function isMobileSidebarMode() {
-  return window.matchMedia("(max-width: 768px)").matches;
-}
-
-window.addEventListener("resize", () => {
-  const sidebar = document.getElementById("sidebar");
-  if (!sidebar) {
-    return;
-  }
-
-  if (!isMobileSidebarMode()) {
-    sidebar.classList.remove("is-open");
-  }
-});
 
 
 function openForm() {
@@ -386,7 +360,7 @@ function exportToCSV() {
       };
   });
 
-  const csvContent = generateCSV(productsToExport);
+  const csvContent = safeGenerateCSV(productsToExport);
 
   const blob = new Blob([csvContent], { type: 'text/csv' });
 
@@ -398,13 +372,6 @@ function exportToCSV() {
   link.click();
 
   document.body.removeChild(link);
-}
-
-function generateCSV(data) {
-  const headers = Object.keys(data[0]).join(',');
-  const rows = data.map(order => Object.values(order).join(','));
-
-  return `${headers}\n${rows.join('\n')}`;
 }
 
 document.addEventListener("languageChanged", () => {

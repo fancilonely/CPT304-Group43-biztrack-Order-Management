@@ -1,45 +1,24 @@
 // SIDEBAR TOGGLE
 
 function openSidebar() {
-  const sidebar = document.getElementById("sidebar");
-  if (!sidebar) {
-    return;
-  }
+    const side = document.getElementById("sidebar");
 
-  if (isMobileSidebarMode()) {
-    sidebar.classList.add("is-open");
-  } else {
-    document.body.classList.remove("sidebar-collapsed");
-  }
+    if (!side) {
+        return;
+    }
+
+    const isOpen = window.getComputedStyle(side).display !== "none";
+    side.style.display = isOpen ? "none" : "flex";
 }
 
 function closeSidebar() {
-  const sidebar = document.getElementById("sidebar");
-  if (!sidebar) {
-    return;
-  }
-
-  if (isMobileSidebarMode()) {
-    sidebar.classList.remove("is-open");
-  } else {
-    document.body.classList.add("sidebar-collapsed");
-  }
+  document.getElementById('sidebar').style.display = 'none';
 }
 
-function isMobileSidebarMode() {
-  return window.matchMedia("(max-width: 768px)").matches;
+function getText(key) {
+  const language = getCurrentLanguage();
+  return translations[language][key] || key;
 }
-
-window.addEventListener("resize", () => {
-  const sidebar = document.getElementById("sidebar");
-  if (!sidebar) {
-    return;
-  }
-
-  if (!isMobileSidebarMode()) {
-    sidebar.classList.remove("is-open");
-  }
-});
 
 function getExpenseCategoryKey(category) {
   const categoryKeys = {

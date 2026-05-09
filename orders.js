@@ -1,44 +1,18 @@
 
 function openSidebar() {
-    const sidebar = document.getElementById("sidebar");
-    if (!sidebar) {
+    const side = document.getElementById("sidebar");
+
+    if (!side) {
         return;
     }
 
-    if (isMobileSidebarMode()) {
-        sidebar.classList.add("is-open");
-    } else {
-        document.body.classList.remove("sidebar-collapsed");
-    }
+    const isOpen = window.getComputedStyle(side).display !== "none";
+    side.style.display = isOpen ? "none" : "flex";
 }
 
 function closeSidebar() {
-    const sidebar = document.getElementById("sidebar");
-    if (!sidebar) {
-        return;
-    }
-
-    if (isMobileSidebarMode()) {
-        sidebar.classList.remove("is-open");
-    } else {
-        document.body.classList.add("sidebar-collapsed");
-    }
+    document.getElementById('sidebar').style.display = 'none';
 }
-
-function isMobileSidebarMode() {
-    return window.matchMedia("(max-width: 768px)").matches;
-}
-
-window.addEventListener("resize", () => {
-    const sidebar = document.getElementById("sidebar");
-    if (!sidebar) {
-        return;
-    }
-
-    if (!isMobileSidebarMode()) {
-        sidebar.classList.remove("is-open");
-    }
-});
 
 
 function openForm() {
@@ -50,6 +24,7 @@ function openForm() {
     }
 
     form.reset();
+    updateOrderDatePlaceholder();
     resetSubmitButtonMode();
     form.style.display = "block";
 }
@@ -57,12 +32,37 @@ function openForm() {
 function closeForm() {
     const form = document.getElementById("order-form");
     form.reset();
+    updateOrderDatePlaceholder();
     resetSubmitButtonMode();
     form.style.display = "none";
 }
 
 let orders = [];
 const orderSortState = {};
+
+function updateOrderDatePlaceholder() {
+    const dateInput = document.getElementById("order-date");
+    if (!dateInput || !dateInput.parentElement) {
+        return;
+    }
+
+    dateInput.parentElement.dataset.placeholder =
+        typeof getText === "function" ? getText("orderDatePlaceholder") : "YYYY-MM-DD";
+    dateInput.parentElement.classList.toggle("has-date", Boolean(dateInput.value));
+}
+
+function setupOrderDatePlaceholder() {
+    const dateInput = document.getElementById("order-date");
+    if (!dateInput) {
+        return;
+    }
+
+    dateInput.addEventListener("input", updateOrderDatePlaceholder);
+    dateInput.addEventListener("change", updateOrderDatePlaceholder);
+    document.addEventListener("languageChanged", updateOrderDatePlaceholder);
+    updateOrderDatePlaceholder();
+}
+
 window.onload = function () {
     const storedOrders = localStorage.getItem("bizTrackOrders");
     if (storedOrders) {
@@ -131,6 +131,7 @@ window.onload = function () {
 
     renderOrders(orders);
     resetSubmitButtonMode();
+    setupOrderDatePlaceholder();
 }
 
 function getSubmitButtonText(mode) {
@@ -220,6 +221,7 @@ function newOrder() {
   localStorage.setItem("bizTrackOrders", JSON.stringify(orders));
 
   document.getElementById("order-form").reset();
+  updateOrderDatePlaceholder();
   resetSubmitButtonMode();
 }
 
@@ -241,10 +243,11 @@ function translateStatus(status) {
         Delivered: "delivered"
     };
 
+    const language = getCurrentLanguage();
     const key = statusKeys[status];
 
-    if (key) {
-        return getText(key);
+    if (key && translations[language][key]) {
+        return translations[language][key];
     }
 
     return status;
@@ -345,7 +348,8 @@ function displayRevenue() {
     const totalRevenue = orders
         .reduce((total, order) => total + order.orderTotal, 0);
 
-    resultElement.textContent = `${getText("totalRevenue")}: $${totalRevenue.toFixed(2)}`;
+    const language = getCurrentLanguage();
+    resultElement.textContent = `${translations[language].totalRevenue}: $${totalRevenue.toFixed(2)}`;
 }
 
 function editRow(orderID) {
@@ -360,6 +364,7 @@ function editRow(orderID) {
     document.getElementById("taxes").value = orderToEdit.taxes;
     document.getElementById("order-total").value = orderToEdit.orderTotal;
     document.getElementById("order-status").value = orderToEdit.orderStatus;
+    updateOrderDatePlaceholder();
 
     setSubmitButtonMode("update", orderID);
 
@@ -410,6 +415,7 @@ function updateOrder(orderID) {
         renderOrders(orders);
 
         document.getElementById("order-form").reset();
+        updateOrderDatePlaceholder();
         resetSubmitButtonMode();
     }
 }
@@ -482,7 +488,7 @@ function exportToCSV() {
         };
     });
   
-    const csvContent = generateCSV(ordersToExport);
+    const csvContent = safeGenerateCSV(ordersToExport);
   
     const blob = new Blob([csvContent], { type: 'text/csv' });
   
@@ -495,13 +501,7 @@ function exportToCSV() {
   
     document.body.removeChild(link);
 }
-  
-function generateCSV(data) {
-    const headers = Object.keys(data[0]).join(',');
-    const rows = data.map(order => Object.values(order).join(','));
 
-    return `${headers}\n${rows.join('\n')}`;
-}
 
 document.addEventListener("languageChanged", () => {
     renderOrders(orders);
