@@ -62,57 +62,52 @@ function closeForm() {
 }
 
 
+const TRANSACTION_STORAGE_KEY = "bizTrackTransactions";
+const DEFAULT_TRANSACTIONS = [
+    {
+        trID: 1,
+        trDate: "2024-01-05",
+        trCategory: "Rent",
+        trAmount: 100.00,
+        trNotes: "January Rent"
+    },
+    {
+        trID: 2,
+        trDate: "2024-01-15",
+        trCategory: "Order Fulfillment",
+        trAmount: 35.00,
+        trNotes: "Order #1005"
+    },
+    {
+        trID: 3,
+        trDate: "2024-01-08",
+        trCategory: "Utilities",
+        trAmount: 120.00,
+        trNotes: "Internet"
+    },
+    {
+        trID: 4,
+        trDate: "2024-02-05",
+        trCategory: "Supplies",
+        trAmount: 180.00,
+        trNotes: "Embroidery Machine"
+    },
+    {
+        trID: 5,
+        trDate: "2024-01-25",
+        trCategory: "Miscellaneous",
+        trAmount: 20.00,
+        trNotes: "Pizza"
+    },
+];
+
 let transactions = [];
 const financeSortState = {};
 let serialNumberCounter;
 
 window.onload = function () {
-    const storedTransactions = localStorage.getItem("bizTrackTransactions");
-    if (storedTransactions) {
-        transactions = JSON.parse(storedTransactions);
-    } else {
-        transactions = [
-            {
-                trID: 1,
-                trDate: "2024-01-05",
-                trCategory: "Rent",
-                trAmount: 100.00,
-                trNotes: "January Rent"
-            },
-            {
-                trID: 2,
-                trDate: "2024-01-15",
-                trCategory: "Order Fulfillment",
-                trAmount: 35.00,
-                trNotes: "Order #1005"
-            },
-            {
-                trID: 3,
-                trDate: "2024-01-08",
-                trCategory: "Utilities",
-                trAmount: 120.00,
-                trNotes: "Internet"
-            },
-            {
-                trID: 4,
-                trDate: "2024-02-05",
-                trCategory: "Supplies",
-                trAmount: 180.00,
-                trNotes: "Embroidery Machine"
-            },
-            {
-                trID: 5,
-                trDate: "2024-01-25",
-                trCategory: "Miscellaneous",
-                trAmount: 20.00,
-                trNotes: "Pizza"
-            },
-        ];
-
-        serialNumberCounter = transactions.length + 1
-  
-        localStorage.setItem("bizTrackTransactions", JSON.stringify(transactions));
-    }
+    transactions = loadBizTrackCollection(TRANSACTION_STORAGE_KEY, DEFAULT_TRANSACTIONS, isBizTrackTransaction);
+    serialNumberCounter = transactions.length + 1
   
     renderTransactions(transactions);
     resetSubmitButtonMode();
@@ -170,28 +165,73 @@ function addOrUpdate(event) {
     }
 }
 
+function clearFormErrors(form) {
+    form.querySelectorAll("input, select").forEach(field => field.setCustomValidity(""));
+}
+
+function invalidateField(field, message) {
+    field.setCustomValidity(message);
+}
+
+function getTrimmedValue(id) {
+    const field = document.getElementById(id);
+    field.value = field.value.trim();
+    return field.value;
+}
+
+function validateNumberField(id, min, max, label) {
+    const field = document.getElementById(id);
+    const value = Number(field.value);
+
+    if (!Number.isFinite(value) || value < min || value > max) {
+        invalidateField(field, `${label} must be between ${min} and ${max}.`);
+        return null;
+    }
+
+    return value;
+}
+
+function validateTransactionForm(trID) {
+    const form = document.getElementById("transaction-form");
+    clearFormErrors(form);
 
 function newTransaction() {
     const trDate = document.getElementById("tr-date").value;
     const trCategory = document.getElementById("tr-category").value;
-    const trAmount = parseFloat(document.getElementById("tr-amount").value);
-    const trNotes = document.getElementById("tr-notes").value;
+    const trAmount = validateNumberField("tr-amount", 0, 10000, "Amount");
+    const trNotes = getTrimmedValue("tr-notes");
 
+    if (trNotes.length === 0 || trNotes.length > 120) {
+        invalidateField(document.getElementById("tr-notes"), "Notes must be 1 to 120 characters.");
+    }
+
+    if (!form.checkValidity() || trAmount === null) {
+        form.reportValidity();
+        return null;
+    }
+
+    return {
+        trID,
+        trDate,
+        trCategory,
+        trAmount,
+        trNotes,
+    };
+}
+
+function newTransaction() {
     serialNumberCounter = transactions.length + 1;
     let trID = serialNumberCounter;
-    
-    const transaction = {
-      trID,
-      trDate,
-      trCategory,
-      trAmount,
-      trNotes,
-    };
+    const transaction = validateTransactionForm(trID);
+
+    if (!transaction) {
+        return;
+    }
     
     transactions.push(transaction);
   
     renderTransactions(transactions);
-    localStorage.setItem("bizTrackTransactions", JSON.stringify(transactions));
+    saveBizTrackCollection(TRANSACTION_STORAGE_KEY, transactions);
 
     serialNumberCounter++;
     displayExpenses();
@@ -319,7 +359,7 @@ function deleteTransaction(trID) {
     if (indexToDelete !== -1) {
         transactions.splice(indexToDelete, 1);
 
-        localStorage.setItem("bizTrackTransactions", JSON.stringify(transactions));
+        saveBizTrackCollection(TRANSACTION_STORAGE_KEY, transactions);
 
         renderTransactions(transactions);
     }
@@ -329,17 +369,15 @@ function deleteTransaction(trID) {
     const indexToUpdate = transactions.findIndex(transaction => transaction.trID === trID);
 
     if (indexToUpdate !== -1) {
-        const updatedTransaction = {
-            trID: trID,
-            trDate: document.getElementById("tr-date").value,
-            trCategory: document.getElementById("tr-category").value,
-            trAmount: parseFloat(document.getElementById("tr-amount").value),
-            trNotes: document.getElementById("tr-notes").value,
-        };
+        const updatedTransaction = validateTransactionForm(trID);
+
+        if (!updatedTransaction) {
+            return;
+        }
 
         transactions[indexToUpdate] = updatedTransaction;
 
-        localStorage.setItem("bizTrackTransactions", JSON.stringify(transactions));
+        saveBizTrackCollection(TRANSACTION_STORAGE_KEY, transactions);
 
         renderTransactions(transactions);
 
