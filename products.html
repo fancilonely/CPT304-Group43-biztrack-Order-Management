@@ -55,15 +55,14 @@
                 </a>
             </li>
         </ul>
-
-        <div class="sidebar-bottom">
-            <button type="button" id="language-toggle" class="language-toggle" onclick="toggleLanguage()" aria-label="Switch language to Chinese">
-                &#20013;&#25991;
-            </button>
-
-            <a href="./about.html" class="sidebar-bottom-link">
-                <i class="fa-solid fa-users-line"></i>
-                <span data-i18n="meetDeveloper">Meet the Developer</span>
+        <div class="sidebar-footer logout">
+            <a href="./about.html" class="sidebar-footer-link">
+                <span class="developer-avatar" aria-hidden="true">
+                    <i class="fa-solid fa-users-line"></i>
+                </span>
+                <span class="developer-meta">
+                    <span class="developer-title" data-i18n="meetDeveloper">Meet the Developer</span>
+                </span>
             </a>
         </div>
     </nav>
@@ -77,11 +76,19 @@
                 <!-- <span>Primary</span> -->
                 <h2 data-i18n="products">Products</h2>
             </div>
-            <div class="user-info">
+            <div class="user-info header-actions">
                 <div class="search-box">
                     <i class="fas fa-search"></i>
                     <input type="search" id="searchInput" placeholder="Search" data-i18n-placeholder="search">
                 </div>
+                <button type="button" id="language-toggle" class="language-toggle header-language-toggle" aria-label="Switch language to Chinese" title="Switch language to Chinese">
+                    <i class="fa-solid fa-language language-icon" aria-hidden="true"></i>
+                    <span class="language-label">
+                        <span class="lang-option" data-lang-option="en">EN</span>
+                        <span class="lang-separator" aria-hidden="true">/</span>
+                        <span class="lang-option" data-lang-option="zh">CN</span>
+                    </span>
+                </button>
                 <!-- <i class="fas fa-user-alt fa-xl"></i> -->
             </div>
         </header>
@@ -201,4 +208,3 @@
     <script src="./products.js"></script>
 </body>
 </html>
-

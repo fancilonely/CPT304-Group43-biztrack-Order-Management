@@ -1,18 +1,44 @@
 
 function openSidebar() {
-    const side = document.getElementById("sidebar");
-
-    if (!side) {
+    const sidebar = document.getElementById("sidebar");
+    if (!sidebar) {
         return;
     }
 
-    const isOpen = window.getComputedStyle(side).display !== "none";
-    side.style.display = isOpen ? "none" : "flex";
+    if (isMobileSidebarMode()) {
+        sidebar.classList.add("is-open");
+    } else {
+        document.body.classList.remove("sidebar-collapsed");
+    }
 }
 
 function closeSidebar() {
-    document.getElementById('sidebar').style.display = 'none';
+    const sidebar = document.getElementById("sidebar");
+    if (!sidebar) {
+        return;
+    }
+
+    if (isMobileSidebarMode()) {
+        sidebar.classList.remove("is-open");
+    } else {
+        document.body.classList.add("sidebar-collapsed");
+    }
 }
+
+function isMobileSidebarMode() {
+    return window.matchMedia("(max-width: 768px)").matches;
+}
+
+window.addEventListener("resize", () => {
+    const sidebar = document.getElementById("sidebar");
+    if (!sidebar) {
+        return;
+    }
+
+    if (!isMobileSidebarMode()) {
+        sidebar.classList.remove("is-open");
+    }
+});
 
 
 function openForm() {
@@ -193,11 +219,10 @@ function translateCategory(category) {
         "Miscellaneous": "miscellaneous"
     };
 
-    const language = getCurrentLanguage();
     const key = categoryKeys[category];
 
-    if (key && translations[language][key]) {
-        return translations[language][key];
+    if (key) {
+        return getText(key);
     }
 
     return category;
@@ -271,8 +296,7 @@ function displayExpenses() {
     const totalExpenses = transactions
         .reduce((total, transaction) => total + transaction.trAmount,0);
 
-    const language = getCurrentLanguage();
-    resultElement.textContent = `${translations[language].totalExpenses}: $${totalExpenses.toFixed(2)}`;
+    resultElement.textContent = `${getText("totalExpenses")}: $${totalExpenses.toFixed(2)}`;
 }
 
 function editRow(trID) {
@@ -375,7 +399,7 @@ function performSearch() {
 
 function exportToCSV() {
     const transactionsToExport = transactions.map(transaction => {
-         return {
+        return {
             [getText("serialNumber")]: transaction.trID,
             [getText("dateShort")]: transaction.trDate,
             [getText("categoryLabel")]: translateCategory(transaction.trCategory),
@@ -397,7 +421,6 @@ function exportToCSV() {
   
     document.body.removeChild(link);
 }
-
 document.addEventListener("languageChanged", () => {
     renderTransactions(transactions);
     const submitBtn = document.getElementById("submitBtn");
