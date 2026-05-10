@@ -134,6 +134,15 @@ window.onload = function () {
     renderTransactions(transactions);
     resetSubmitButtonMode();
     closeForm();
+    openFormFromDashboardAction();
+}
+
+function openFormFromDashboardAction() {
+    const params = new URLSearchParams(window.location.search);
+
+    if (params.get("action") === "add") {
+        openForm();
+    }
 }
 
 function getSubmitButtonText(mode) {

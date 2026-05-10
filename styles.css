@@ -643,6 +643,122 @@ label {
     margin-bottom: 1rem;
 }
 
+.dashboard-workspace {
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+}
+
+.workspace-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.workspace-card {
+    background: var(--light-orange);
+    border-radius: 14px;
+    padding: 1.25rem;
+    min-height: 190px;
+    box-shadow: -4px 4px 8px rgba(0, 0, 0, 0.12);
+}
+
+.workspace-card h4 {
+    color: var(--brown-color);
+    font-size: 1.05rem;
+    margin-bottom: 0.5rem;
+}
+
+.workspace-card-helper {
+    padding: 0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #5f514e;
+    text-align: left;
+}
+
+.quick-action-buttons {
+    display: grid;
+    gap: 0.65rem;
+    margin-top: 1rem;
+}
+
+.quick-action-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    border-radius: 10px;
+    background: var(--green-color);
+    color: var(--white-color);
+    text-decoration: none;
+    font-weight: 700;
+    transition:
+        background-color 180ms ease,
+        box-shadow 180ms ease;
+}
+
+.quick-action-button:hover {
+    background: #145440;
+}
+
+.quick-action-button:focus-visible {
+    outline: none;
+    box-shadow:
+        0 0 0 3px #ffffff,
+        0 0 0 6px var(--blue-color);
+}
+
+.recent-activity-list {
+    list-style: none;
+    display: grid;
+    gap: 0.65rem;
+    margin-top: 1rem;
+    padding: 0;
+}
+
+.recent-activity-list li {
+    background: #ffffff;
+    border-left: 4px solid var(--blue-color);
+    border-radius: 10px;
+    padding: 0.7rem 0.85rem;
+    font-size: 0.95rem;
+}
+
+.status-overview-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.65rem;
+    margin-top: 1rem;
+}
+
+.status-overview-item {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 0.75rem;
+}
+
+.status-overview-label {
+    display: block;
+    font-size: 0.85rem;
+    color: #5f514e;
+}
+
+.status-overview-value {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--black-color);
+}
+
+@media (max-width: 1100px) {
+    .workspace-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 .charts-wrapper {
     display: flex;
     flex-wrap: wrap;
@@ -995,6 +1111,7 @@ ol {
     }
 
     .card-container,
+    .dashboard-workspace,
     .charts-container,
     .table-wrapper,
     .guide-container,

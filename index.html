@@ -183,6 +183,30 @@
                 </div>
             </div>
         </div>
+        <div class="dashboard-workspace">
+            <h3 class="main-title" data-i18n="businessWorkspace">Business Workspace</h3>
+            <div class="workspace-grid">
+                <section class="workspace-card quick-actions-card" aria-labelledby="quick-actions-title">
+                    <h4 id="quick-actions-title" data-i18n="quickActions">Quick Actions</h4>
+                    <p class="workspace-card-helper" data-i18n="quickActionsDesc">Quickly add new business records from the dashboard.</p>
+                    <div class="quick-action-buttons">
+                        <a class="quick-action-button" href="./products.html?action=add" data-i18n="addProduct">Add Product</a>
+                        <a class="quick-action-button" href="./orders.html?action=add" data-i18n="addOrder">Add Order</a>
+                        <a class="quick-action-button" href="./finances.html?action=add" data-i18n="addExpense">Add Expense</a>
+                    </div>
+                </section>
+                <section class="workspace-card recent-activity-card" aria-labelledby="recent-activity-title">
+                    <h4 id="recent-activity-title" data-i18n="recentActivity">Recent Activity</h4>
+                    <p class="workspace-card-helper" data-i18n="recentActivityDesc">Latest saved records from local browser data.</p>
+                    <ul class="recent-activity-list" id="recent-activity-list"></ul>
+                </section>
+                <section class="workspace-card order-status-card" aria-labelledby="order-status-overview-title">
+                    <h4 id="order-status-overview-title" data-i18n="orderStatusOverview">Order Status Overview</h4>
+                    <p class="workspace-card-helper" data-i18n="orderStatusOverviewDesc">Current order status summary.</p>
+                    <div class="status-overview-grid" id="order-status-overview"></div>
+                </section>
+            </div>
+        </div>
         <div class="charts-container">
             <h3 class="main-title" data-i18n="analytics">Analytics</h3>
             <div class="charts-wrapper">
