@@ -11,7 +11,9 @@
     --green-color: #1F6F54;
     --sidebar-width: clamp(200px, 18vw, 220px);
     --sidebar-expanded-width: clamp(218px, 20vw, 240px);
-    --sidebar-transition: 220ms ease;
+    --sidebar-duration: 300ms;
+    --sidebar-easing: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --sidebar-transition: var(--sidebar-duration) var(--sidebar-easing);
 }
 
 * {
