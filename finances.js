@@ -64,7 +64,6 @@ function closeForm() {
 
 let transactions = [];
 const financeSortState = {};
-let serialNumberCounter;
 
 window.onload = function () {
     const storedTransactions = localStorage.getItem("bizTrackTransactions");
@@ -109,8 +108,6 @@ window.onload = function () {
             },
         ];
 
-        serialNumberCounter = transactions.length + 1
-  
         localStorage.setItem("bizTrackTransactions", JSON.stringify(transactions));
     }
   
@@ -241,8 +238,9 @@ function newTransaction() {
         return;
     }
 
-    serialNumberCounter = transactions.length + 1;
-    let trID = serialNumberCounter;
+    const trID = transactions.length > 0
+        ? Math.max(...transactions.map(transaction => Number(transaction.trID))) + 1
+        : 1;
     
     const transaction = {
       trID,
@@ -253,8 +251,6 @@ function newTransaction() {
   
     renderTransactions(transactions);
     localStorage.setItem("bizTrackTransactions", JSON.stringify(transactions));
-
-    serialNumberCounter++;
     displayExpenses();
   
     document.getElementById("transaction-form").reset();
