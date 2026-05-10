@@ -48,7 +48,7 @@ const translationDefinitions = {
     },
     products: {
       addProduct: "Add Product",
-      downloadCSV: "Download CSV",
+      downloadCSV: "Export to CSV",
       productID: "Product ID:",
       productIDShort: "Product ID",
       productName: "Product Name",
