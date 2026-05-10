@@ -231,7 +231,7 @@ body {
 }
 
 .sidebar-close {
-    display: inline-flex;
+    display: none;
     align-items: center;
     justify-content: center;
     width: 36px;
@@ -935,6 +935,10 @@ ol {
 @media (max-width: 768px) {
     body {
         display: block;
+    }
+
+    .sidebar-close {
+        display: inline-flex;
     }
 
     .sidebar {

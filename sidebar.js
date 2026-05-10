@@ -9,8 +9,9 @@ function openSidebar() {
   if (isMobileSidebarMode()) {
     sidebar.classList.add("is-open");
   } else {
-    document.body.classList.remove("sidebar-collapsed");
-    localStorage.setItem(SIDEBAR_STATE_KEY, "false");
+    const isCollapsed = document.body.classList.contains("sidebar-collapsed");
+    document.body.classList.toggle("sidebar-collapsed", !isCollapsed);
+    localStorage.setItem(SIDEBAR_STATE_KEY, isCollapsed ? "false" : "true");
   }
 }
 
