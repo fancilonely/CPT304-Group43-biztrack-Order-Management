@@ -381,14 +381,16 @@ function exportToCSV() {
         [getText("productName")]: translateValue(product.prodName),
         [getText("description")]: translateValue(product.prodDesc),
         [getText("category")]: translateValue(product.prodCat),
-        [getText("price")]: product.prodPrice.toFixed(2),
+        [getText("price")]: Number(product.prodPrice).toFixed(2),
         [getText("unitsSoldShort")]: product.prodSold,
       };
   });
 
   const csvContent = safeGenerateCSV(productsToExport);
 
-  const blob = new Blob([csvContent], { type: 'text/csv' });
+  const blob = new Blob(["\ufeff" + csvContent], {
+    type: "text/csv;charset=utf-8;",
+  });
 
   const link = document.createElement('a');
   link.href = window.URL.createObjectURL(blob);

@@ -402,15 +402,17 @@ function exportToCSV() {
         return {
             [getText("serialNumber")]: transaction.trID,
             [getText("dateShort")]: transaction.trDate,
-            [getText("categoryLabel")]: translateCategory(transaction.trCategory),
-            [getText("amountShort")]: transaction.trAmount.toFixed(2),
+            [getText("expenseCategory")]: translateCategory(transaction.trCategory),
+            [getText("amountShort")]: Number(transaction.trAmount).toFixed(2),
             [getText("notesShort")]: transaction.trNotes,
         };
     });
   
     const csvContent = safeGenerateCSV(transactionsToExport);
   
-    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const blob = new Blob(["\ufeff" + csvContent], {
+        type: "text/csv;charset=utf-8;",
+    });
   
     const link = document.createElement('a');
     link.href = window.URL.createObjectURL(blob);

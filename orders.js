@@ -473,18 +473,20 @@ function exportToCSV() {
             [getText("orderIDShort")]: order.orderID,
             [getText("orderDateShort")]: order.orderDate,
             [getText("itemNameShort")]: translateValue(order.itemName),
-            [getText("itemPriceShort")]: order.itemPrice.toFixed(2),
+            [getText("itemPriceShort")]: Number(order.itemPrice).toFixed(2),
             [getText("qty")]: order.qtyBought,
-            [getText("shippingFeeShort")]: order.shipping.toFixed(2),
-            [getText("taxesShort")]: order.taxes.toFixed(2),
-            [getText("orderTotalShort")]: order.orderTotal.toFixed(2),
+            [getText("shippingFeeShort")]: Number(order.shipping).toFixed(2),
+            [getText("taxesShort")]: Number(order.taxes).toFixed(2),
+            [getText("orderTotalShort")]: Number(order.orderTotal).toFixed(2),
             [getText("orderStatusShort")]: translateStatus(order.orderStatus),
         };
     });
   
     const csvContent = safeGenerateCSV(ordersToExport);
   
-    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const blob = new Blob(["\ufeff" + csvContent], {
+        type: "text/csv;charset=utf-8;",
+    });
   
     const link = document.createElement('a');
     link.href = window.URL.createObjectURL(blob);
