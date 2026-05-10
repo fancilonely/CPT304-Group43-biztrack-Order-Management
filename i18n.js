@@ -7,9 +7,10 @@ const translationDefinitions = {
       orders: "Orders",
       expenses: "Expenses",
       help: "Help",
-      meetDeveloper: "About",
+      meetDeveloper: "Meet the Developer",
       openSidebar: "Open sidebar",
       closeSidebar: "Close sidebar",
+      openUserMenu: "Open user menu",
     },
     common: {
       search: "Search",
@@ -29,6 +30,8 @@ const translationDefinitions = {
       calculated: "(Calculated)",
       switchToChinese: "Switch language to Chinese",
       switchToEnglish: "Switch language to English",
+      guestUser: "Guest User",
+      localMode: "Local Mode",
     },
     dashboard: {
       summary: "Summary",
@@ -206,9 +209,10 @@ const translationDefinitions = {
       orders: "订单",
       expenses: "支出",
       help: "帮助",
-      meetDeveloper: "关于",
+      meetDeveloper: "认识开发者",
       openSidebar: "打开侧边栏",
       closeSidebar: "关闭侧边栏",
+      openUserMenu: "打开用户菜单",
     },
     common: {
       search: "搜索",
@@ -228,6 +232,8 @@ const translationDefinitions = {
       calculated: "（自动计算）",
       switchToChinese: "切换语言为中文",
       switchToEnglish: "切换语言为英文",
+      guestUser: "访客用户",
+      localMode: "本地模式",
     },
     dashboard: {
       summary: "概览",
