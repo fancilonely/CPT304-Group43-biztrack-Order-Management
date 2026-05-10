@@ -68,7 +68,7 @@
             </li>
         </ul>
         <div class="sidebar-footer user-panel">
-            <button type="button" class="user-panel-button" aria-label="Open user menu" data-i18n-aria-label="openUserMenu">
+            <button type="button" class="user-panel-button" id="user-menu-button" aria-haspopup="menu" aria-expanded="false" aria-controls="user-menu" aria-label="Open user menu" data-i18n-aria-label="openUserMenu">
                 <span class="user-avatar" aria-hidden="true">G</span>
                 <span class="user-meta">
                     <span class="user-name" data-i18n="guestUser">Guest User</span>
@@ -76,6 +76,41 @@
                 </span>
                 <i class="fa-solid fa-chevron-right user-panel-chevron" aria-hidden="true"></i>
             </button>
+            <div class="user-menu" id="user-menu" role="menu" hidden>
+                <div class="user-menu-profile">
+                    <span class="user-avatar" aria-hidden="true">G</span>
+                    <span class="user-menu-profile-text">
+                        <strong data-i18n="guestUser">Guest User</strong>
+                        <small data-i18n="localMode">Local Mode</small>
+                    </span>
+                </div>
+                <div class="user-menu-divider"></div>
+                <button type="button" class="user-menu-item" role="menuitem" data-user-action="preferences">
+                    <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
+                    <span data-i18n="preferences">Preferences</span>
+                </button>
+                <button type="button" class="user-menu-item" role="menuitem" data-user-action="storage">
+                    <i class="fa-solid fa-database" aria-hidden="true"></i>
+                    <span data-i18n="dataStorage">Data &amp; Storage</span>
+                </button>
+                <a class="user-menu-item" role="menuitem" href="./privacy.html">
+                    <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+                    <span data-i18n="privacySettings">Privacy Settings</span>
+                </a>
+                <div class="user-menu-divider"></div>
+                <a class="user-menu-item" role="menuitem" href="./help.html">
+                    <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
+                    <span data-i18n="help">Help</span>
+                </a>
+                <a class="user-menu-item" role="menuitem" href="./about.html">
+                    <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                    <span data-i18n="about">About</span>
+                </a>
+                <button type="button" class="user-menu-item user-menu-item--disabled" role="menuitem" disabled>
+                    <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i>
+                    <span data-i18n="signInComingSoon">Sign in coming soon</span>
+                </button>
+            </div>
         </div>
     </nav>
 
@@ -217,6 +252,7 @@
     </main>
     <script src="./i18n.js"></script>
     <script src="./cookie-consent.js"></script>
+    <script src="./user-menu.js"></script>
     <script src="./products.js"></script>
 </body>
 </html>
