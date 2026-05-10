@@ -1093,9 +1093,18 @@ ol {
 }
 
 .developer-title {
+    display: inline-block;
     font-size: 14px;
     font-weight: 500;
     line-height: 1.3;
+}
+
+html[lang="en"] .developer-title {
+    max-width: 7ch;
+    white-space: normal;
+}
+
+html[lang="zh-CN"] .developer-title {
     white-space: nowrap;
 }
 
