@@ -14,6 +14,9 @@
     --sidebar-duration: 300ms;
     --sidebar-easing: cubic-bezier(0.25, 0.46, 0.45, 0.94);
     --sidebar-transition: var(--sidebar-duration) var(--sidebar-easing);
+    --form-slide-duration: 520ms;
+    --form-fade-duration: 360ms;
+    --form-slide-easing: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 * {
@@ -434,15 +437,15 @@ body.sidebar-collapsed .main-content {
     overflow: hidden;
     pointer-events: none;
     transition:
-        max-height 380ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
-        opacity 260ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
-        transform 380ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
-        margin-top 380ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
-        padding-top 380ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
-        padding-right 380ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
-        padding-bottom 380ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
-        padding-left 380ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
-        border-width 380ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        max-height var(--form-slide-duration) var(--form-slide-easing),
+        opacity var(--form-fade-duration) ease,
+        transform var(--form-slide-duration) var(--form-slide-easing),
+        margin-top var(--form-slide-duration) var(--form-slide-easing),
+        padding-top var(--form-slide-duration) var(--form-slide-easing),
+        padding-right var(--form-slide-duration) var(--form-slide-easing),
+        padding-bottom var(--form-slide-duration) var(--form-slide-easing),
+        padding-left var(--form-slide-duration) var(--form-slide-easing),
+        border-width var(--form-slide-duration) var(--form-slide-easing);
 }
 
 .form-container.is-open {
