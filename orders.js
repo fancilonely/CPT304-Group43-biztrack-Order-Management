@@ -42,23 +42,25 @@ window.addEventListener("resize", () => {
 
 
 function openForm() {
-    var form = document.getElementById("order-form");
+    const form = document.getElementById("order-form");
 
-    if (form.style.display === "block") {
+    if (form.classList.contains("is-open")) {
         closeForm();
         return;
     }
 
     form.reset();
     resetSubmitButtonMode();
-    form.style.display = "block";
+    form.classList.add("is-open");
+    form.setAttribute("aria-hidden", "false");
 }
 
 function closeForm() {
     const form = document.getElementById("order-form");
     form.reset();
     resetSubmitButtonMode();
-    form.style.display = "none";
+    form.classList.remove("is-open");
+    form.setAttribute("aria-hidden", "true");
 }
 
 let orders = [];
@@ -131,6 +133,7 @@ window.onload = function () {
 
     renderOrders(orders);
     resetSubmitButtonMode();
+    closeForm();
 }
 
 function getSubmitButtonText(mode) {
@@ -445,7 +448,9 @@ function editRow(orderID) {
 
     setSubmitButtonMode("update", orderID);
 
-    document.getElementById("order-form").style.display = "block";
+    const form = document.getElementById("order-form");
+    form.classList.add("is-open");
+    form.setAttribute("aria-hidden", "false");
 }
 
 function deleteOrder(orderID) {

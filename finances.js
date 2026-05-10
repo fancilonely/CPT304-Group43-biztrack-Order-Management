@@ -42,23 +42,25 @@ window.addEventListener("resize", () => {
 
 
 function openForm() {
-    var form = document.getElementById("transaction-form");
+    const form = document.getElementById("transaction-form");
 
-    if (form.style.display === "block") {
+    if (form.classList.contains("is-open")) {
         closeForm();
         return;
     }
 
     form.reset();
     resetSubmitButtonMode();
-    form.style.display = "block";
+    form.classList.add("is-open");
+    form.setAttribute("aria-hidden", "false");
 }
 
 function closeForm() {
     const form = document.getElementById("transaction-form");
     form.reset();
     resetSubmitButtonMode();
-    form.style.display = "none";
+    form.classList.remove("is-open");
+    form.setAttribute("aria-hidden", "true");
 }
 
 
@@ -113,6 +115,7 @@ window.onload = function () {
   
     renderTransactions(transactions);
     resetSubmitButtonMode();
+    closeForm();
 }
 
 function getSubmitButtonText(mode) {
@@ -367,7 +370,9 @@ function editRow(trID) {
   
     setSubmitButtonMode("update", trID);
 
-    document.getElementById("transaction-form").style.display = "block";
+    const form = document.getElementById("transaction-form");
+    form.classList.add("is-open");
+    form.setAttribute("aria-hidden", "false");
   }
   
 function deleteTransaction(trID) {
