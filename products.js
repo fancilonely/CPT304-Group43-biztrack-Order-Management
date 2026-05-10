@@ -171,27 +171,113 @@ function addOrUpdate(event) {
   }
 }
 
-function newProduct() {
-  const prodID = document.getElementById("product-id").value;
-  const prodName = document.getElementById("product-name").value;
-  const prodDesc = document.getElementById("product-desc").value;
-  const prodCat = document.getElementById("product-cat").value;
-  const prodPrice = parseFloat(document.getElementById("product-price").value);
-  const prodSold = parseInt(document.getElementById("product-sold").value);
+function isPositiveIntegerString(value) {
+  return /^[1-9]\d*$/.test(String(value).trim());
+}
 
-  if (isDuplicateID(prodID, null)) {
-    alert("Product ID already exists. Please use a unique ID.");
-    return;
+function isNonNegativeIntegerString(value) {
+  return /^(0|[1-9]\d*)$/.test(String(value).trim());
+}
+
+function isMoneyString(value, { allowZero = false } = {}) {
+  const trimmed = String(value).trim();
+  const pattern = /^\d+(\.\d{1,2})?$/;
+
+  if (!pattern.test(trimmed)) {
+    return false;
   }
 
-  const product = {
+  const numberValue = Number(trimmed);
+
+  if (!Number.isFinite(numberValue) || numberValue > 10000) {
+    return false;
+  }
+
+  return allowZero ? numberValue >= 0 : numberValue > 0;
+}
+
+function normalizeProductID(rawValue) {
+  const trimmed = String(rawValue).trim();
+
+  if (!/^\d+$/.test(trimmed)) {
+    return null;
+  }
+
+  const numericValue = Number(trimmed);
+
+  if (!Number.isInteger(numericValue) || numericValue <= 0) {
+    return null;
+  }
+
+  return `PD${String(numericValue).padStart(3, "0")}`;
+}
+
+function validateProductForm(currentID) {
+  const rawProductID = document.getElementById("product-id").value;
+  const prodName = document.getElementById("product-name").value;
+  const prodDesc = document.getElementById("product-desc").value.trim();
+  const prodCat = document.getElementById("product-cat").value;
+  const rawProdPrice = document.getElementById("product-price").value;
+  const rawProdSold = document.getElementById("product-sold").value;
+
+  const prodID = normalizeProductID(rawProductID);
+
+  if (!prodID) {
+    alert("Product ID must be a positive integer. For example, enter 6 to create PD006.");
+    return null;
+  }
+
+  if (!prodName) {
+    alert("Please choose a product.");
+    return null;
+  }
+
+  if (!prodDesc) {
+    alert("Product description is required.");
+    return null;
+  }
+
+  if (prodDesc.length > 120) {
+    alert("Product description must be 120 characters or fewer.");
+    return null;
+  }
+
+  if (!prodCat) {
+    alert("Please choose a category.");
+    return null;
+  }
+
+  if (!isMoneyString(rawProdPrice)) {
+    alert("Product price must be between 0.01 and 10000.00.");
+    return null;
+  }
+
+  if (!isNonNegativeIntegerString(rawProdSold)) {
+    alert("Units sold must be a whole number of 0 or more.");
+    return null;
+  }
+
+  if (isDuplicateID(prodID, currentID)) {
+    alert("Product ID already exists. Please use a unique ID.");
+    return null;
+  }
+
+  return {
     prodID,
     prodName,
     prodDesc,
     prodCat,
-    prodPrice,
-    prodSold,
+    prodPrice: Number(rawProdPrice),
+    prodSold: Number(rawProdSold),
   };
+}
+
+function newProduct() {
+  const product = validateProductForm(null);
+
+  if (!product) {
+    return;
+  }
 
   products.push(product);
 
@@ -274,8 +360,9 @@ function renderProducts(products) {
 
 function editRow(prodID) {
   const productToEdit = products.find(product => product.prodID === prodID);
+  const numericProductID = String(productToEdit.prodID).replace(/^PD0*/, "") || "0";
 
-  document.getElementById("product-id").value = productToEdit.prodID;
+  document.getElementById("product-id").value = numericProductID;
   document.getElementById("product-name").value = productToEdit.prodName;
   document.getElementById("product-desc").value = productToEdit.prodDesc;
   document.getElementById("product-cat").value = productToEdit.prodCat;
@@ -303,17 +390,9 @@ function updateProduct(prodID) {
     const indexToUpdate = products.findIndex(product => product.prodID === prodID);
 
     if (indexToUpdate !== -1) {
-        const updatedProduct = {
-            prodID: document.getElementById("product-id").value,
-            prodName: document.getElementById("product-name").value,
-            prodDesc: document.getElementById("product-desc").value,
-            prodCat: document.getElementById("product-cat").value,
-            prodPrice: parseFloat(document.getElementById("product-price").value),
-            prodSold: parseInt(document.getElementById("product-sold").value),
-        };
+        const updatedProduct = validateProductForm(prodID);
 
-        if (isDuplicateID(updatedProduct.prodID, prodID)) {
-            alert("Product ID already exists. Please use a unique ID.");
+        if (!updatedProduct) {
             return;
         }
 

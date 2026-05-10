@@ -170,22 +170,83 @@ function addOrUpdate(event) {
     }
 }
 
+function isMoneyString(value, { allowZero = false } = {}) {
+    const trimmed = String(value).trim();
+    const pattern = /^\d+(\.\d{1,2})?$/;
 
-function newTransaction() {
+    if (!pattern.test(trimmed)) {
+        return false;
+    }
+
+    const numberValue = Number(trimmed);
+
+    if (!Number.isFinite(numberValue) || numberValue > 10000) {
+        return false;
+    }
+
+    return allowZero ? numberValue >= 0 : numberValue > 0;
+}
+
+function validateTransactionForm() {
     const trDate = document.getElementById("tr-date").value;
     const trCategory = document.getElementById("tr-category").value;
-    const trAmount = parseFloat(document.getElementById("tr-amount").value);
-    const trNotes = document.getElementById("tr-notes").value;
+    const rawTrAmount = document.getElementById("tr-amount").value;
+    const trNotes = document.getElementById("tr-notes").value.trim();
+    const validCategories = new Set([
+        "Rent",
+        "Order Fulfillment",
+        "Utilities",
+        "Supplies",
+        "Miscellaneous",
+    ]);
+
+    if (!trDate) {
+        alert("Expense date is required.");
+        return null;
+    }
+
+    if (!validCategories.has(trCategory)) {
+        alert("Please choose a valid expense category.");
+        return null;
+    }
+
+    if (!isMoneyString(rawTrAmount)) {
+        alert("Expense amount must be between 0.01 and 10000.00.");
+        return null;
+    }
+
+    if (!trNotes) {
+        alert("Notes are required.");
+        return null;
+    }
+
+    if (trNotes.length > 120) {
+        alert("Notes must be 120 characters or fewer.");
+        return null;
+    }
+
+    return {
+        trDate,
+        trCategory,
+        trAmount: Number(rawTrAmount),
+        trNotes,
+    };
+}
+
+
+function newTransaction() {
+    const validatedTransaction = validateTransactionForm();
+
+    if (!validatedTransaction) {
+        return;
+    }
 
     serialNumberCounter = transactions.length + 1;
     let trID = serialNumberCounter;
     
     const transaction = {
       trID,
-      trDate,
-      trCategory,
-      trAmount,
-      trNotes,
+      ...validatedTransaction,
     };
     
     transactions.push(transaction);
@@ -329,12 +390,15 @@ function deleteTransaction(trID) {
     const indexToUpdate = transactions.findIndex(transaction => transaction.trID === trID);
 
     if (indexToUpdate !== -1) {
+        const validatedTransaction = validateTransactionForm();
+
+        if (!validatedTransaction) {
+            return;
+        }
+
         const updatedTransaction = {
             trID: trID,
-            trDate: document.getElementById("tr-date").value,
-            trCategory: document.getElementById("tr-category").value,
-            trAmount: parseFloat(document.getElementById("tr-amount").value),
-            trNotes: document.getElementById("tr-notes").value,
+            ...validatedTransaction,
         };
 
         transactions[indexToUpdate] = updatedTransaction;

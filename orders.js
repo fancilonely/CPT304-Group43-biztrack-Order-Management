@@ -185,34 +185,116 @@ function addOrUpdate(event) {
     }
 }
 
+function isPositiveIntegerString(value) {
+    return /^[1-9]\d*$/.test(String(value).trim());
+}
+
+function isMoneyString(value, { allowZero = false } = {}) {
+    const trimmed = String(value).trim();
+    const pattern = /^\d+(\.\d{1,2})?$/;
+
+    if (!pattern.test(trimmed)) {
+        return false;
+    }
+
+    const numberValue = Number(trimmed);
+
+    if (!Number.isFinite(numberValue) || numberValue > 10000) {
+        return false;
+    }
+
+    return allowZero ? numberValue >= 0 : numberValue > 0;
+}
+
+function calculateOrderTotal(itemPrice, qtyBought, shipping, taxes) {
+    return (itemPrice * qtyBought) + shipping + taxes;
+}
+
+function validateOrderForm(currentID) {
+    const rawOrderID = document.getElementById("order-id").value;
+    const orderDate = document.getElementById("order-date").value;
+    const itemName = document.getElementById("item-name").value;
+    const rawItemPrice = document.getElementById("item-price").value;
+    const rawQtyBought = document.getElementById("qty-bought").value;
+    const rawShipping = document.getElementById("shipping").value;
+    const rawTaxes = document.getElementById("taxes").value;
+    const orderStatus = document.getElementById("order-status").value;
+
+    if (!isPositiveIntegerString(rawOrderID)) {
+        alert("Order ID must be a positive integer.");
+        return null;
+    }
+
+    const orderID = String(Number(rawOrderID));
+
+    if (isDuplicateID(orderID, currentID)) {
+        alert("Order ID already exists. Please use a unique ID.");
+        return null;
+    }
+
+    if (!orderDate) {
+        alert("Order date is required.");
+        return null;
+    }
+
+    if (!itemName) {
+        alert("Please choose an item.");
+        return null;
+    }
+
+    if (!isMoneyString(rawItemPrice)) {
+        alert("Item price must be between 0.01 and 10000.00.");
+        return null;
+    }
+
+    if (!isPositiveIntegerString(rawQtyBought)) {
+        alert("Quantity bought must be a positive integer.");
+        return null;
+    }
+
+    if (!isMoneyString(rawShipping, { allowZero: true })) {
+        alert("Shipping fee must be between 0.00 and 10000.00.");
+        return null;
+    }
+
+    if (!isMoneyString(rawTaxes, { allowZero: true })) {
+        alert("Taxes must be between 0.00 and 10000.00.");
+        return null;
+    }
+
+    if (!orderStatus) {
+        alert("Please choose a status.");
+        return null;
+    }
+
+    const itemPrice = Number(rawItemPrice);
+    const qtyBought = Number(rawQtyBought);
+    const shipping = Number(rawShipping);
+    const taxes = Number(rawTaxes);
+    const orderTotal = calculateOrderTotal(itemPrice, qtyBought, shipping, taxes);
+
+    document.getElementById("order-total").value = orderTotal.toFixed(2);
+
+    return {
+        orderID,
+        orderDate,
+        itemName,
+        itemPrice,
+        qtyBought,
+        shipping,
+        taxes,
+        orderTotal,
+        orderStatus,
+    };
+}
+
 
 function newOrder() {
-  const orderID = document.getElementById("order-id").value;
-  const orderDate = document.getElementById("order-date").value;
-  const itemName = document.getElementById("item-name").value;
-  const itemPrice = parseFloat(document.getElementById("item-price").value);
-  const qtyBought = parseInt(document.getElementById("qty-bought").value);
-  const shipping = parseFloat(document.getElementById("shipping").value);
-  const taxes = parseFloat(document.getElementById("taxes").value);
-  const orderTotal = ((itemPrice * qtyBought) + shipping + taxes);
-  const orderStatus = document.getElementById("order-status").value;
+  const order = validateOrderForm(null);
 
-  if (isDuplicateID(orderID, null)) {
-    alert("Order ID already exists. Please use a unique ID.");
+  if (!order) {
     return;
   }
-
-  const order = {
-    orderID,
-    orderDate,
-    itemName,
-    itemPrice,
-    qtyBought,
-    shipping,
-    taxes,
-    orderTotal,
-    orderStatus,
-  };
 
   orders.push(order);
 
@@ -382,24 +464,9 @@ function updateOrder(orderID) {
     const indexToUpdate = orders.findIndex(order => order.orderID === orderID);
 
     if (indexToUpdate !== -1) {
-        const itemPrice = parseFloat(document.getElementById("item-price").value);
-        const qtyBought = parseInt(document.getElementById("qty-bought").value);
-        const shipping = parseFloat(document.getElementById("shipping").value);
-        const taxes = parseFloat(document.getElementById("taxes").value);
-        const updatedOrder = {
-            orderID: document.getElementById("order-id").value,
-            orderDate: document.getElementById("order-date").value,
-            itemName: document.getElementById("item-name").value,
-            itemPrice: itemPrice,
-            qtyBought: qtyBought,
-            shipping: shipping,
-            taxes: taxes,
-            orderTotal: ((itemPrice * qtyBought) + shipping + taxes),
-            orderStatus: document.getElementById("order-status").value,
-        };
+        const updatedOrder = validateOrderForm(orderID);
 
-        if (isDuplicateID(updatedOrder.orderID, orderID)) {
-            alert("Order ID already exists. Please use a unique ID.");
+        if (!updatedOrder) {
             return;
         }
 
