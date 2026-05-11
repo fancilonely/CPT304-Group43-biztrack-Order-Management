@@ -283,17 +283,23 @@
                     <div class="settings-row">
                         <div>
                             <strong data-i18n="languagePreference">Language preference</strong>
-                            <p data-i18n="languagePreferenceDesc">Use the existing EN / CN language toggle in the page header.</p>
+                            <p data-i18n="languagePreferenceDesc">Choose the interface language for this browser.</p>
                         </div>
-                        <span class="settings-pill" id="settings-language-pill">EN / CN</span>
+                        <div class="settings-segmented-control" role="group" aria-label="Language preference" data-i18n-aria-label="languagePreference">
+                            <button type="button" class="settings-segment-button" data-language-choice="en" aria-pressed="false">EN</button>
+                            <button type="button" class="settings-segment-button" data-language-choice="zh" aria-pressed="false">CN</button>
+                        </div>
                     </div>
 
                     <div class="settings-row">
                         <div>
                             <strong data-i18n="themePreference">Theme</strong>
-                            <p data-i18n="themePreferenceDesc">BizTrack currently uses the default dark sidebar and warm dashboard theme.</p>
+                            <p data-i18n="themePreferenceDesc">Choose a light or dark BizTrack interface theme.</p>
                         </div>
-                        <span class="settings-pill" data-i18n="biztrackDefault">BizTrack Default</span>
+                        <div class="settings-segmented-control" role="group" aria-label="Theme preference" data-i18n-aria-label="themePreference">
+                            <button type="button" class="settings-segment-button" data-theme-choice="light" data-i18n="lightTheme" aria-pressed="false">Light</button>
+                            <button type="button" class="settings-segment-button" data-theme-choice="dark" data-i18n="darkTheme" aria-pressed="false">Dark</button>
+                        </div>
                     </div>
 
                     <div class="settings-row">
@@ -412,6 +418,7 @@
     <script src="./i18n.js"></script>
     <script src="./cookie-consent.js"></script>
     <script src="./user-menu.js"></script>
+    <script src="./sidebar.js"></script>
     <script src="./products.js"></script>
 </body>
 </html>

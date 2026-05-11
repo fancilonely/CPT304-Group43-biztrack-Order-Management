@@ -17,6 +17,39 @@
     --form-slide-duration: 720ms;
     --form-fade-duration: 520ms;
     --form-slide-easing: cubic-bezier(0.16, 1, 0.3, 1);
+    --app-bg: #313131;
+    --sidebar-bg: #262626;
+    --sidebar-text: #ffffff;
+    --surface-bg: #ffffff;
+    --panel-bg: #fff5ee;
+    --panel-bg-strong: #fffaf6;
+    --text-main: #262626;
+    --text-muted: #6b7280;
+    --header-bg: #ffffff;
+}
+
+:root[data-theme="light"] {
+    --app-bg: #f7f3ef;
+    --sidebar-bg: #fff5ee;
+    --sidebar-text: #262626;
+    --surface-bg: #ffffff;
+    --panel-bg: #fff8f2;
+    --panel-bg-strong: #fffdf9;
+    --text-main: #262626;
+    --text-muted: #6b7280;
+    --header-bg: #ffffff;
+}
+
+:root[data-theme="dark"] {
+    --app-bg: #313131;
+    --sidebar-bg: #262626;
+    --sidebar-text: #ffffff;
+    --surface-bg: #ffffff;
+    --panel-bg: #fff5ee;
+    --panel-bg-strong: #fffaf6;
+    --text-main: #262626;
+    --text-muted: #6b7280;
+    --header-bg: #ffffff;
 }
 
 * {
@@ -37,7 +70,8 @@ body {
     display: flex;
     min-width: 0;
     overflow-x: hidden;
-    background-color: #313131;
+    background-color: var(--app-bg);
+    color: var(--text-main);
 }
 
 .sidebar {
@@ -61,7 +95,7 @@ body {
         margin-left var(--sidebar-transition),
         transform var(--sidebar-transition),
         opacity var(--sidebar-transition);
-    background: var(--black-color);
+    background: var(--sidebar-bg);
     z-index: 20;
     will-change: flex-basis, width, transform;
 }
@@ -251,7 +285,7 @@ body {
 
 .main-content {
     position: relative;
-    background-color: #313131;
+    background-color: var(--app-bg);
     flex: 1 1 auto;
     width: auto;
     min-width: 0;
@@ -280,7 +314,7 @@ body.sidebar-collapsed .main-content {
     grid-template-columns: auto 1fr auto;
     align-items: center;
     gap: 1rem;
-    background-color: #fff;
+    background-color: var(--header-bg);
     border-radius: 10px;
     padding: 10px 2rem;
     margin-bottom: 1rem;
@@ -342,7 +376,7 @@ body.sidebar-collapsed .main-content {
 }
 
 .card-container {
-    background: #ffffff;
+    background: var(--surface-bg);
     padding: 2rem;
     border-radius: 10px;
     margin-bottom: 1rem;
@@ -637,14 +671,14 @@ label {
 
 /* ---- Charts ---- */
 .charts-container {
-    background: #ffffff;
+    background: var(--surface-bg);
     padding: 2rem;
     border-radius: 10px;
     margin-bottom: 1rem;
 }
 
 .dashboard-workspace {
-    background: #ffffff;
+    background: var(--surface-bg);
     padding: 2rem;
     border-radius: 10px;
     margin-bottom: 1rem;
@@ -657,7 +691,7 @@ label {
 }
 
 .workspace-card {
-    background: var(--light-orange);
+    background: var(--panel-bg);
     border-radius: 14px;
     padding: 1.25rem;
     min-height: 190px;
@@ -719,7 +753,7 @@ label {
 }
 
 .recent-activity-list li {
-    background: #ffffff;
+    background: var(--surface-bg);
     border-left: 4px solid var(--blue-color);
     border-radius: 10px;
     padding: 0.7rem 0.85rem;
@@ -734,7 +768,7 @@ label {
 }
 
 .status-overview-item {
-    background: #ffffff;
+    background: var(--surface-bg);
     border-radius: 10px;
     padding: 0.75rem;
 }
@@ -767,7 +801,7 @@ label {
 }
 
 .charts-card {
-    background-color: #FFF5EE;
+    background-color: var(--panel-bg);
     flex: 1 1 420px;
     min-width: 320px;
     width: auto;
@@ -791,7 +825,7 @@ label {
 }
 
 .table-wrapper {
-    background: #fff;
+    background: var(--surface-bg);
     margin-bottom: 1rem;
     border-radius: 10px;
     padding: 2rem;
@@ -947,7 +981,7 @@ tfoot td {
 
 .guide-container,
 .about-container {
-    background: #ffffff;
+    background: var(--surface-bg);
     padding: 3rem;
     border-radius: 10px;
     margin-bottom: 1rem;
@@ -1192,9 +1226,47 @@ ol {
     flex: 0 0 auto;
     width: 100%;
     padding: 12px 14px 14px;
-    background: var(--black-color);
+    background: var(--sidebar-bg);
     z-index: 50;
     box-shadow: 0 -10px 18px rgba(0, 0, 0, 0.18);
+}
+
+:root[data-theme="light"] .logo a,
+:root[data-theme="light"] .menu a,
+:root[data-theme="light"] .language-toggle {
+    color: var(--black-color);
+}
+
+:root[data-theme="light"] .menu li.active a,
+:root[data-theme="light"] .menu li:hover a,
+:root[data-theme="light"] .menu li:focus-within a {
+    color: var(--white-color);
+}
+
+:root[data-theme="light"] .sidebar-close .fa-xmark,
+:root[data-theme="light"] .menu-icon i {
+    color: var(--black-color);
+}
+
+:root[data-theme="light"] .user-panel-button {
+    background: rgba(38, 38, 38, 0.06);
+}
+
+:root[data-theme="light"] .user-panel-button:hover {
+    background: rgba(228, 146, 115, 0.24);
+}
+
+:root[data-theme="light"] .user-panel-button[aria-expanded="true"] {
+    background: rgba(228, 146, 115, 0.3);
+}
+
+:root[data-theme="light"] .user-name {
+    color: var(--black-color);
+}
+
+:root[data-theme="light"] .user-plan,
+:root[data-theme="light"] .user-panel-chevron {
+    color: var(--brown-color);
 }
 
 .sidebar-footer.user-panel {
@@ -1302,7 +1374,7 @@ ol {
     z-index: 1200;
     padding: 10px;
     border-radius: 16px;
-    background: var(--light-orange);
+    background: var(--panel-bg);
     color: var(--black-color);
     border: 1px solid rgba(107, 79, 75, 0.18);
     box-shadow: 0 18px 36px rgba(0, 0, 0, 0.32);
@@ -1487,7 +1559,7 @@ body.auth-panel-open {
     max-height: 90vh;
     display: grid;
     grid-template-columns: 220px minmax(0, 1fr);
-    background: var(--white-color);
+    background: var(--surface-bg);
     border-radius: 18px;
     overflow: hidden;
     box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
@@ -1495,7 +1567,7 @@ body.auth-panel-open {
 }
 
 .settings-tabs {
-    background: var(--light-orange);
+    background: var(--panel-bg);
     padding: 1rem;
     border-right: 1px solid rgba(38, 38, 38, 0.1);
     display: grid;
@@ -1538,7 +1610,7 @@ body.auth-panel-open {
 .settings-content {
     padding: 1.5rem;
     overflow-y: auto;
-    background: linear-gradient(180deg, var(--white-color) 0%, var(--light-orange) 100%);
+    background: linear-gradient(180deg, var(--surface-bg) 0%, var(--panel-bg-strong) 100%);
 }
 
 .settings-panel-header {
@@ -1607,9 +1679,54 @@ body.auth-panel-open {
 }
 
 .settings-row p {
-    color: #6b7280;
+    color: var(--text-muted);
     margin-top: 0.25rem;
     line-height: 1.4;
+}
+
+.settings-segmented-control {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem;
+    border-radius: 999px;
+    background: rgba(36, 123, 160, 0.08);
+    border: 1px solid rgba(36, 123, 160, 0.14);
+}
+
+.settings-segment-button {
+    min-width: 58px;
+    min-height: 38px;
+    border: 0;
+    border-radius: 999px;
+    padding: 0.45rem 0.85rem;
+    background: transparent;
+    color: var(--brown-color);
+    cursor: pointer;
+    font: inherit;
+    font-weight: 800;
+    transition:
+        background-color 160ms ease,
+        color 160ms ease,
+        box-shadow 160ms ease;
+}
+
+.settings-segment-button:hover {
+    background: rgba(228, 146, 115, 0.18);
+    color: var(--black-color);
+}
+
+.settings-segment-button.is-active {
+    background: var(--orange-color);
+    color: var(--white-color);
+}
+
+.settings-segment-button:focus-visible {
+    outline: none;
+    box-shadow:
+        0 0 0 2px #ffffff,
+        0 0 0 4px var(--blue-color);
 }
 
 .settings-pill {
@@ -1700,7 +1817,7 @@ body.auth-panel-open {
 
 .auth-shell {
     width: min(460px, 100%);
-    background: var(--white-color);
+    background: var(--surface-bg);
     border-radius: 18px;
     box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
     border: 1px solid rgba(107, 79, 75, 0.16);
@@ -1843,7 +1960,7 @@ body.auth-panel-open {
 .account-summary-card {
     padding: 1rem;
     border-radius: 14px;
-    background: var(--light-orange);
+    background: var(--panel-bg);
     border: 1px solid rgba(107, 79, 75, 0.14);
 }
 
@@ -1924,7 +2041,7 @@ body.auth-panel-open {
     }
 
     .settings-tabs {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         border-right: 0;
         border-bottom: 1px solid rgba(38, 38, 38, 0.1);
     }
@@ -2153,7 +2270,7 @@ body.auth-panel-open {
 }
 
 .privacy-page {
-    background: #ffffff;
+    background: var(--surface-bg);
     padding: 2rem;
     border-radius: 10px;
     margin-bottom: 1rem;

@@ -1,5 +1,6 @@
 const USERS_KEY = "bizTrackUsers";
 const CURRENT_USER_KEY = "bizTrackCurrentUser";
+const THEME_STORAGE_KEY = "bizTrackTheme";
 
 // Prototype-only local account storage. This is not secure authentication and should not be used with real passwords.
 
@@ -50,6 +51,8 @@ function getSettingsElements() {
   const storageFeedback = document.getElementById("settings-storage-feedback");
   const accountSettingsContent = document.getElementById("account-settings-content");
   const accountModePill = document.getElementById("settings-account-mode-pill");
+  const languageButtons = Array.from(document.querySelectorAll("[data-language-choice]"));
+  const themeButtons = Array.from(document.querySelectorAll("[data-theme-choice]"));
 
   settingsElements = {
     overlay,
@@ -62,6 +65,8 @@ function getSettingsElements() {
     storageFeedback,
     accountSettingsContent,
     accountModePill,
+    languageButtons,
+    themeButtons,
   };
 
   return settingsElements;
@@ -150,6 +155,22 @@ function clearCurrentUser() {
 function findUserByUsername(username) {
   const normalizedUsername = username.trim().toLowerCase();
   return getUsers().find((user) => user.username.toLowerCase() === normalizedUsername) || null;
+}
+
+function getCurrentTheme() {
+  const storedTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
+  return storedTheme === "light" || storedTheme === "dark" ? storedTheme : "dark";
+}
+
+function applyTheme(theme, { persist = false } = {}) {
+  const normalizedTheme = theme === "light" ? "light" : "dark";
+  document.documentElement.dataset.theme = normalizedTheme;
+
+  if (persist) {
+    window.localStorage.setItem(THEME_STORAGE_KEY, normalizedTheme);
+  }
+
+  updatePreferenceControls();
 }
 
 function validateUsername(username) {
@@ -482,6 +503,49 @@ function updateUserStateUI() {
   updateUserPanel();
   updateUserMenuState();
   renderAccountSettings();
+  updatePreferenceControls();
+}
+
+function updatePreferenceControls() {
+  const { languageButtons, themeButtons } = getSettingsElements();
+  const currentLanguage = typeof window.getCurrentLanguage === "function" ? window.getCurrentLanguage() : "en";
+  const currentTheme = getCurrentTheme();
+
+  languageButtons.forEach((button) => {
+    const isActive = button.dataset.languageChoice === currentLanguage;
+    button.classList.toggle("is-active", isActive);
+    button.setAttribute("aria-pressed", isActive ? "true" : "false");
+  });
+
+  themeButtons.forEach((button) => {
+    const isActive = button.dataset.themeChoice === currentTheme;
+    button.classList.toggle("is-active", isActive);
+    button.setAttribute("aria-pressed", isActive ? "true" : "false");
+  });
+}
+
+function bindPreferenceControls() {
+  const { panel, languageButtons, themeButtons } = getSettingsElements();
+
+  if (!panel || panel.dataset.preferencesBound === "true") {
+    return;
+  }
+
+  languageButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      if (typeof window.setLanguage === "function") {
+        window.setLanguage(button.dataset.languageChoice === "zh" ? "zh" : "en");
+      }
+    });
+  });
+
+  themeButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      applyTheme(button.dataset.themeChoice, { persist: true });
+    });
+  });
+
+  panel.dataset.preferencesBound = "true";
 }
 
 function switchSettingsTab(tabName) {
@@ -993,6 +1057,8 @@ function refreshVisibleFeedbackTranslations() {
 }
 
 function initializeUserMenu() {
+  applyTheme(getCurrentTheme());
+  bindPreferenceControls();
   bindSettingsPanel();
   bindAuthPanel();
   bindUserMenu();
@@ -1007,6 +1073,7 @@ window.bindSettingsPanel = bindSettingsPanel;
 window.bindUserMenu = bindUserMenu;
 window.openAuthPanel = openAuthPanel;
 window.closeAuthPanel = closeAuthPanel;
+window.applyTheme = applyTheme;
 
 document.addEventListener("languageChanged", () => {
   updateUserStateUI();
