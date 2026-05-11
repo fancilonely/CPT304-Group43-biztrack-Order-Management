@@ -14,6 +14,207 @@ function getTextSafe(key) {
   return typeof window.getText === "function" ? window.getText(key) : key;
 }
 
+function getSettingsOverlayTemplate() {
+  return '<div class="settings-overlay" id="settings-overlay" hidden></div>';
+}
+
+function getSettingsPanelTemplate() {
+  return `
+    <section class="settings-panel" id="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settings-panel-title" tabindex="-1" hidden>
+      <div class="settings-shell">
+        <aside class="settings-tabs" aria-label="Settings sections">
+          <button type="button" class="settings-tab is-active" data-settings-tab="preferences">
+            <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
+            <span data-i18n="preferences">Preferences</span>
+          </button>
+          <button type="button" class="settings-tab" data-settings-tab="storage">
+            <i class="fa-solid fa-database" aria-hidden="true"></i>
+            <span data-i18n="dataStorage">Data &amp; Storage</span>
+          </button>
+          <button type="button" class="settings-tab" data-settings-tab="account">
+            <i class="fa-solid fa-circle-user" aria-hidden="true"></i>
+            <span data-i18n="account">Account</span>
+          </button>
+        </aside>
+
+        <div class="settings-content">
+          <div class="settings-panel-header">
+            <h2 id="settings-panel-title" data-i18n="userSettings">User Settings</h2>
+            <button type="button" class="settings-close-button" id="settings-close-button" aria-label="Close settings" data-i18n-aria-label="closeSettings">
+              <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <section class="settings-section is-active" data-settings-section="preferences">
+            <h3 data-i18n="preferences">Preferences</h3>
+            <p data-i18n="preferencesDesc">Customize basic interface preferences for this browser.</p>
+
+            <div class="settings-row">
+              <div>
+                <strong data-i18n="languagePreference">Language preference</strong>
+                <p data-i18n="languagePreferenceDesc">Choose the interface language for this browser.</p>
+              </div>
+              <div class="settings-segmented-control" data-segmented="language" data-active="left" role="group" aria-label="Language preference" data-i18n-aria-label="languagePreference">
+                <span class="segmented-slider" aria-hidden="true"></span>
+                <button type="button" class="settings-segment-button" data-language-choice="en" aria-pressed="false">EN</button>
+                <button type="button" class="settings-segment-button" data-language-choice="zh" aria-pressed="false">CN</button>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div>
+                <strong data-i18n="themePreference">Theme</strong>
+                <p data-i18n="themePreferenceDesc">Choose a light or dark BizTrack interface theme.</p>
+              </div>
+              <div class="settings-segmented-control" data-segmented="theme" data-active="right" role="group" aria-label="Theme preference" data-i18n-aria-label="themePreference">
+                <span class="segmented-slider" aria-hidden="true"></span>
+                <button type="button" class="settings-segment-button" data-theme-choice="light" data-i18n="lightTheme" aria-pressed="false">Light</button>
+                <button type="button" class="settings-segment-button" data-theme-choice="dark" data-i18n="darkTheme" aria-pressed="false">Dark</button>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div>
+                <strong data-i18n="accountMode">Account mode</strong>
+                <p data-i18n="accountModeDesc">This prototype runs in guest mode without cloud login.</p>
+              </div>
+              <span class="settings-pill" id="settings-account-mode-pill" data-i18n="localMode">Local Mode</span>
+            </div>
+          </section>
+
+          <section class="settings-section" data-settings-section="storage">
+            <h3 data-i18n="dataStorage">Data &amp; Storage</h3>
+            <p data-i18n="dataStorageDesc">BizTrack stores products, orders, expenses, language preference, and cookie choice in this browser.</p>
+
+            <div class="settings-row">
+              <div>
+                <strong data-i18n="localStorageMode">Local browser storage</strong>
+                <p data-i18n="localStorageModeDesc">Your business data is saved locally and is not synced across devices.</p>
+              </div>
+              <span class="settings-pill" data-i18n="enabled">Enabled</span>
+            </div>
+
+            <div class="settings-row settings-row--action">
+              <div>
+                <strong data-i18n="cookieChoice">Cookie choice</strong>
+                <p data-i18n="cookieChoiceDesc">Reset the consent banner so you can choose again.</p>
+              </div>
+              <button type="button" class="settings-inline-button" id="settings-reset-cookie-choice">
+                <i class="fa-solid fa-cookie-bite" aria-hidden="true"></i>
+                <span data-i18n="resetCookieChoiceShort">Reset</span>
+              </button>
+            </div>
+
+            <div class="settings-row settings-row--action">
+              <div>
+                <strong data-i18n="localBusinessData">Local business data</strong>
+                <p data-i18n="localBusinessDataDesc">Clear saved products, orders, and expenses from this browser.</p>
+              </div>
+              <button type="button" class="settings-inline-button settings-inline-button--danger" id="settings-clear-local-data">
+                <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
+                <span data-i18n="clearLocalBusinessDataShort">Clear</span>
+              </button>
+            </div>
+
+            <p class="settings-feedback" id="settings-storage-feedback" hidden></p>
+
+            <p class="settings-warning" data-i18n="clearLocalBusinessDataWarning">
+              Clearing local business data removes saved products, orders, and expenses from this browser.
+            </p>
+          </section>
+
+          <section class="settings-section" data-settings-section="account">
+            <h3 data-i18n="account">Account</h3>
+            <p data-i18n="accountDesc">Manage the local prototype account for this browser.</p>
+
+            <div id="account-settings-content"></div>
+          </section>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function getAuthOverlayTemplate() {
+  return '<div class="auth-overlay" id="auth-overlay" hidden></div>';
+}
+
+function getAuthPanelTemplate() {
+  return `
+    <section class="auth-panel" id="auth-panel" role="dialog" aria-modal="true" aria-labelledby="auth-panel-title" tabindex="-1" hidden>
+      <div class="auth-shell">
+        <div class="auth-header">
+          <h2 id="auth-panel-title" data-i18n="login">Login</h2>
+          <button type="button" class="auth-close-button" id="auth-close-button" aria-label="Close login panel" data-i18n-aria-label="closeAuthPanel">
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+          </button>
+        </div>
+
+        <p class="auth-helper" data-i18n="localAccountPrototypeNotice">
+          This is a local prototype account. Do not use real passwords.
+        </p>
+
+        <form class="auth-form is-active" id="login-form">
+          <label for="login-username" data-i18n="username">Username</label>
+          <input type="text" id="login-username" autocomplete="username" maxlength="20" required>
+
+          <label for="login-password" data-i18n="password">Password</label>
+          <input type="password" id="login-password" autocomplete="current-password" maxlength="64" required>
+
+          <button type="submit" class="auth-primary-button" data-i18n="login">Login</button>
+
+          <button type="button" class="auth-link-button" data-auth-mode="register" data-i18n="needCreateAccount">
+            Need an account? Create one locally
+          </button>
+        </form>
+
+        <form class="auth-form" id="register-form">
+          <label for="register-display-name" data-i18n="displayName">Display name</label>
+          <input type="text" id="register-display-name" maxlength="40" required>
+
+          <label for="register-username" data-i18n="username">Username</label>
+          <input type="text" id="register-username" autocomplete="username" maxlength="20" required>
+
+          <label for="register-password" data-i18n="password">Password</label>
+          <input type="password" id="register-password" autocomplete="new-password" maxlength="64" required>
+
+          <label for="register-confirm-password" data-i18n="confirmPassword">Confirm password</label>
+          <input type="password" id="register-confirm-password" autocomplete="new-password" maxlength="64" required>
+
+          <button type="submit" class="auth-primary-button" data-i18n="createLocalAccount">Create Local Account</button>
+
+          <button type="button" class="auth-link-button" data-auth-mode="login" data-i18n="alreadyHaveAccount">
+            Already have an account? Login
+          </button>
+        </form>
+
+        <p class="auth-feedback" id="auth-feedback" hidden></p>
+      </div>
+    </section>
+  `;
+}
+
+function ensureSharedPanels() {
+  if (!document.getElementById("settings-overlay")) {
+    document.body.insertAdjacentHTML("beforeend", getSettingsOverlayTemplate());
+  }
+
+  if (!document.getElementById("settings-panel")) {
+    document.body.insertAdjacentHTML("beforeend", getSettingsPanelTemplate());
+  }
+
+  if (!document.getElementById("auth-overlay")) {
+    document.body.insertAdjacentHTML("beforeend", getAuthOverlayTemplate());
+  }
+
+  if (!document.getElementById("auth-panel")) {
+    document.body.insertAdjacentHTML("beforeend", getAuthPanelTemplate());
+  }
+
+  settingsElements = null;
+  authElements = null;
+}
+
 function getUserMenuElements() {
   if (userMenuElements) {
     return userMenuElements;
@@ -510,11 +711,21 @@ function updatePreferenceControls() {
   const { languageButtons, themeButtons } = getSettingsElements();
   const currentLanguage = typeof window.getCurrentLanguage === "function" ? window.getCurrentLanguage() : "en";
   const currentTheme = getCurrentTheme();
+  const languageControls = document.querySelectorAll("[data-segmented='language']");
+  const themeControls = document.querySelectorAll("[data-segmented='theme']");
+
+  languageControls.forEach((control) => {
+    control.dataset.active = currentLanguage === "zh" ? "right" : "left";
+  });
 
   languageButtons.forEach((button) => {
     const isActive = button.dataset.languageChoice === currentLanguage;
     button.classList.toggle("is-active", isActive);
     button.setAttribute("aria-pressed", isActive ? "true" : "false");
+  });
+
+  themeControls.forEach((control) => {
+    control.dataset.active = currentTheme === "light" ? "left" : "right";
   });
 
   themeButtons.forEach((button) => {
@@ -1057,12 +1268,20 @@ function refreshVisibleFeedbackTranslations() {
 }
 
 function initializeUserMenu() {
-  applyTheme(getCurrentTheme());
+  ensureSharedPanels();
   bindPreferenceControls();
   bindSettingsPanel();
   bindAuthPanel();
   bindUserMenu();
-  updateUserStateUI();
+  applyTheme(getCurrentTheme(), { persist: false });
+  updateUserPanel();
+  updateUserMenuState();
+  renderAccountSettings();
+
+  if (typeof window.applyLanguage === "function" && typeof window.getCurrentLanguage === "function") {
+    window.applyLanguage(window.getCurrentLanguage(), { persist: false, dispatchEvent: false });
+  }
+
   refreshVisibleFeedbackTranslations();
 }
 

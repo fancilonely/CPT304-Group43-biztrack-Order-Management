@@ -9,7 +9,8 @@ function openForm() {
     form.reset();
     resetSubmitButtonMode();
     form.classList.add("is-open");
-    form.setAttribute("aria-hidden", "false");
+    form.removeAttribute("inert");
+    form.removeAttribute("aria-hidden");
 }
 
 function closeForm() {
@@ -17,7 +18,8 @@ function closeForm() {
     form.reset();
     resetSubmitButtonMode();
     form.classList.remove("is-open");
-    form.setAttribute("aria-hidden", "true");
+    form.setAttribute("inert", "");
+    form.removeAttribute("aria-hidden");
 }
 
 
@@ -342,7 +344,8 @@ function editRow(prodID) {
 
   const form = document.getElementById("product-form");
   form.classList.add("is-open");
-  form.setAttribute("aria-hidden", "false");
+  form.removeAttribute("inert");
+  form.removeAttribute("aria-hidden");
 }
 
 function deleteProduct(prodID) {

@@ -707,8 +707,14 @@ function updateLanguageToggle(language) {
   const nextActionText = translations[language][nextActionKey] || translations.en[nextActionKey];
 
   toggleButton.dataset.currentLanguage = language;
+  toggleButton.dataset.active = language;
   toggleButton.setAttribute("aria-label", nextActionText);
   toggleButton.setAttribute("title", nextActionText);
+
+  toggleButton.querySelectorAll("[data-lang-option]").forEach((option) => {
+    const isActive = option.dataset.langOption === language;
+    option.classList.toggle("is-active", isActive);
+  });
 }
 
 function applyLanguage(language, options = {}) {
