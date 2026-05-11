@@ -1,6 +1,320 @@
 let inventory = [];
 const inventorySortState = {};
 const INVENTORY_STORAGE_KEY = "bizTrackInventory";
+const PRODUCTS_STORAGE_KEY = "bizTrackProducts";
+
+function getFallbackProducts() {
+    return [
+        {
+            prodID: "PD001",
+            prodName: "Baseball caps",
+            prodDesc: "Peace embroidered cap",
+            prodCat: "Hats",
+            prodPrice: 25.00,
+            prodSold: 20,
+        },
+        {
+            prodID: "PD002",
+            prodName: "Water bottles",
+            prodDesc: "Floral lotus printed bottle",
+            prodCat: "Drinkware",
+            prodPrice: 48.50,
+            prodSold: 10,
+        },
+        {
+            prodID: "PD003",
+            prodName: "Sweatshirts",
+            prodDesc: "Palestine sweater",
+            prodCat: "Clothing",
+            prodPrice: 17.50,
+            prodSold: 70,
+        },
+        {
+            prodID: "PD004",
+            prodName: "Posters",
+            prodDesc: "Vibes printed poster",
+            prodCat: "Home decor",
+            prodPrice: 12.00,
+            prodSold: 60,
+        },
+        {
+            prodID: "PD005",
+            prodName: "Pillow cases",
+            prodDesc: "Morrocan print pillow case",
+            prodCat: "Accessories",
+            prodPrice: 17.00,
+            prodSold: 40,
+        },
+    ];
+}
+
+function getStoredProducts() {
+    const storedProducts = localStorage.getItem(PRODUCTS_STORAGE_KEY);
+
+    if (!storedProducts) {
+        return getFallbackProducts();
+    }
+
+    try {
+        const parsedProducts = JSON.parse(storedProducts);
+        return Array.isArray(parsedProducts) && parsedProducts.length > 0
+            ? parsedProducts
+            : getFallbackProducts();
+    } catch (error) {
+        return getFallbackProducts();
+    }
+}
+
+function getStoredInventory() {
+    const storedInventory = localStorage.getItem(INVENTORY_STORAGE_KEY);
+
+    if (!storedInventory) {
+        return [];
+    }
+
+    try {
+        const parsedInventory = JSON.parse(storedInventory);
+        return Array.isArray(parsedInventory) ? parsedInventory : [];
+    } catch (error) {
+        return [];
+    }
+}
+
+function getProductsByCategory(products) {
+    return products.reduce((groups, product) => {
+        const category = product.prodCat || "";
+
+        if (!category) {
+            return groups;
+        }
+
+        if (!groups[category]) {
+            groups[category] = [];
+        }
+
+        groups[category].push(product);
+        return groups;
+    }, {});
+}
+
+function findProductRecord(productValue, productNameFallback = "") {
+    const products = getStoredProducts();
+
+    return products.find((product) => {
+        if (product.prodID && product.prodID === productValue) {
+            return true;
+        }
+
+        return product.prodName === productValue || product.prodName === productNameFallback;
+    }) || null;
+}
+
+function hasInventoryRecordForProduct(product, inventoryItems) {
+    return inventoryItems.some((item) => {
+        if (product.prodID && item.productID) {
+            return item.productID === product.prodID;
+        }
+
+        return item.productName === product.prodName;
+    });
+}
+
+function getNextInventoryID(inventoryItems) {
+    const maxNumericID = inventoryItems.reduce((maxValue, item) => {
+        const match = String(item.inventoryID || "").match(/^INV(\d+)$/);
+
+        if (!match) {
+            return maxValue;
+        }
+
+        return Math.max(maxValue, Number(match[1]));
+    }, 0);
+
+    return `INV${String(maxNumericID + 1).padStart(3, "0")}`;
+}
+
+function calculateInventoryStatus(stockQuantity, reorderLevel) {
+    if (stockQuantity === 0) {
+        return "Out of Stock";
+    }
+
+    if (stockQuantity <= reorderLevel) {
+        return "Low Stock";
+    }
+
+    return "In Stock";
+}
+
+function normalizeInventoryItem(item) {
+    const matchedProduct = findProductRecord(item.productID, item.productName);
+    const stockQuantity = Number(item.stockQuantity) || 0;
+    const reorderLevel = Number(item.reorderLevel) || 0;
+
+    return {
+        inventoryID: item.inventoryID,
+        productID: item.productID || matchedProduct?.prodID || "",
+        productName: item.productName || matchedProduct?.prodName || "",
+        category: matchedProduct?.prodCat || item.category || "",
+        stockQuantity,
+        reorderLevel,
+        supplier: item.supplier || getText("notAssigned"),
+        lastUpdated: item.lastUpdated || new Date().toISOString().slice(0, 10),
+        status: calculateInventoryStatus(stockQuantity, reorderLevel),
+        autoCreated: item.autoCreated === true || item.supplier === "Not assigned" || item.supplier === getText("notAssigned"),
+    };
+}
+
+function persistInventory() {
+    localStorage.setItem(INVENTORY_STORAGE_KEY, JSON.stringify(inventory));
+}
+
+function autoSyncInventoryWithProducts() {
+    const products = getStoredProducts();
+    const today = new Date().toISOString().slice(0, 10);
+    let didCreateRecord = false;
+
+    products.forEach((product) => {
+        if (hasInventoryRecordForProduct(product, inventory)) {
+            return;
+        }
+
+        inventory.push({
+            inventoryID: getNextInventoryID(inventory),
+            productID: product.prodID || "",
+            productName: product.prodName,
+            category: product.prodCat || "",
+            stockQuantity: 0,
+            reorderLevel: 5,
+            supplier: "Not assigned",
+            lastUpdated: today,
+            status: "Out of Stock",
+            autoCreated: true,
+        });
+        didCreateRecord = true;
+    });
+
+    if (didCreateRecord) {
+        persistInventory();
+    }
+}
+
+function ensureLegacyProductOption(selectElement, item) {
+    const optionValue = item.productID || item.productName;
+
+    if (!optionValue || selectElement.querySelector(`option[value="${CSS.escape(optionValue)}"]`)) {
+        return;
+    }
+
+    const legacyOption = document.createElement("option");
+    legacyOption.value = optionValue;
+    legacyOption.textContent = typeof translateValue === "function"
+        ? translateValue(item.productName)
+        : item.productName;
+    legacyOption.dataset.productId = item.productID || "";
+    legacyOption.dataset.productName = item.productName;
+    legacyOption.dataset.category = item.category || "";
+    selectElement.appendChild(legacyOption);
+}
+
+function populateInventoryProductOptions(selectedValue = "", selectedName = "") {
+    const productSelect = document.getElementById("inventory-product-name");
+
+    if (!productSelect) {
+        return;
+    }
+
+    const placeholder = document.createElement("option");
+    placeholder.value = "";
+    placeholder.disabled = true;
+    placeholder.hidden = true;
+    placeholder.textContent = getText("chooseInventoryProduct");
+
+    productSelect.replaceChildren(placeholder);
+
+    const groupedProducts = getProductsByCategory(getStoredProducts());
+
+    Object.entries(groupedProducts).forEach(([category, products]) => {
+        const optgroup = document.createElement("optgroup");
+        optgroup.label = typeof translateValue === "function" ? translateValue(category) : category;
+
+        products.forEach((product) => {
+            const option = document.createElement("option");
+            option.value = product.prodID || product.prodName;
+            option.textContent = typeof translateValue === "function"
+                ? translateValue(product.prodName)
+                : product.prodName;
+            option.dataset.productId = product.prodID || "";
+            option.dataset.productName = product.prodName;
+            option.dataset.category = product.prodCat || "";
+            optgroup.appendChild(option);
+        });
+
+        productSelect.appendChild(optgroup);
+    });
+
+    if (selectedValue || selectedName) {
+        const matchedProduct = findProductRecord(selectedValue, selectedName);
+        const valueToSelect = matchedProduct?.prodID || selectedValue || selectedName;
+
+        if (!productSelect.querySelector(`option[value="${CSS.escape(valueToSelect)}"]`) && selectedName) {
+            ensureLegacyProductOption(productSelect, {
+                productID: selectedValue,
+                productName: selectedName,
+                category: matchedProduct?.prodCat || "",
+            });
+        }
+
+        productSelect.value = valueToSelect;
+    } else {
+        productSelect.selectedIndex = 0;
+    }
+}
+
+function syncCategoryFromSelectedProduct() {
+    const productSelect = document.getElementById("inventory-product-name");
+    const categorySelect = document.getElementById("inventory-category");
+
+    if (!productSelect || !categorySelect) {
+        return;
+    }
+
+    const selectedOption = productSelect.selectedOptions[0];
+
+    if (!selectedOption || !selectedOption.dataset.category) {
+        categorySelect.value = "";
+        return;
+    }
+
+    categorySelect.value = selectedOption.dataset.category;
+}
+
+function setInventoryFieldEditability({ isEditing }) {
+    const inventoryIdInput = document.getElementById("inventory-id");
+    const productSelect = document.getElementById("inventory-product-name");
+    const categorySelect = document.getElementById("inventory-category");
+
+    if (!inventoryIdInput || !productSelect || !categorySelect) {
+        return;
+    }
+
+    inventoryIdInput.disabled = isEditing;
+    productSelect.disabled = isEditing;
+    categorySelect.disabled = true;
+}
+
+function bindInventoryProductSelection() {
+    const productSelect = document.getElementById("inventory-product-name");
+
+    if (!productSelect || productSelect.dataset.bound === "true") {
+        return;
+    }
+
+    productSelect.addEventListener("change", () => {
+        syncCategoryFromSelectedProduct();
+    });
+
+    productSelect.dataset.bound = "true";
+}
 
 function openForm() {
     const form = document.getElementById("inventory-form");
@@ -11,6 +325,9 @@ function openForm() {
     }
 
     form.reset();
+    populateInventoryProductOptions();
+    syncCategoryFromSelectedProduct();
+    setInventoryFieldEditability({ isEditing: false });
     resetSubmitButtonMode();
     updateInventoryStatusField();
     form.classList.add("is-open");
@@ -21,6 +338,9 @@ function openForm() {
 function closeForm() {
     const form = document.getElementById("inventory-form");
     form.reset();
+    populateInventoryProductOptions();
+    syncCategoryFromSelectedProduct();
+    setInventoryFieldEditability({ isEditing: false });
     resetSubmitButtonMode();
     updateInventoryStatusField();
     form.classList.remove("is-open");
@@ -29,49 +349,15 @@ function closeForm() {
 }
 
 function init() {
-    const storedInventory = localStorage.getItem(INVENTORY_STORAGE_KEY);
+    inventory = getStoredInventory().map((item) => normalizeInventoryItem(item));
+    autoSyncInventoryWithProducts();
+    inventory = inventory.map((item) => normalizeInventoryItem(item));
 
-    if (storedInventory) {
-        inventory = JSON.parse(storedInventory);
-    } else {
-        inventory = [
-            {
-                inventoryID: "INV001",
-                productName: "Baseball caps",
-                category: "Hats",
-                stockQuantity: 24,
-                reorderLevel: 5,
-                supplier: "North Stitch Supply",
-                lastUpdated: "2024-05-01",
-                status: "In Stock",
-            },
-            {
-                inventoryID: "INV002",
-                productName: "Mugs",
-                category: "Drinkware",
-                stockQuantity: 8,
-                reorderLevel: 10,
-                supplier: "Ceramic Hub",
-                lastUpdated: "2024-05-03",
-                status: "Low Stock",
-            },
-            {
-                inventoryID: "INV003",
-                productName: "Tote bags",
-                category: "Accessories",
-                stockQuantity: 0,
-                reorderLevel: 6,
-                supplier: "Canvas Works",
-                lastUpdated: "2024-05-05",
-                status: "Out of Stock",
-            },
-        ];
-
-        localStorage.setItem(INVENTORY_STORAGE_KEY, JSON.stringify(inventory));
-    }
-
-    renderInventory(inventory);
+    populateInventoryProductOptions();
+    bindInventoryProductSelection();
     bindInventoryStatusPreview();
+    renderInventory(inventory);
+    renderInventorySummary();
     resetSubmitButtonMode();
     closeForm();
     openFormFromDashboardAction();
@@ -136,10 +422,6 @@ function addOrUpdate(event) {
     }
 }
 
-function isPositiveIntegerString(value) {
-    return /^[1-9]\d*$/.test(String(value).trim());
-}
-
 function isNonNegativeIntegerString(value) {
     return /^(0|[1-9]\d*)$/.test(String(value).trim());
 }
@@ -158,18 +440,6 @@ function normalizeInventoryID(rawValue) {
     }
 
     return `INV${String(numericValue).padStart(3, "0")}`;
-}
-
-function calculateInventoryStatus(stockQuantity, reorderLevel) {
-    if (stockQuantity === 0) {
-        return "Out of Stock";
-    }
-
-    if (stockQuantity <= reorderLevel) {
-        return "Low Stock";
-    }
-
-    return "In Stock";
 }
 
 function updateInventoryStatusField() {
@@ -217,10 +487,24 @@ function isDuplicateInventoryID(inventoryID, currentID) {
     return inventory.some((item) => item.inventoryID === inventoryID && item.inventoryID !== currentID);
 }
 
+function isDuplicateInventoryProduct(productID, productName, currentID) {
+    return inventory.some((item) => {
+        if (item.inventoryID === currentID) {
+            return false;
+        }
+
+        if (productID && item.productID) {
+            return item.productID === productID;
+        }
+
+        return item.productName === productName;
+    });
+}
+
 function validateInventoryForm(currentID) {
     const rawInventoryID = document.getElementById("inventory-id").value;
-    const productName = document.getElementById("inventory-product-name").value;
-    const category = document.getElementById("inventory-category").value;
+    const productSelect = document.getElementById("inventory-product-name");
+    const categorySelect = document.getElementById("inventory-category");
     const rawStockQuantity = document.getElementById("stock-quantity").value;
     const rawReorderLevel = document.getElementById("reorder-level").value;
     const supplier = document.getElementById("supplier").value.trim();
@@ -231,6 +515,17 @@ function validateInventoryForm(currentID) {
         alert("Inventory ID must be a positive integer. For example, enter 6 to create INV006.");
         return null;
     }
+
+    if (!productSelect.value) {
+        alert("Please choose a product.");
+        return null;
+    }
+
+    const selectedOption = productSelect.selectedOptions[0];
+    const matchedProduct = findProductRecord(productSelect.value, selectedOption?.dataset.productName);
+    const productID = matchedProduct?.prodID || selectedOption?.dataset.productId || "";
+    const productName = matchedProduct?.prodName || selectedOption?.dataset.productName || selectedOption?.textContent || "";
+    const category = matchedProduct?.prodCat || selectedOption?.dataset.category || categorySelect.value;
 
     if (!productName) {
         alert("Please choose a product.");
@@ -272,18 +567,26 @@ function validateInventoryForm(currentID) {
         return null;
     }
 
+    if (isDuplicateInventoryProduct(productID, productName, currentID)) {
+        alert(getText("inventoryProductExists"));
+        return null;
+    }
+
     const stockQuantity = Number(rawStockQuantity);
     const reorderLevel = Number(rawReorderLevel);
+    const normalizedSupplier = supplier === getText("notAssigned") ? "Not assigned" : supplier;
 
     return {
         inventoryID,
+        productID,
         productName,
         category,
         stockQuantity,
         reorderLevel,
-        supplier,
+        supplier: normalizedSupplier,
         lastUpdated,
         status: calculateInventoryStatus(stockQuantity, reorderLevel),
+        autoCreated: normalizedSupplier === "Not assigned",
     };
 }
 
@@ -295,8 +598,9 @@ function newInventoryItem() {
     }
 
     inventory.push(newItem);
-    localStorage.setItem(INVENTORY_STORAGE_KEY, JSON.stringify(inventory));
+    persistInventory();
     renderInventory(inventory);
+    renderInventorySummary();
     closeForm();
 }
 
@@ -314,8 +618,9 @@ function updateInventoryItem(inventoryID) {
     }
 
     inventory[indexToUpdate] = updatedItem;
-    localStorage.setItem(INVENTORY_STORAGE_KEY, JSON.stringify(inventory));
+    persistInventory();
     renderInventory(inventory);
+    renderInventorySummary();
     closeForm();
 }
 
@@ -326,9 +631,19 @@ function deleteInventoryItem(inventoryID) {
         return;
     }
 
-    inventory.splice(indexToDelete, 1);
-    localStorage.setItem(INVENTORY_STORAGE_KEY, JSON.stringify(inventory));
-    renderInventory(inventory);
+    showDeleteConfirmation({
+        title: getText("confirmDeletion"),
+        message: getText("deleteConfirmMessage"),
+        confirmText: getText("delete"),
+        cancelText: getText("cancel"),
+        dangerNote: getText("deleteCannotUndo"),
+        onConfirm: () => {
+            inventory.splice(indexToDelete, 1);
+            persistInventory();
+            renderInventory(inventory);
+            renderInventorySummary();
+        },
+    });
 }
 
 function editRow(inventoryID) {
@@ -341,13 +656,14 @@ function editRow(inventoryID) {
     const numericInventoryID = String(itemToEdit.inventoryID).replace(/^INV0*/, "") || "0";
 
     document.getElementById("inventory-id").value = numericInventoryID;
-    document.getElementById("inventory-product-name").value = itemToEdit.productName;
+    populateInventoryProductOptions(itemToEdit.productID || itemToEdit.productName, itemToEdit.productName);
     document.getElementById("inventory-category").value = itemToEdit.category;
     document.getElementById("stock-quantity").value = itemToEdit.stockQuantity;
     document.getElementById("reorder-level").value = itemToEdit.reorderLevel;
-    document.getElementById("supplier").value = itemToEdit.supplier;
+    document.getElementById("supplier").value = itemToEdit.supplier === "Not assigned" ? getText("notAssigned") : itemToEdit.supplier;
     document.getElementById("last-updated").value = itemToEdit.lastUpdated;
 
+    setInventoryFieldEditability({ isEditing: true });
     setSubmitButtonMode("update", inventoryID);
     updateInventoryStatusField();
 
@@ -389,6 +705,97 @@ function getActionLabel(key, id) {
     return `${label} ${id}`;
 }
 
+function removeDeleteConfirmationModal() {
+    const existingModal = document.querySelector(".biztrack-modal-overlay");
+
+    if (existingModal) {
+        existingModal.remove();
+    }
+
+    delete document.body.dataset.deleteModalOpen;
+}
+
+function showDeleteConfirmation({
+    title,
+    message,
+    confirmText,
+    cancelText,
+    dangerNote,
+    onConfirm,
+}) {
+    removeDeleteConfirmationModal();
+
+    const overlay = document.createElement("div");
+    overlay.className = "biztrack-modal-overlay";
+
+    const modal = document.createElement("section");
+    modal.className = "biztrack-confirm-modal";
+    modal.setAttribute("role", "dialog");
+    modal.setAttribute("aria-modal", "true");
+
+    const titleId = `delete-confirm-title-${Date.now()}`;
+    modal.setAttribute("aria-labelledby", titleId);
+
+    const heading = document.createElement("h3");
+    heading.id = titleId;
+    heading.textContent = title;
+
+    const bodyText = document.createElement("p");
+    bodyText.textContent = message;
+    modal.append(heading, bodyText);
+
+    if (dangerNote) {
+        const warning = document.createElement("p");
+        warning.className = "confirm-warning";
+        warning.textContent = dangerNote;
+        modal.appendChild(warning);
+    }
+
+    const actions = document.createElement("div");
+    actions.className = "confirm-actions";
+
+    const cancelButton = document.createElement("button");
+    cancelButton.type = "button";
+    cancelButton.className = "btn confirm-cancel";
+    cancelButton.textContent = cancelText;
+
+    const confirmButton = document.createElement("button");
+    confirmButton.type = "button";
+    confirmButton.className = "btn confirm-delete";
+    confirmButton.textContent = confirmText;
+
+    actions.append(cancelButton, confirmButton);
+    modal.appendChild(actions);
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+    document.body.dataset.deleteModalOpen = "true";
+
+    function closeModal() {
+        document.removeEventListener("keydown", handleKeydown);
+        removeDeleteConfirmationModal();
+    }
+
+    function handleKeydown(event) {
+        if (event.key === "Escape") {
+            closeModal();
+        }
+    }
+
+    cancelButton.addEventListener("click", closeModal);
+    confirmButton.addEventListener("click", () => {
+        onConfirm();
+        closeModal();
+    });
+    overlay.addEventListener("click", (event) => {
+        if (event.target === overlay) {
+            closeModal();
+        }
+    });
+    document.addEventListener("keydown", handleKeydown);
+
+    cancelButton.focus();
+}
+
 function getInventoryStatusClass(status) {
     if (status === "In Stock") {
         return "in-stock";
@@ -401,6 +808,14 @@ function getInventoryStatusClass(status) {
     return "out-of-stock";
 }
 
+function getSupplierDisplayText(item) {
+    if (item.supplier === "Not assigned" || item.supplier === getText("notAssigned")) {
+        return getText("notAssigned");
+    }
+
+    return item.supplier;
+}
+
 function renderInventory(items) {
     const inventoryTableBody = document.getElementById("tableBody");
     inventoryTableBody.replaceChildren();
@@ -410,6 +825,7 @@ function renderInventory(items) {
         inventoryRow.className = "inventory-row";
 
         inventoryRow.dataset.inventoryID = item.inventoryID;
+        inventoryRow.dataset.productID = item.productID || "";
         inventoryRow.dataset.productName = item.productName;
         inventoryRow.dataset.category = item.category;
         inventoryRow.dataset.stockQuantity = item.stockQuantity;
@@ -423,7 +839,13 @@ function renderInventory(items) {
         appendTextCell(inventoryRow, translateValue(item.category));
         appendTextCell(inventoryRow, item.stockQuantity);
         appendTextCell(inventoryRow, item.reorderLevel);
-        appendTextCell(inventoryRow, item.supplier);
+
+        const supplierCell = appendTextCell(inventoryRow, "");
+        const supplierText = document.createElement("span");
+        supplierText.textContent = getSupplierDisplayText(item);
+        supplierText.className = item.autoCreated === true ? "inventory-cell-note" : "";
+        supplierCell.appendChild(supplierText);
+
         appendTextCell(inventoryRow, item.lastUpdated);
 
         const statusCell = appendTextCell(inventoryRow, "");
@@ -446,6 +868,41 @@ function renderInventory(items) {
 
         inventoryTableBody.appendChild(inventoryRow);
     });
+}
+
+function renderInventorySummary() {
+    const totalCount = document.getElementById("inventory-total-count");
+    const inStockCount = document.getElementById("inventory-in-stock-count");
+    const lowStockCount = document.getElementById("inventory-low-stock-count");
+    const outOfStockCount = document.getElementById("inventory-out-of-stock-count");
+
+    if (!totalCount || !inStockCount || !lowStockCount || !outOfStockCount) {
+        return;
+    }
+
+    const counts = inventory.reduce((summary, item) => {
+        summary.total += 1;
+
+        if (item.status === "In Stock") {
+            summary.inStock += 1;
+        } else if (item.status === "Low Stock") {
+            summary.lowStock += 1;
+        } else {
+            summary.outOfStock += 1;
+        }
+
+        return summary;
+    }, {
+        total: 0,
+        inStock: 0,
+        lowStock: 0,
+        outOfStock: 0,
+    });
+
+    totalCount.textContent = String(counts.total);
+    inStockCount.textContent = String(counts.inStock);
+    lowStockCount.textContent = String(counts.lowStock);
+    outOfStockCount.textContent = String(counts.outOfStock);
 }
 
 function sortTable(column, triggerButton) {
@@ -490,11 +947,11 @@ function performSearch() {
 function exportToCSV() {
     const inventoryToExport = inventory.map((item) => ({
         [getText("inventoryIDShort")]: item.inventoryID,
-        [getText("productName")]: translateValue(item.productName),
+        [getText("inventoryProduct")]: translateValue(item.productName),
         [getText("inventoryCategory")]: translateValue(item.category),
         [getText("stockQuantity")]: item.stockQuantity,
         [getText("reorderLevel")]: item.reorderLevel,
-        [getText("supplier")]: item.supplier,
+        [getText("supplier")]: getSupplierDisplayText(item),
         [getText("lastUpdated")]: item.lastUpdated,
         [getText("inventoryStatus")]: translateValue(item.status),
     }));
@@ -520,7 +977,14 @@ document.getElementById("searchInput").addEventListener("keyup", (event) => {
 });
 
 document.addEventListener("languageChanged", () => {
+    const productSelect = document.getElementById("inventory-product-name");
+    const selectedOption = productSelect?.selectedOptions?.[0];
+    const currentValue = productSelect?.value || "";
+    const currentName = selectedOption?.dataset.productName || "";
+
+    populateInventoryProductOptions(currentValue, currentName);
     renderInventory(inventory);
+    renderInventorySummary();
     updateInventoryStatusField();
 
     const submitBtn = document.getElementById("submitBtn");

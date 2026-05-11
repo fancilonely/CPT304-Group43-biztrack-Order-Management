@@ -135,10 +135,28 @@
         </header>
 
         <div class="table-wrapper">
+            <div class="inventory-summary-grid" id="inventory-summary">
+                <article class="inventory-summary-card">
+                    <span data-i18n="totalInventoryItems">Total Items</span>
+                    <strong id="inventory-total-count">0</strong>
+                </article>
+                <article class="inventory-summary-card">
+                    <span data-i18n="inStock">In Stock</span>
+                    <strong id="inventory-in-stock-count">0</strong>
+                </article>
+                <article class="inventory-summary-card">
+                    <span data-i18n="lowStock">Low Stock</span>
+                    <strong id="inventory-low-stock-count">0</strong>
+                </article>
+                <article class="inventory-summary-card">
+                    <span data-i18n="outOfStock">Out of Stock</span>
+                    <strong id="inventory-out-of-stock-count">0</strong>
+                </article>
+            </div>
             <div class="product-title">
                 <h3 class="main-title" data-i18n="inventory">Inventory</h3>
                 <div class="product-button">
-                    <button class="add-button" onclick="openForm()" data-i18n="addInventory">Add Inventory</button>
+                    <button class="add-button" onclick="openForm()" data-i18n="updateStock">Update Stock</button>
                     <button class="download-button" onclick="exportToCSV()" data-i18n="exportCSV">Export to CSV</button>
                 </div>
             </div>
@@ -149,35 +167,9 @@
                             <label for="inventory-id" data-i18n="inventoryID"><b>Inventory ID: </b></label>
                             <input type="text" id="inventory-id" inputmode="numeric" pattern="[0-9]*" placeholder="001" required>
 
-                            <label for="inventory-product-name" data-i18n="productName"><b>Product Name</b></label>
+                            <label for="inventory-product-name" data-i18n="inventoryProduct"><b>Product</b></label>
                             <select id="inventory-product-name" required>
                                 <option value="" disabled selected hidden data-i18n="chooseInventoryProduct">Choose a product</option>
-                                <optgroup label="Hats" data-i18n-label="hats">
-                                    <option value="Baseball caps" data-i18n="baseballCaps">Baseball caps</option>
-                                    <option value="Snapbacks" data-i18n="snapbacks">Snapbacks</option>
-                                    <option value="Beanies" data-i18n="beanies">Beanies</option>
-                                    <option value="Bucket hats" data-i18n="bucketHats">Bucket hats</option>
-                                </optgroup>
-                                <optgroup label="Drinkware" data-i18n-label="drinkware">
-                                    <option value="Mugs" data-i18n="mugs">Mugs</option>
-                                    <option value="Water bottles" data-i18n="waterBottles">Water bottles</option>
-                                    <option value="Tumblers" data-i18n="tumblers">Tumblers</option>
-                                </optgroup>
-                                <optgroup label="Clothing" data-i18n-label="clothing">
-                                    <option value="T-shirts" data-i18n="tshirts">T-shirts</option>
-                                    <option value="Sweatshirts" data-i18n="sweatshirts">Sweatshirts</option>
-                                    <option value="Hoodies" data-i18n="hoodies">Hoodies</option>
-                                </optgroup>
-                                <optgroup label="Accessories" data-i18n-label="accessories">
-                                    <option value="Pillow cases" data-i18n="pillowCases">Pillow cases</option>
-                                    <option value="Tote bags" data-i18n="toteBags">Tote bags</option>
-                                    <option value="Stickers" data-i18n="stickers">Stickers</option>
-                                </optgroup>
-                                <optgroup label="Home decor" data-i18n-label="homeDecor">
-                                    <option value="Posters" data-i18n="posters">Posters</option>
-                                    <option value="Framed posters" data-i18n="framedPosters">Framed posters</option>
-                                    <option value="Canvas prints" data-i18n="canvasPrints">Canvas prints</option>
-                                </optgroup>
                             </select>
 
                             <label for="inventory-category" data-i18n="inventoryCategory"><b>Category</b></label>

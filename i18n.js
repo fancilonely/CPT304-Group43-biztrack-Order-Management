@@ -549,6 +549,30 @@ Object.assign(translations.en, {
   deleteInventory: "Delete inventory",
 });
 
+Object.assign(translations.en, {
+  inventoryProduct: "Product",
+  inventoryAlerts: "Inventory Alerts",
+  inventoryAlertsDesc: "Stock levels that may need attention.",
+  noInventoryYet: "No inventory records yet.",
+  notEnoughStock: "Not enough stock for this order.",
+  inventoryProductExists: "An inventory record for this product already exists.",
+  inventoryRecordRequired: "A matching inventory record is required before this order can be fulfilled.",
+  fulfilledOrderLocked: "This fulfilled order has already updated inventory. Product and quantity cannot be changed.",
+  deleteAppliedOrderWarning: "This order has already updated inventory. Deleting it will not restore stock automatically. Continue?",
+});
+
+Object.assign(translations.en, {
+  updateStock: "Update Stock",
+  totalInventoryItems: "Total Items",
+  notAssigned: "Not assigned",
+  autoCreatedInventoryNote: "Auto-created from Products",
+  confirmDeletion: "Confirm deletion",
+  deleteConfirmMessage: "Are you sure you want to delete this record?",
+  deleteCannotUndo: "This action cannot be undone.",
+  delete: "Delete",
+  deleteAppliedOrderModalWarning: "This order has already updated inventory. Deleting it will not restore stock automatically.",
+});
+
 Object.assign(translations.zh, {
   login: "登录",
   logout: "退出登录",
@@ -629,6 +653,37 @@ Object.assign(translations.zh, {
   chooseInventoryCategory: "请选择类别",
   editInventory: "编辑库存",
   deleteInventory: "删除库存",
+});
+
+Object.assign(translations.zh, {
+  inventoryProduct: "产品",
+  inventoryAlerts: "库存提醒",
+  inventoryAlertsDesc: "需要关注的库存状态。",
+  noInventoryYet: "暂无库存记录",
+  notEnoughStock: "该订单库存不足。",
+  inventoryProductExists: "该产品已经存在库存记录。",
+  inventoryRecordRequired: "该订单发货或完成前需要先创建对应库存记录。",
+  fulfilledOrderLocked: "该已履约订单已经更新库存，不能再修改产品和数量。",
+  deleteAppliedOrderWarning: "该订单已经更新库存，删除它不会自动恢复库存。是否继续？",
+});
+
+Object.assign(translations.zh, {
+  updateStock: "更新库存",
+  totalInventoryItems: "库存项目",
+  notAssigned: "未设置",
+  autoCreatedInventoryNote: "已根据产品自动创建",
+});
+
+Object.assign(translations.zh, {
+  updateStock: "\u66f4\u65b0\u5e93\u5b58",
+  totalInventoryItems: "\u5e93\u5b58\u9879\u76ee",
+  notAssigned: "\u672a\u8bbe\u7f6e",
+  autoCreatedInventoryNote: "\u5df2\u6839\u636e\u4ea7\u54c1\u81ea\u52a8\u521b\u5efa",
+  confirmDeletion: "\u786e\u8ba4\u5220\u9664",
+  deleteConfirmMessage: "\u786e\u5b9a\u8981\u5220\u9664\u8fd9\u6761\u8bb0\u5f55\u5417\uff1f",
+  deleteCannotUndo: "\u6b64\u64cd\u4f5c\u65e0\u6cd5\u64a4\u9500\u3002",
+  delete: "\u5220\u9664",
+  deleteAppliedOrderModalWarning: "\u8be5\u8ba2\u5355\u5df2\u7ecf\u66f4\u65b0\u5e93\u5b58\uff0c\u5220\u9664\u5b83\u4e0d\u4f1a\u81ea\u52a8\u6062\u590d\u5e93\u5b58\u3002",
 });
 
 const valueTranslationKeys = {
