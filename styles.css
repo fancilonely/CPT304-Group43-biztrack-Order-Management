@@ -971,6 +971,31 @@ tfoot td {
     color: #1f2937;
 }
 
+.inventory-status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 92px;
+    padding: 0.45rem 0.7rem;
+    border-radius: 999px;
+    font-weight: 800;
+}
+
+.inventory-status-badge.in-stock {
+    background: #b7d8cc;
+    color: #12382d;
+}
+
+.inventory-status-badge.low-stock {
+    background: #f1e3a8;
+    color: #4a3a00;
+}
+
+.inventory-status-badge.out-of-stock {
+    background: #efc1b0;
+    color: #5a2418;
+}
+
 .action {
     display: flex;
     align-items: center;

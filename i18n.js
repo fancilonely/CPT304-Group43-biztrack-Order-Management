@@ -530,6 +530,25 @@ Object.assign(translations.en, {
   cookieChoiceResetFromSettings: "Cookie choice has been reset. The banner will appear again.",
 });
 
+Object.assign(translations.en, {
+  addInventory: "Add Inventory",
+  inventoryID: "Inventory ID:",
+  inventoryIDShort: "Inventory ID",
+  inventoryCategory: "Category",
+  stockQuantity: "Stock Quantity",
+  reorderLevel: "Reorder Level",
+  supplier: "Supplier",
+  lastUpdated: "Last Updated",
+  inventoryStatus: "Status",
+  inStock: "In Stock",
+  lowStock: "Low Stock",
+  outOfStock: "Out of Stock",
+  chooseInventoryProduct: "Choose a product",
+  chooseInventoryCategory: "Choose a category",
+  editInventory: "Edit inventory",
+  deleteInventory: "Delete inventory",
+});
+
 Object.assign(translations.zh, {
   login: "登录",
   logout: "退出登录",
@@ -593,6 +612,25 @@ Object.assign(translations.zh, {
   cookieChoiceResetFromSettings: "Cookie 选择已重置，提示横幅将再次出现。",
 });
 
+Object.assign(translations.zh, {
+  addInventory: "添加库存",
+  inventoryID: "库存编号：",
+  inventoryIDShort: "库存编号",
+  inventoryCategory: "类别",
+  stockQuantity: "库存数量",
+  reorderLevel: "补货阈值",
+  supplier: "供应商",
+  lastUpdated: "最后更新",
+  inventoryStatus: "状态",
+  inStock: "库存充足",
+  lowStock: "库存偏低",
+  outOfStock: "缺货",
+  chooseInventoryProduct: "请选择产品",
+  chooseInventoryCategory: "请选择类别",
+  editInventory: "编辑库存",
+  deleteInventory: "删除库存",
+});
+
 const valueTranslationKeys = {
   Hats: "hats",
   Drinkware: "drinkware",
@@ -630,6 +668,12 @@ const valueTranslationKeys = {
   Shipped: "shipped",
   Delivered: "delivered",
 };
+
+Object.assign(valueTranslationKeys, {
+  "In Stock": "inStock",
+  "Low Stock": "lowStock",
+  "Out of Stock": "outOfStock",
+});
 
 const LANGUAGE_STORAGE_KEY = "bizTrackLanguage";
 
