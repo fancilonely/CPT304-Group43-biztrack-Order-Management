@@ -74,6 +74,40 @@ body {
     color: var(--text-main);
 }
 
+@keyframes biztrackRiseIn {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes biztrackOverlayFadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes biztrackPanelRiseIn {
+    from {
+        opacity: 0;
+        transform: translateY(22px) scale(0.985);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
 .sidebar {
     position: sticky;
     top: 0;
@@ -305,6 +339,23 @@ body {
         margin-left var(--sidebar-transition),
         width var(--sidebar-transition),
         flex-basis var(--sidebar-transition);
+}
+
+.main-content > :is(.card-container, .dashboard-workspace, .charts-container, .table-wrapper, .guide-container, .about-container, .privacy-page) {
+    animation: biztrackRiseIn 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    will-change: opacity, transform;
+}
+
+.main-content > :is(.card-container, .dashboard-workspace, .charts-container, .table-wrapper, .guide-container, .about-container, .privacy-page):nth-child(2) {
+    animation-delay: 0ms;
+}
+
+.main-content > :is(.card-container, .dashboard-workspace, .charts-container, .table-wrapper, .guide-container, .about-container, .privacy-page):nth-child(3) {
+    animation-delay: 60ms;
+}
+
+.main-content > :is(.card-container, .dashboard-workspace, .charts-container, .table-wrapper, .guide-container, .about-container, .privacy-page):nth-child(4) {
+    animation-delay: 100ms;
 }
 
 body.sidebar-collapsed .sidebar {
@@ -1595,6 +1646,12 @@ ol {
     box-shadow: 0 18px 36px rgba(0, 0, 0, 0.32);
 }
 
+.user-menu:not([hidden]) {
+    animation: biztrackPanelRiseIn 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    transform-origin: bottom left;
+    will-change: opacity, transform;
+}
+
 .user-menu[hidden] {
     display: none;
 }
@@ -1706,6 +1763,11 @@ body.auth-panel-open {
     z-index: 1400;
 }
 
+.settings-overlay:not([hidden]) {
+    animation: biztrackOverlayFadeIn 220ms ease-out both;
+    will-change: opacity;
+}
+
 .settings-panel {
     position: fixed;
     inset: 5vh 5vw;
@@ -1730,6 +1792,11 @@ body.auth-panel-open {
     overflow: hidden;
     box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
     border: 1px solid rgba(38, 38, 38, 0.12);
+}
+
+.settings-panel:not([hidden]) .settings-shell {
+    animation: biztrackPanelRiseIn 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    will-change: opacity, transform;
 }
 
 .settings-tabs {
@@ -2563,6 +2630,17 @@ body.auth-panel-open {
     font-weight: 700;
     text-decoration: underline;
     text-underline-offset: 0.18rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .main-content > :is(.card-container, .dashboard-workspace, .charts-container, .table-wrapper, .guide-container, .about-container, .privacy-page),
+    .settings-overlay:not([hidden]),
+    .settings-panel:not([hidden]) .settings-shell,
+    .user-menu:not([hidden]) {
+        animation: none !important;
+        transition: none !important;
+        transform: none !important;
+    }
 }
 
 @media (max-width: 768px) {
