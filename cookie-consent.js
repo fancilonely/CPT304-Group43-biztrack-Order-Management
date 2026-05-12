@@ -1,7 +1,6 @@
 (function () {
   const STORAGE_KEY = "biztrack_cookie_consent";
   const CONSENT_VERSION = "1.0";
-  const PRIVACY_PAGE_URL = "./privacy.html";
   const COOKIE_DISMISS_DURATION = 420;
 
   const fallbackText = {
@@ -169,11 +168,17 @@
       () => dismissCookieBanner("rejected"),
     );
 
-    const policyLink = document.createElement("a");
-    policyLink.href = PRIVACY_PAGE_URL;
-    policyLink.className = "cookie-button cookie-button--policy";
-    policyLink.dataset.cookieI18n = "cookiePrivacyPolicy";
-    policyLink.textContent = getConsentText("cookiePrivacyPolicy");
+    const policyLink = createActionButton(
+      "cookie-button cookie-button--policy",
+      "cookiePrivacyPolicy",
+      () => {
+        if (typeof window.openSettingsPanel === "function") {
+          window.openSettingsPanel("privacy");
+        } else {
+          window.location.href = "./privacy.html";
+        }
+      },
+    );
 
     actions.append(acceptButton, rejectButton, policyLink);
     content.append(textWrapper, actions);

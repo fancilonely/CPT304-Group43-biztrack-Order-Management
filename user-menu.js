@@ -26,6 +26,10 @@ function getSettingsPanelTemplate() {
             <i class="fa-solid fa-database" aria-hidden="true"></i>
             <span data-i18n="dataStorage">Data &amp; Storage</span>
           </button>
+          <button type="button" class="settings-tab" data-settings-tab="privacy">
+            <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+            <span data-i18n="privacyPolicy">Privacy Policy</span>
+          </button>
         </aside>
 
         <div class="settings-content">
@@ -109,6 +113,31 @@ function getSettingsPanelTemplate() {
 
             <p class="settings-feedback" id="settings-storage-feedback" hidden></p>
           </section>
+
+          <section class="settings-section" data-settings-section="privacy">
+            <h3 data-i18n="privacyPolicy">Privacy Policy</h3>
+            <p data-i18n="privacySettingsIntro">This section explains how BizTrack handles browser-stored data in this coursework prototype.</p>
+
+            <div class="settings-info-block">
+              <h4 data-i18n="privacyStoredInfoTitle">What BizTrack stores</h4>
+              <p data-i18n="privacyStoredInfoDesc">BizTrack stores products, inventory, orders, expenses, language preference, theme preference, and cookie choice.</p>
+            </div>
+
+            <div class="settings-info-block">
+              <h4 data-i18n="privacyStorageLocationTitle">Where data is stored</h4>
+              <p data-i18n="privacyStorageLocationDesc">Data is stored in this browser through localStorage. It is not synchronized to a cloud account or backend database.</p>
+            </div>
+
+            <div class="settings-info-block">
+              <h4 data-i18n="privacyCookieTitle">Cookie and preference choices</h4>
+              <p data-i18n="privacyCookieDesc">BizTrack uses browser storage to remember cookie consent and interface preferences. You can reset cookie choice in Data &amp; Storage.</p>
+            </div>
+
+            <div class="settings-info-block">
+              <h4 data-i18n="privacySafetyTitle">Security note</h4>
+              <p data-i18n="privacySafetyDesc">Because this is a frontend coursework prototype, browser-stored data should not be treated as secure cloud storage.</p>
+            </div>
+          </section>
         </div>
       </div>
     </section>
@@ -181,6 +210,18 @@ function getSettingsElements() {
   };
 
   return settingsElements;
+}
+
+function normalizePrivacyMenuItems() {
+  document.querySelectorAll('.user-menu-item[href$="privacy.html"]').forEach((item) => {
+    item.dataset.userAction = "privacy";
+
+    const label = item.querySelector("[data-i18n]");
+    if (label) {
+      label.dataset.i18n = "privacyPolicy";
+      label.textContent = getTextSafe("privacyPolicy");
+    }
+  });
 }
 
 function getCurrentTheme() {
@@ -315,7 +356,7 @@ function switchSettingsTab(tabName) {
     return;
   }
 
-  const normalizedTab = tabName === "storage" ? "storage" : "preferences";
+  const normalizedTab = ["preferences", "storage", "privacy"].includes(tabName) ? tabName : "preferences";
 
   if (normalizedTab !== "storage") {
     hideSettingsFeedback();
@@ -528,6 +569,7 @@ function refreshVisibleFeedbackTranslations() {
 
 function initializeUserMenu() {
   ensureSharedPanels();
+  normalizePrivacyMenuItems();
   setSettingsBadges();
   bindPreferenceControls();
   bindSettingsPanel();

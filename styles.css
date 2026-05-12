@@ -2023,6 +2023,22 @@ body.auth-panel-open {
     margin-bottom: 1rem;
 }
 
+.settings-info-block {
+    padding: 1rem 0;
+    border-top: 1px solid rgba(38, 38, 38, 0.1);
+}
+
+.settings-info-block h4 {
+    margin: 0 0 0.35rem;
+    color: var(--black-color);
+}
+
+.settings-info-block p {
+    margin: 0;
+    color: var(--text-muted);
+    line-height: 1.55;
+}
+
 .settings-row {
     display: flex;
     justify-content: space-between;
@@ -2836,8 +2852,17 @@ body.auth-panel-open {
 :root[data-theme="dark"] .inventory-summary-card span,
 :root[data-theme="dark"] .orders-summary-card span,
 :root[data-theme="dark"] .settings-row p,
-:root[data-theme="dark"] .settings-section > p {
+:root[data-theme="dark"] .settings-section > p,
+:root[data-theme="dark"] .settings-info-block p {
     color: var(--text-muted);
+}
+
+:root[data-theme="dark"] .settings-info-block {
+    border-top-color: rgba(255, 250, 246, 0.12);
+}
+
+:root[data-theme="dark"] .settings-info-block h4 {
+    color: var(--text-main);
 }
 
 :root[data-theme="dark"] .search-box,

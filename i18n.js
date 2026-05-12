@@ -743,6 +743,40 @@ Object.assign(translations.zh, {
   privacyStoredDataText: "\u5728\u5f53\u524d\u6d4f\u89c8\u5668\u4e2d\uff0cBizTrack \u4f1a\u4fdd\u5b58\u4ea7\u54c1\u3001\u5e93\u5b58\u3001\u8ba2\u5355\u3001\u652f\u51fa\u3001\u8bed\u8a00\u504f\u597d\u3001\u4e3b\u9898\u504f\u597d\u548c Cookie \u540c\u610f\u9009\u62e9\u3002",
 });
 
+Object.assign(translations.en, {
+  privacyPolicy: "Privacy Policy",
+  privacySettingsIntro: "This section explains how BizTrack handles browser-stored data in this coursework prototype.",
+  privacyStoredInfoTitle: "What BizTrack stores",
+  privacyStoredInfoDesc: "BizTrack stores products, inventory, orders, expenses, language preference, theme preference, and cookie choice.",
+  privacyStorageLocationTitle: "Where data is stored",
+  privacyStorageLocationDesc: "Data is stored in this browser through localStorage. It is not synchronized to a cloud account or backend database.",
+  privacyCookieTitle: "Cookie and preference choices",
+  privacyCookieDesc: "BizTrack uses browser storage to remember cookie consent and interface preferences. You can reset cookie choice in Data & Storage.",
+  privacySafetyTitle: "Security note",
+  privacySafetyDesc: "Because this is a frontend coursework prototype, browser-stored data should not be treated as secure cloud storage.",
+  privacySettingsGuide: "Privacy settings are now available in the Settings panel. Open the sidebar Settings button and choose Privacy Policy.",
+  privacyPanelFallbackIntro: "Privacy settings are now available in the Settings panel. Open the sidebar Settings button and choose Privacy Policy.",
+  privacyPanelFallbackTitle: "Open Privacy Policy in Settings",
+  privacyPanelFallbackDesc: "Use the Settings panel for the latest privacy explanation, browser storage details, and cookie choice controls.",
+});
+
+Object.assign(translations.zh, {
+  privacyPolicy: "\u9690\u79c1\u653f\u7b56",
+  privacySettingsIntro: "\u672c\u90e8\u5206\u8bf4\u660e BizTrack \u5728\u8be5\u8bfe\u7a0b\u539f\u578b\u4e2d\u5982\u4f55\u5904\u7406\u4fdd\u5b58\u5728\u6d4f\u89c8\u5668\u4e2d\u7684\u6570\u636e\u3002",
+  privacyStoredInfoTitle: "BizTrack \u5b58\u50a8\u54ea\u4e9b\u4fe1\u606f",
+  privacyStoredInfoDesc: "BizTrack \u4f1a\u5b58\u50a8\u4ea7\u54c1\u3001\u5e93\u5b58\u3001\u8ba2\u5355\u3001\u652f\u51fa\u3001\u8bed\u8a00\u504f\u597d\u3001\u4e3b\u9898\u504f\u597d\u548c Cookie \u9009\u62e9\u3002",
+  privacyStorageLocationTitle: "\u6570\u636e\u4fdd\u5b58\u5728\u54ea\u91cc",
+  privacyStorageLocationDesc: "\u6570\u636e\u901a\u8fc7 localStorage \u4fdd\u5b58\u5728\u5f53\u524d\u6d4f\u89c8\u5668\u4e2d\uff0c\u4e0d\u4f1a\u540c\u6b65\u5230\u4e91\u7aef\u8d26\u6237\u6216\u540e\u7aef\u6570\u636e\u5e93\u3002",
+  privacyCookieTitle: "Cookie \u4e0e\u504f\u597d\u9009\u62e9",
+  privacyCookieDesc: "BizTrack \u4f7f\u7528\u6d4f\u89c8\u5668\u5b58\u50a8\u6765\u8bb0\u4f4f Cookie \u540c\u610f\u72b6\u6001\u548c\u754c\u9762\u504f\u597d\u3002\u4f60\u53ef\u4ee5\u5728\u201c\u6570\u636e\u4e0e\u5b58\u50a8\u201d\u4e2d\u91cd\u7f6e Cookie \u9009\u62e9\u3002",
+  privacySafetyTitle: "\u5b89\u5168\u8bf4\u660e",
+  privacySafetyDesc: "\u7531\u4e8e\u672c\u9879\u76ee\u662f\u524d\u7aef\u8bfe\u7a0b\u539f\u578b\uff0c\u4fdd\u5b58\u5728\u6d4f\u89c8\u5668\u4e2d\u7684\u6570\u636e\u4e0d\u5e94\u88ab\u89c6\u4e3a\u5b89\u5168\u7684\u4e91\u7aef\u5b58\u50a8\u3002",
+  privacySettingsGuide: "\u9690\u79c1\u8bbe\u7f6e\u73b0\u5728\u53ef\u5728\u201c\u8bbe\u7f6e\u201d\u9762\u677f\u4e2d\u67e5\u770b\u3002\u8bf7\u6253\u5f00\u4fa7\u8fb9\u680f\u5e95\u90e8\u7684\u201c\u8bbe\u7f6e\u201d\u6309\u94ae\uff0c\u5e76\u9009\u62e9\u201c\u9690\u79c1\u653f\u7b56\u201d\u3002",
+  privacyPanelFallbackIntro: "\u9690\u79c1\u8bbe\u7f6e\u73b0\u5728\u53ef\u5728\u201c\u8bbe\u7f6e\u201d\u9762\u677f\u4e2d\u67e5\u770b\u3002\u8bf7\u6253\u5f00\u4fa7\u8fb9\u680f\u5e95\u90e8\u7684\u201c\u8bbe\u7f6e\u201d\u6309\u94ae\uff0c\u5e76\u9009\u62e9\u201c\u9690\u79c1\u653f\u7b56\u201d\u3002",
+  privacyPanelFallbackTitle: "\u5728\u201c\u8bbe\u7f6e\u201d\u4e2d\u6253\u5f00\u9690\u79c1\u653f\u7b56",
+  privacyPanelFallbackDesc: "\u8bf7\u4f7f\u7528\u201c\u8bbe\u7f6e\u201d\u9762\u677f\u67e5\u770b\u6700\u65b0\u7684\u9690\u79c1\u8bf4\u660e\u3001\u6d4f\u89c8\u5668\u5b58\u50a8\u8be6\u60c5\u548c Cookie \u9009\u62e9\u63a7\u5236\u3002",
+});
+
 const valueTranslationKeys = {
   Hats: "hats",
   Drinkware: "drinkware",
