@@ -73,8 +73,10 @@ html {
 
 body {
     display: flex;
+    min-height: 100vh;
     min-width: 0;
     overflow-x: hidden;
+    overflow-y: auto;
     background-color: var(--app-bg);
     color: var(--text-main);
 }
@@ -336,11 +338,15 @@ body {
     position: relative;
     background-color: var(--app-bg);
     flex: 1 1 auto;
-    width: auto;
+    width: 100%;
     max-width: 100%;
+    min-height: 100vh;
+    height: auto;
+    max-height: none;
     min-width: 0;
     padding: 1rem;
-    overflow-x: hidden;
+    overflow-x: visible;
+    overflow-y: visible;
     box-sizing: border-box;
     transition:
         margin-left var(--sidebar-transition),
@@ -524,6 +530,8 @@ body.sidebar-collapsed .main-content {
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
+    overflow-x: hidden;
+    overflow-y: visible;
 }
 
 .form-container {
@@ -541,6 +549,7 @@ body.sidebar-collapsed .main-content {
     border-radius: 3px;
     overflow: hidden;
     overflow-x: hidden;
+    overflow-y: visible;
     box-sizing: border-box;
     pointer-events: none;
     transition:
@@ -974,7 +983,9 @@ label {
     margin-bottom: 1rem;
     border-radius: 10px;
     padding: 2rem;
-    height: 90%;
+    max-width: 100%;
+    height: auto;
+    box-sizing: border-box;
 }
 
 .inventory-summary-grid,
@@ -1009,9 +1020,12 @@ label {
 }
 
 .table-container {
+    width: 100%;
     margin-top: 1rem;
     max-width: 100%;
     overflow-x: auto;
+    overflow-y: visible;
+    box-sizing: border-box;
 }
 
 .table-container button {
@@ -1369,9 +1383,11 @@ ol {
 
     .main-content {
         width: 100%;
+        min-height: 100vh;
         min-width: 0;
         padding: 0.75rem;
-        overflow-x: hidden;
+        overflow-x: visible;
+        overflow-y: visible;
     }
 
     .header-wrapper {
