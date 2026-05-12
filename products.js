@@ -45,58 +45,54 @@ function closeForm() {
 }
 
 
+const PRODUCT_STORAGE_KEY = "bizTrackProducts";
+const DEFAULT_PRODUCTS = [
+  {
+    prodID: "PD001",
+    prodName: "Baseball caps",
+    prodDesc: "Peace embroidered cap",
+    prodCat: "Hats",
+    prodPrice: 25.00,
+    prodSold: 20
+  },
+  {
+    prodID: "PD002",
+    prodName: "Water bottles",
+    prodDesc: "Floral lotus printed bottle",
+    prodCat: "Drinkware",
+    prodPrice: 48.50,
+    prodSold: 10
+  },
+  {
+    prodID: "PD003",
+    prodName: "Sweatshirts",
+    prodDesc: "Palestine sweater",
+    prodCat: "Clothing",
+    prodPrice: 17.50,
+    prodSold: 70
+  },
+  {
+    prodID: "PD004",
+    prodName: "Posters",
+    prodDesc: "Vibes printed poster",
+    prodCat: "Home decor",
+    prodPrice: 12.00,
+    prodSold: 60
+  },
+  {
+    prodID: "PD005",
+    prodName: "Pillow cases",
+    prodDesc: "Morrocan print pillow case",
+    prodCat: "Accessories",
+    prodPrice: 17.00,
+    prodSold: 40
+  },
+];
+
 let products = [];
 const productSortState = {};
 function init() {
-  const storedProducts = localStorage.getItem("bizTrackProducts");
-  if (storedProducts) {
-      products = JSON.parse(storedProducts);
-  } else {
-      products = [
-        {
-          prodID: "PD001",
-          prodName: "Baseball caps",
-          prodDesc: "Peace embroidered cap",
-          prodCat: "Hats",
-          prodPrice: 25.00,
-          prodSold: 20
-        },
-        {
-          prodID: "PD002",
-          prodName: "Water bottles",
-          prodDesc: "Floral lotus printed bottle",
-          prodCat: "Drinkware",
-          prodPrice: 48.50,
-          prodSold: 10
-        },
-        {
-          prodID: "PD003",
-          prodName: "Sweatshirts",
-          prodDesc: "Palestine sweater",
-          prodCat: "Clothing",
-          prodPrice: 17.50,
-          prodSold: 70
-        },
-        {
-          prodID: "PD004",
-          prodName: "Posters",
-          prodDesc: "Vibes printed poster",
-          prodCat: "Home decor",
-          prodPrice: 12.00,
-          prodSold: 60
-        },
-        {
-          prodID: "PD005",
-          prodName: "Pillow cases",
-          prodDesc: "Morrocan print pillow case",
-          prodCat: "Accessories",
-          prodPrice: 17.00,
-          prodSold: 40
-        },
-      ];
-
-      localStorage.setItem("bizTrackProducts", JSON.stringify(products));
-    }
+    products = loadBizTrackCollection(PRODUCT_STORAGE_KEY, DEFAULT_PRODUCTS, isBizTrackProduct);
 
     renderProducts(products);
     resetSubmitButtonMode();
@@ -450,6 +446,7 @@ function editRow(prodID) {
   document.getElementById("product-cat").value = productToEdit.prodCat;
   document.getElementById("product-price").value = productToEdit.prodPrice;
   document.getElementById("product-sold").value = productToEdit.prodSold;
+  document.getElementById("product-form").dataset.currentProductId = prodID;
 
   setSubmitButtonMode("update", prodID);
 
@@ -488,7 +485,7 @@ function updateProduct(prodID) {
 
         products[indexToUpdate] = updatedProduct;
 
-        localStorage.setItem("bizTrackProducts", JSON.stringify(products));
+        saveBizTrackCollection(PRODUCT_STORAGE_KEY, products);
 
         renderProducts(products);
         closeForm();

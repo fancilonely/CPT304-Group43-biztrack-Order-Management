@@ -45,6 +45,45 @@ function closeForm() {
 }
 
 
+const TRANSACTION_STORAGE_KEY = "bizTrackTransactions";
+const DEFAULT_TRANSACTIONS = [
+    {
+        trID: 1,
+        trDate: "2024-01-05",
+        trCategory: "Rent",
+        trAmount: 100.00,
+        trNotes: "January Rent"
+    },
+    {
+        trID: 2,
+        trDate: "2024-01-15",
+        trCategory: "Order Fulfillment",
+        trAmount: 35.00,
+        trNotes: "Order #1005"
+    },
+    {
+        trID: 3,
+        trDate: "2024-01-08",
+        trCategory: "Utilities",
+        trAmount: 120.00,
+        trNotes: "Internet"
+    },
+    {
+        trID: 4,
+        trDate: "2024-02-05",
+        trCategory: "Supplies",
+        trAmount: 180.00,
+        trNotes: "Embroidery Machine"
+    },
+    {
+        trID: 5,
+        trDate: "2024-01-25",
+        trCategory: "Miscellaneous",
+        trAmount: 20.00,
+        trNotes: "Pizza"
+    },
+];
+
 let transactions = [];
 const financeSortState = {};
 
@@ -489,7 +528,7 @@ function deleteTransaction(trID) {
 
         transactions[indexToUpdate] = updatedTransaction;
 
-        localStorage.setItem("bizTrackTransactions", JSON.stringify(transactions));
+        saveBizTrackCollection(TRANSACTION_STORAGE_KEY, transactions);
 
         renderTransactions(transactions);
         closeForm();
