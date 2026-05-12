@@ -568,50 +568,50 @@ body.sidebar-collapsed .main-content {
 }
 
 .form-popup {
-    bottom: 2;
-    right: 15px;
-    z-index: 9;
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    transform: translateY(-16px);
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
+    overflow: hidden;
     overflow-x: hidden;
     overflow-y: visible;
+    pointer-events: none;
+    transition:
+        grid-template-rows var(--motion-duration-form) var(--motion-soft),
+        opacity var(--motion-duration-form) var(--motion-soft),
+        transform var(--motion-duration-form) var(--motion-soft);
+}
+
+.form-popup.is-open {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
 }
 
 .form-container {
     display: block;
     width: 100%;
     max-width: 100%;
-    max-height: 0;
-    opacity: 0;
-    transform: translateY(-14px);
+    min-height: 0;
     margin-top: 0;
-    padding: 0;
+    padding: 1rem;
     background-color: var(--surface-bg);
-    border: 1px solid transparent;
+    border: 1px solid var(--border-soft);
     border-radius: 3px;
     overflow: hidden;
     overflow-x: hidden;
     overflow-y: visible;
     box-sizing: border-box;
-    pointer-events: none;
-    transition:
-        max-height var(--form-slide-duration) var(--form-slide-easing),
-        opacity var(--form-fade-duration) var(--form-slide-easing),
-        transform var(--form-slide-duration) var(--form-slide-easing),
-        border-color var(--form-slide-duration) var(--form-slide-easing),
-        box-shadow var(--form-slide-duration) var(--form-slide-easing);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.12);
 }
 
-.form-container.is-open {
-    max-height: 1600px;
-    opacity: 1;
-    transform: translateY(0);
-    margin-top: 0;
-    padding: 1rem;
-    border-color: var(--border-soft);
-    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.12);
-    pointer-events: auto;
+.form-popup > .form-container {
+    min-height: 0;
+    overflow: hidden;
 }
 
 .form-columns {
