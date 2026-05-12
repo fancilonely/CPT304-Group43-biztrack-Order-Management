@@ -342,7 +342,7 @@ body {
 }
 
 .main-content > :is(.card-container, .dashboard-workspace, .charts-container, .table-wrapper, .guide-container, .about-container, .privacy-page) {
-    animation: biztrackRiseIn 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: biztrackRiseIn 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
     will-change: opacity, transform;
 }
 
