@@ -36,6 +36,7 @@
     --panel-bg-strong: #fffaf6;
     --text-main: #262626;
     --text-muted: #6b7280;
+    --text-soft: #6b7280;
     --border-soft: rgba(38, 38, 38, 0.1);
     --header-bg: #ffffff;
 }
@@ -52,6 +53,7 @@
     --panel-bg-strong: #fffdf9;
     --text-main: #262626;
     --text-muted: #6b7280;
+    --text-soft: #6b7280;
     --border-soft: rgba(38, 38, 38, 0.1);
     --header-bg: #ffffff;
 }
@@ -68,6 +70,7 @@
     --panel-bg-strong: #3a322f;
     --text-main: #fffaf6;
     --text-muted: #d7c8c1;
+    --text-soft: #c8b8b1;
     --border-soft: rgba(255, 250, 246, 0.12);
     --header-bg: #302927;
 }
@@ -160,8 +163,10 @@ body {
 }
 
 .sidebar {
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 0;
+    bottom: 0;
     flex: 0 0 var(--sidebar-expanded-width);
     width: var(--sidebar-expanded-width);
     min-width: var(--sidebar-expanded-width);
@@ -181,7 +186,7 @@ body {
         transform var(--sidebar-transition),
         opacity var(--sidebar-transition);
     background: var(--sidebar-bg);
-    z-index: 20;
+    z-index: 1000;
     will-change: flex-basis, width, transform;
 }
 
@@ -382,12 +387,13 @@ body {
     position: relative;
     background-color: var(--page-bg, var(--app-bg));
     flex: 1 1 auto;
-    width: 100%;
+    width: calc(100% - var(--sidebar-expanded-width));
     max-width: 100%;
     min-height: 100vh;
     height: auto;
     max-height: none;
     min-width: 0;
+    margin-left: var(--sidebar-expanded-width);
     padding: 1rem;
     overflow-x: visible;
     overflow-y: visible;
@@ -423,21 +429,26 @@ body.sidebar-collapsed .sidebar {
 }
 
 body.sidebar-collapsed .main-content {
+    margin-left: 0;
     width: 100%;
     flex-basis: 100%;
 }
 
 .header-wrapper {
+    position: sticky;
+    top: 0;
+    z-index: 900;
     display: grid;
     grid-template-columns: auto 1fr auto;
     align-items: center;
     gap: 1rem;
-    background-color: var(--header-bg);
+    background-color: var(--surface-bg);
     border-radius: 10px;
     padding: 10px 2rem;
     margin-bottom: 1rem;
     height: 70px;
     box-sizing: border-box;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
 }
 
 .header-title {
@@ -575,7 +586,8 @@ body.sidebar-collapsed .main-content {
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: hidden;
     overflow-x: hidden;
     overflow-y: visible;
     pointer-events: none;
@@ -1423,6 +1435,7 @@ ol {
 
     .main-content {
         width: 100%;
+        margin-left: 0;
         min-height: 100vh;
         min-width: 0;
         padding: 0.75rem;
