@@ -3837,3 +3837,311 @@ body.quick-entry-panel-open {
         width: 100%;
     }
 }
+
+/* Step13 final polish: dark mode, modal scrolling, floating header */
+.header-wrapper {
+    position: sticky;
+    top: 12px;
+    z-index: 900;
+    border-radius: 18px;
+    background: var(--surface-bg);
+    border: 1px solid rgba(107, 79, 75, 0.12);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    margin-bottom: 1rem;
+}
+
+.settings-shell {
+    width: min(1040px, calc(100vw - 2rem));
+    max-height: calc(100vh - 2rem);
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 250px minmax(0, 1fr);
+    position: relative;
+}
+
+.settings-content {
+    min-height: 0;
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+}
+
+.settings-tabs {
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.settings-section.is-active {
+    min-height: 0;
+    max-height: calc(100vh - 5.5rem);
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding-right: 0.75rem;
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(107, 79, 75, 0.42) transparent;
+}
+
+.quick-entry-panel {
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+    overflow: hidden;
+}
+
+.quick-entry-shell {
+    width: min(1080px, calc(100vw - 2rem));
+    max-height: calc(100vh - 2rem);
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 230px minmax(0, 1fr);
+    position: relative;
+}
+
+.quick-entry-tabs {
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.quick-entry-content {
+    min-height: 0;
+    max-height: calc(100vh - 2rem);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.quick-entry-panel-header {
+    flex: 0 0 auto;
+}
+
+#quick-entry-content-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding-right: 0.75rem;
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(107, 79, 75, 0.42) transparent;
+}
+
+.settings-section.is-active::-webkit-scrollbar,
+#quick-entry-content-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.settings-section.is-active::-webkit-scrollbar-track,
+#quick-entry-content-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.settings-section.is-active::-webkit-scrollbar-thumb,
+#quick-entry-content-body::-webkit-scrollbar-thumb {
+    background: rgba(107, 79, 75, 0.42);
+    border-radius: 999px;
+}
+
+:root[data-theme="dark"] {
+    --page-bg: #2a2523;
+    --surface-bg: #342d2a;
+    --surface-soft: #3b3330;
+    --surface-muted: #433a36;
+    --panel-bg: #342d2a;
+    --text-main: #fffaf6;
+    --text-muted: #e2d4cc;
+    --text-soft: #d2c2ba;
+    --border-soft: rgba(255, 250, 246, 0.16);
+}
+
+:root[data-theme="dark"] body,
+:root[data-theme="dark"] .main-content,
+:root[data-theme="dark"] h1,
+:root[data-theme="dark"] h2,
+:root[data-theme="dark"] h3,
+:root[data-theme="dark"] h4,
+:root[data-theme="dark"] p,
+:root[data-theme="dark"] span,
+:root[data-theme="dark"] label,
+:root[data-theme="dark"] strong,
+:root[data-theme="dark"] small,
+:root[data-theme="dark"] td,
+:root[data-theme="dark"] th {
+    color: var(--text-main);
+}
+
+:root[data-theme="dark"] .muted,
+:root[data-theme="dark"] .text-muted,
+:root[data-theme="dark"] .workspace-card p,
+:root[data-theme="dark"] .settings-row p,
+:root[data-theme="dark"] .settings-section > p,
+:root[data-theme="dark"] .settings-info-block p,
+:root[data-theme="dark"] .quick-entry-context-label,
+:root[data-theme="dark"] .quick-entry-feedback {
+    color: var(--text-muted);
+}
+
+:root[data-theme="dark"] .header-wrapper {
+    background: #3b3330;
+    border-color: rgba(255, 250, 246, 0.16);
+    box-shadow: 0 16px 38px rgba(0, 0, 0, 0.42);
+}
+
+:root[data-theme="dark"] .card-container,
+:root[data-theme="dark"] .dashboard-workspace,
+:root[data-theme="dark"] .charts-container,
+:root[data-theme="dark"] .workspace-card,
+:root[data-theme="dark"] .charts-card,
+:root[data-theme="dark"] .table-wrapper,
+:root[data-theme="dark"] .form-container,
+:root[data-theme="dark"] .settings-shell,
+:root[data-theme="dark"] .quick-entry-shell,
+:root[data-theme="dark"] .user-menu,
+:root[data-theme="dark"] .about-container,
+:root[data-theme="dark"] .guide-container {
+    background: var(--surface-bg);
+    color: var(--text-main);
+    border-color: var(--border-soft);
+}
+
+:root[data-theme="dark"] .workspace-card,
+:root[data-theme="dark"] .recent-activity-list li,
+:root[data-theme="dark"] .status-overview-item,
+:root[data-theme="dark"] .order-status-card,
+:root[data-theme="dark"] .inventory-alerts-card,
+:root[data-theme="dark"] .charts-card {
+    background: var(--surface-soft);
+    color: var(--text-main);
+    border: 1px solid var(--border-soft);
+}
+
+:root[data-theme="dark"] .status-overview-item.total,
+:root[data-theme="dark"] .status-overview-item.total-items,
+:root[data-theme="dark"] .status-overview-item.inventory-total {
+    background: #4a403c;
+    color: #fffaf6;
+}
+
+:root[data-theme="dark"] .status-overview-item.pending,
+:root[data-theme="dark"] .status-overview-item.out-of-stock {
+    background: #6a3f34;
+    color: #fff4ee;
+}
+
+:root[data-theme="dark"] .status-overview-item.processing,
+:root[data-theme="dark"] .status-overview-item.low-stock {
+    background: #66592f;
+    color: #fff6d2;
+}
+
+:root[data-theme="dark"] .status-overview-item.shipped,
+:root[data-theme="dark"] .status-overview-item.in-stock {
+    background: #315f52;
+    color: #e9fff8;
+}
+
+:root[data-theme="dark"] .status-overview-item.delivered {
+    background: #334d63;
+    color: #edf7ff;
+}
+
+:root[data-theme="dark"] .status-overview-item *,
+:root[data-theme="dark"] .recent-activity-list li * {
+    color: inherit;
+}
+
+:root[data-theme="dark"] .action-button,
+:root[data-theme="dark"] .edit-btn,
+:root[data-theme="dark"] .delete-btn,
+:root[data-theme="dark"] td button,
+:root[data-theme="dark"] td button i,
+:root[data-theme="dark"] .fa-edit,
+:root[data-theme="dark"] .fa-pen-to-square,
+:root[data-theme="dark"] .fa-trash,
+:root[data-theme="dark"] .fa-trash-can {
+    color: #fffaf6;
+}
+
+:root[data-theme="dark"] .action-button:hover,
+:root[data-theme="dark"] .edit-btn:hover,
+:root[data-theme="dark"] .delete-btn:hover,
+:root[data-theme="dark"] td button:hover,
+:root[data-theme="dark"] td button:focus-visible {
+    color: #ffffff;
+    background: rgba(255, 250, 246, 0.10);
+}
+
+:root[data-theme="dark"] thead,
+:root[data-theme="dark"] th {
+    background: #211e1d;
+    color: #fffaf6;
+}
+
+:root[data-theme="dark"] tbody tr:nth-child(odd) {
+    background: #3b3330;
+}
+
+:root[data-theme="dark"] tbody tr:nth-child(even) {
+    background: #342d2a;
+}
+
+:root[data-theme="dark"] td {
+    color: #fffaf6;
+    border-color: rgba(255, 250, 246, 0.10);
+}
+
+:root[data-theme="dark"] input,
+:root[data-theme="dark"] select,
+:root[data-theme="dark"] textarea,
+:root[data-theme="dark"] .search-input,
+:root[data-theme="dark"] .search-box,
+:root[data-theme="dark"] .search-box input {
+    background: #433a36;
+    color: #fffaf6;
+    border-color: rgba(255, 250, 246, 0.16);
+}
+
+:root[data-theme="dark"] input::placeholder,
+:root[data-theme="dark"] textarea::placeholder,
+:root[data-theme="dark"] .search-input::placeholder,
+:root[data-theme="dark"] .search-box input::placeholder {
+    color: #d2c2ba;
+}
+
+:root[data-theme="dark"] .settings-section.is-active,
+:root[data-theme="dark"] #quick-entry-content-body {
+    scrollbar-color: rgba(255, 250, 246, 0.32) transparent;
+}
+
+:root[data-theme="dark"] .settings-section.is-active::-webkit-scrollbar-thumb,
+:root[data-theme="dark"] #quick-entry-content-body::-webkit-scrollbar-thumb {
+    background: rgba(255, 250, 246, 0.32);
+}
+
+@media (max-width: 768px) {
+    .settings-shell,
+    .quick-entry-shell {
+        width: calc(100vw - 1rem);
+        max-height: calc(100vh - 1rem);
+        grid-template-columns: 1fr;
+    }
+
+    .settings-section.is-active,
+    #quick-entry-content-body {
+        max-height: calc(100vh - 10rem);
+        overflow-y: scroll;
+    }
+
+    .quick-entry-tabs {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    .header-wrapper {
+        top: 0.75rem;
+        border-radius: 16px;
+    }
+}
