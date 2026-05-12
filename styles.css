@@ -513,10 +513,15 @@ body.sidebar-collapsed .main-content {
     bottom: 2;
     right: 15px;
     z-index: 9;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .form-container {
     display: block;
+    width: 100%;
+    max-width: 100%;
     max-height: 0;
     opacity: 0;
     transform: translateY(-24px);
@@ -527,6 +532,8 @@ body.sidebar-collapsed .main-content {
     border-width: 0;
     border-radius: 3px;
     overflow: hidden;
+    overflow-x: hidden;
+    box-sizing: border-box;
     pointer-events: none;
     transition:
         max-height var(--form-slide-duration) var(--form-slide-easing),
@@ -556,6 +563,9 @@ body.sidebar-collapsed .main-content {
     align-items: center;
     gap: 18px;
     width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
 }
 
 .first-col,
@@ -580,10 +590,27 @@ label {
 .form-container input[type=number],
 .form-container select {
     width: 100%;
+    max-width: 100%;
+    min-width: 0;
     padding: 15px;
     margin: 5px 0 22px 0;
     border: none;
     background: #f1f1f1;
+    box-sizing: border-box;
+}
+
+.form-container textarea,
+.form-container label,
+.form-container .form-field,
+.order-first-col,
+.order-second-col,
+.order-third-col,
+.first-col,
+.second-col,
+.third-col {
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .form-container input[type=text]:focus,
@@ -599,6 +626,9 @@ label {
     align-items: center;
     justify-content: center;
     gap: 18px;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .form-container .btn {
@@ -608,9 +638,35 @@ label {
     border: none;
     cursor: pointer;
     width: 30%;
+    max-width: 100%;
     margin-bottom: 10px;
     opacity: 0.8;
     font-size: 15px;
+    box-sizing: border-box;
+}
+
+.table-wrapper {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+#inventory-form .form-columns {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: start;
+    gap: 1.5rem;
+}
+
+#inventory-form .order-first-col,
+#inventory-form .order-second-col,
+#inventory-form .order-third-col {
+    width: auto;
+}
+
+@media (max-width: 1100px) {
+    #inventory-form .form-columns {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
 
 .form-container .cancel {
@@ -1342,6 +1398,10 @@ ol {
     .form-columns {
         flex-direction: column;
         align-items: stretch;
+    }
+
+    #inventory-form .form-columns {
+        grid-template-columns: 1fr;
     }
 
     .first-col,
