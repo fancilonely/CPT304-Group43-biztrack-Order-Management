@@ -1832,6 +1832,7 @@ body.auth-panel-open {
 }
 
 .settings-tab:focus-visible,
+.settings-segmented-control:focus-visible,
 .settings-close-button:focus-visible,
 .settings-inline-button:focus-visible {
     outline: none;
@@ -1930,6 +1931,7 @@ body.auth-panel-open {
     background: rgba(36, 123, 160, 0.08);
     border: 1px solid rgba(36, 123, 160, 0.14);
     overflow: hidden;
+    cursor: pointer;
 }
 
 .segmented-slider,
@@ -1967,6 +1969,8 @@ body.auth-panel-open {
     cursor: pointer;
     font: inherit;
     font-weight: 800;
+    pointer-events: none;
+    user-select: none;
     transition:
         background-color 160ms ease,
         color 160ms ease,
