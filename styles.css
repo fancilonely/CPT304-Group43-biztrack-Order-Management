@@ -1599,55 +1599,6 @@ ol {
     display: none;
 }
 
-.user-menu-profile {
-    display: grid;
-    grid-template-columns: 38px minmax(0, 1fr);
-    gap: 10px;
-    align-items: center;
-    padding: 8px;
-    background: rgba(255, 255, 255, 0.65);
-    border-radius: 12px;
-}
-
-.user-menu-profile-button {
-    width: 100%;
-    border: 0;
-    grid-template-columns: 38px minmax(0, 1fr) 16px;
-    color: var(--black-color);
-    cursor: pointer;
-    text-align: left;
-    transition:
-        background-color 160ms ease,
-        box-shadow 160ms ease;
-}
-
-.user-menu-profile-button:hover,
-.user-menu-profile-button:focus-visible {
-    background: rgba(228, 146, 115, 0.22);
-}
-
-.user-menu-profile-button:focus-visible {
-    outline: none;
-    box-shadow:
-        0 0 0 2px var(--light-orange),
-        0 0 0 4px var(--blue-color);
-}
-
-.user-menu-profile strong {
-    font-size: 14px;
-    color: var(--black-color);
-}
-
-.user-menu-profile small {
-    color: var(--brown-color);
-    font-size: 12px;
-}
-
-.user-menu-profile-chevron {
-    color: var(--brown-color);
-    font-size: 12px;
-}
-
 .user-menu-divider {
     height: 1px;
     background: rgba(107, 79, 75, 0.18);
