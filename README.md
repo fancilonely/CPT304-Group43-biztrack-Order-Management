@@ -18,7 +18,7 @@ Please refer to:
 
 ## 📷 Screenshots
 
-![BizTrack Home page](assets/biztrack-home.png)
+![BizTrack Home page](assets/Dashborad_screenshot.png)
 
 ---
 
