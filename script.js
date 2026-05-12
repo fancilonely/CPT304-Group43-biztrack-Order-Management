@@ -249,6 +249,7 @@ function createStatusOverviewItem(statusKey, value) {
   const label = document.createElement("span");
   const count = document.createElement("span");
   const statusClassMap = {
+    totalInventoryItems: "inventory-total",
     inStock: "in-stock",
     lowStock: "low-stock",
     outOfStock: "out-of-stock",
@@ -347,6 +348,7 @@ function renderInventoryAlertsOverview() {
   });
 
   overview.replaceChildren(
+    createStatusOverviewItem("totalInventoryItems", inventoryItems.length),
     createStatusOverviewItem("inStock", counts.inStock),
     createStatusOverviewItem("lowStock", counts.lowStock),
     createStatusOverviewItem("outOfStock", counts.outOfStock)

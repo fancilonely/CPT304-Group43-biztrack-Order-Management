@@ -436,19 +436,20 @@ body.sidebar-collapsed .main-content {
 
 .header-wrapper {
     position: sticky;
-    top: 0;
+    top: 0.75rem;
     z-index: 900;
     display: grid;
     grid-template-columns: auto 1fr auto;
     align-items: center;
     gap: 1rem;
-    background-color: var(--surface-bg);
-    border-radius: 10px;
-    padding: 10px 2rem;
-    margin-bottom: 1rem;
+    background: var(--surface-bg);
+    border: 1px solid var(--border-soft);
+    border-radius: 14px;
+    padding: 10px 1.5rem;
+    margin-bottom: 1.25rem;
     height: 70px;
     box-sizing: border-box;
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.10);
 }
 
 .header-title {
@@ -906,6 +907,11 @@ label {
     text-align: left;
 }
 
+.quick-actions-helper {
+    font-size: 0.9rem;
+    line-height: 1.45;
+}
+
 .quick-action-buttons {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -950,7 +956,14 @@ label {
 }
 
 .quick-actions-card {
+    display: flex;
+    flex-direction: column;
     align-content: start;
+}
+
+.quick-actions-card .quick-action-buttons {
+    margin-top: auto;
+    padding-top: 0.85rem;
 }
 
 .recent-activity-list {
@@ -3135,6 +3148,10 @@ body.quick-entry-panel-open {
     background: var(--surface-bg);
     color: var(--text-main);
     border-color: var(--border-soft);
+}
+
+:root[data-theme="dark"] .header-wrapper {
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.36);
 }
 
 :root[data-theme="dark"] .workspace-card,
