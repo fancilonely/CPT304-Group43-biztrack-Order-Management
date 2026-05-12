@@ -359,6 +359,12 @@ function renderDashboardWorkspace() {
   renderInventoryAlertsOverview();
 }
 
+function refreshDashboard() {
+  renderDashboardSummary();
+  renderDashboardWorkspace();
+  initializeChart();
+}
+
 function renderDashboardSummary() {
   const expenses = getStoredCollection("bizTrackTransactions", getFallbackTransactions());
   const revenues = getStoredCollection("bizTrackOrders", getFallbackOrders());
@@ -577,15 +583,13 @@ function initializeChart() {
 };
 
 window.addEventListener("load", () => {
-  renderDashboardSummary();
-  renderDashboardWorkspace();
-  initializeChart();
+  refreshDashboard();
 });
 
 document.addEventListener("languageChanged", () => {
-  renderDashboardSummary();
-  renderRecentActivity();
-  renderOrderStatusOverview();
-  renderInventoryAlertsOverview();
-  initializeChart();
+  refreshDashboard();
+});
+
+window.addEventListener("biztrackDataChanged", () => {
+  refreshDashboard();
 });

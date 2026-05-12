@@ -908,27 +908,33 @@ label {
 
 .quick-action-buttons {
     display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.65rem;
-    margin-top: 1rem;
+    margin-top: 0.2rem;
 }
 
 .quick-action-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    width: 100%;
     min-height: 42px;
     border-radius: 10px;
     background: var(--green-color);
     color: var(--white-color);
     text-decoration: none;
     font-weight: 700;
+    font: inherit;
+    cursor: pointer;
     transition:
         background-color 180ms ease,
-        box-shadow 180ms ease;
+        box-shadow 180ms ease,
+        transform 220ms var(--motion-soft);
 }
 
 .quick-action-button:hover {
     background: #145440;
+    transform: translateY(-1px);
 }
 
 .quick-action-button:focus-visible {
@@ -936,6 +942,15 @@ label {
     box-shadow:
         0 0 0 3px #ffffff,
         0 0 0 6px var(--blue-color);
+}
+
+.quick-action-button--primary {
+    margin-top: 0.65rem;
+    background: linear-gradient(135deg, var(--green-color) 0%, var(--orange-color) 100%);
+}
+
+.quick-actions-card {
+    align-content: start;
 }
 
 .recent-activity-list {
@@ -999,6 +1014,10 @@ label {
 
 @media (max-width: 768px) {
     .workspace-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .quick-action-buttons {
         grid-template-columns: 1fr;
     }
 }
@@ -2214,6 +2233,300 @@ body.auth-panel-open {
     font-weight: 700;
 }
 
+body.quick-entry-panel-open {
+    overflow: hidden;
+}
+
+.quick-entry-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(38, 38, 38, 0.52);
+    z-index: 1420;
+}
+
+.quick-entry-panel {
+    position: fixed;
+    inset: 5vh 5vw;
+    z-index: 1520;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.quick-entry-panel[hidden],
+.quick-entry-overlay[hidden] {
+    display: none;
+}
+
+.quick-entry-overlay:not([hidden]) {
+    animation: biztrackOverlayFadeIn var(--motion-duration-panel) var(--motion-soft) both;
+}
+
+.quick-entry-shell {
+    width: min(980px, 100%);
+    max-height: 90vh;
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
+    background: var(--surface-bg);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(38, 38, 38, 0.12);
+}
+
+.quick-entry-panel:not([hidden]) .quick-entry-shell {
+    animation: biztrackPanelRiseIn var(--motion-duration-panel) var(--motion-soft) both;
+}
+
+.quick-entry-tabs {
+    background: var(--panel-bg);
+    padding: 1rem;
+    border-right: 1px solid rgba(38, 38, 38, 0.1);
+    display: grid;
+    align-content: start;
+    gap: 0.5rem;
+}
+
+.quick-entry-tab {
+    min-height: 46px;
+    border: 0;
+    display: grid;
+    grid-template-columns: 22px minmax(0, 1fr);
+    gap: 0.7rem;
+    align-items: center;
+    padding: 0.8rem;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--text-main);
+    text-align: left;
+    cursor: pointer;
+    font: inherit;
+    font-weight: 700;
+    transition: background-color 180ms ease, color 180ms ease;
+}
+
+.quick-entry-tab:hover,
+.quick-entry-tab.is-active {
+    background: var(--orange-color);
+    color: var(--white-color);
+}
+
+.quick-entry-content {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    background: linear-gradient(180deg, var(--surface-bg) 0%, var(--panel-bg-strong) 100%);
+}
+
+.quick-entry-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.4rem 1.6rem 1rem;
+}
+
+.quick-entry-panel-header h2 {
+    font-size: clamp(1.45rem, 2vw, 1.9rem);
+    color: var(--text-main);
+}
+
+.quick-entry-close-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--surface-soft);
+    color: var(--text-main);
+    cursor: pointer;
+    font: inherit;
+}
+
+.quick-entry-close-button:hover {
+    background: rgba(228, 146, 115, 0.2);
+}
+
+.quick-entry-close-button:focus-visible,
+.quick-entry-tab:focus-visible,
+.quick-entry-mode-tab:focus-visible,
+.quick-entry-submit-button:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--blue-color), 0 0 0 6px #ffffff;
+}
+
+#quick-entry-content-body {
+    padding: 0 1.6rem 1.6rem;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.quick-entry-section {
+    animation: biztrackRiseIn 320ms var(--motion-soft) both;
+}
+
+.quick-entry-section-heading {
+    margin-bottom: 1rem;
+}
+
+.quick-entry-context-label {
+    display: inline-flex;
+    align-items: center;
+    min-height: 34px;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    background: rgba(31, 111, 84, 0.12);
+    color: var(--green-color);
+    font-weight: 800;
+}
+
+.quick-entry-mode-tabs {
+    display: inline-flex;
+    gap: 0.35rem;
+    margin-bottom: -1px;
+    position: relative;
+    z-index: 1;
+}
+
+.quick-entry-mode-tab {
+    min-width: 94px;
+    min-height: 40px;
+    padding: 0.55rem 1rem;
+    border: 1px solid rgba(38, 38, 38, 0.12);
+    border-bottom: 0;
+    border-radius: 14px 14px 0 0;
+    background: var(--surface-muted);
+    color: var(--text-main);
+    cursor: pointer;
+    font: inherit;
+    font-weight: 700;
+}
+
+.quick-entry-mode-tab.is-active {
+    color: var(--white-color);
+}
+
+.quick-entry-form-shell {
+    border: 1px solid rgba(38, 38, 38, 0.12);
+    border-radius: 0 18px 18px 18px;
+    padding: 1rem;
+    background: var(--surface-bg);
+}
+
+.quick-entry-form-shell.mode-add {
+    border-color: rgba(31, 111, 84, 0.42);
+}
+
+.quick-entry-form-shell.mode-edit {
+    border-color: rgba(107, 79, 75, 0.42);
+}
+
+.quick-entry-form-shell.mode-add .quick-entry-mode-tab.is-active {
+    background: var(--green-color);
+}
+
+.quick-entry-form-shell.mode-edit .quick-entry-mode-tab.is-active {
+    background: var(--brown-color);
+}
+
+.quick-entry-feedback {
+    margin-bottom: 0.9rem;
+    padding: 0.8rem 0.9rem;
+    border-radius: 12px;
+    font-weight: 700;
+    background: var(--surface-soft);
+    color: var(--text-main);
+}
+
+.quick-entry-feedback[hidden] {
+    display: none;
+}
+
+.quick-entry-feedback.is-success {
+    background: rgba(31, 111, 84, 0.12);
+    color: #12382d;
+}
+
+.quick-entry-feedback.is-error {
+    background: rgba(228, 146, 115, 0.18);
+    color: #7c2d12;
+}
+
+.quick-entry-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.quick-entry-field {
+    display: grid;
+    gap: 0.45rem;
+}
+
+.quick-entry-field--full,
+.quick-entry-actions {
+    grid-column: 1 / -1;
+}
+
+.quick-entry-field label {
+    padding: 0;
+    font-size: 0.92rem;
+    color: var(--text-main);
+    font-weight: 700;
+    text-align: left;
+}
+
+.quick-entry-field input,
+.quick-entry-field select,
+.quick-entry-field textarea {
+    width: 100%;
+    min-height: 46px;
+    padding: 0.8rem 0.9rem;
+    border-radius: 12px;
+    border: 1px solid rgba(38, 38, 38, 0.12);
+    background: var(--surface-soft);
+    color: var(--text-main);
+    font: inherit;
+}
+
+.quick-entry-field textarea {
+    min-height: 110px;
+    resize: vertical;
+}
+
+.quick-entry-field input:focus,
+.quick-entry-field select:focus,
+.quick-entry-field textarea:focus {
+    border-color: var(--blue-color);
+    box-shadow: 0 0 0 3px rgba(36, 123, 160, 0.18);
+}
+
+.quick-entry-field input[disabled] {
+    opacity: 0.75;
+    cursor: not-allowed;
+}
+
+.quick-entry-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.quick-entry-submit-button {
+    min-width: 140px;
+    min-height: 44px;
+    padding: 0.8rem 1.2rem;
+    border-radius: 12px;
+    background: var(--green-color);
+    color: var(--white-color);
+    cursor: pointer;
+    font: inherit;
+    font-weight: 800;
+    transition: background-color 200ms ease, transform 220ms var(--motion-soft);
+}
+
+.quick-entry-submit-button:hover {
+    background: #145440;
+    transform: translateY(-1px);
+}
+
 .auth-overlay {
     position: fixed;
     inset: 0;
@@ -2810,6 +3123,7 @@ body.auth-panel-open {
 :root[data-theme="dark"] .form-container,
 :root[data-theme="dark"] .form-popup,
 :root[data-theme="dark"] .settings-shell,
+:root[data-theme="dark"] .quick-entry-shell,
 :root[data-theme="dark"] .user-menu,
 :root[data-theme="dark"] .about-container,
 :root[data-theme="dark"] .privacy-page,
@@ -2829,6 +3143,7 @@ body.auth-panel-open {
 :root[data-theme="dark"] .orders-summary-card,
 :root[data-theme="dark"] .form-container,
 :root[data-theme="dark"] .settings-shell,
+:root[data-theme="dark"] .quick-entry-shell,
 :root[data-theme="dark"] .user-menu {
     box-shadow: 0 18px 36px rgba(0, 0, 0, 0.28);
 }
@@ -2837,9 +3152,13 @@ body.auth-panel-open {
 :root[data-theme="dark"] .header-title h2,
 :root[data-theme="dark"] .main-title,
 :root[data-theme="dark"] .settings-panel-header h2,
+:root[data-theme="dark"] .quick-entry-panel-header h2,
 :root[data-theme="dark"] .settings-section h3,
 :root[data-theme="dark"] .settings-row strong,
 :root[data-theme="dark"] .settings-tab,
+:root[data-theme="dark"] .quick-entry-tab,
+:root[data-theme="dark"] .quick-entry-field label,
+:root[data-theme="dark"] .quick-entry-mode-tab,
 :root[data-theme="dark"] .settings-segment-button,
 :root[data-theme="dark"] .user-menu-item,
 :root[data-theme="dark"] .user-menu-item i,
@@ -2870,8 +3189,29 @@ body.auth-panel-open {
 :root[data-theme="dark"] .orders-summary-card span,
 :root[data-theme="dark"] .settings-row p,
 :root[data-theme="dark"] .settings-section > p,
-:root[data-theme="dark"] .settings-info-block p {
+:root[data-theme="dark"] .settings-info-block p,
+:root[data-theme="dark"] .quick-entry-context-label {
     color: var(--text-muted);
+}
+
+:root[data-theme="dark"] .quick-entry-tabs {
+    background: var(--panel-bg);
+    border-color: var(--border-soft);
+}
+
+:root[data-theme="dark"] .quick-entry-content,
+:root[data-theme="dark"] .quick-entry-form-shell,
+:root[data-theme="dark"] .quick-entry-field input,
+:root[data-theme="dark"] .quick-entry-field select,
+:root[data-theme="dark"] .quick-entry-field textarea,
+:root[data-theme="dark"] .quick-entry-close-button {
+    background: var(--surface-soft);
+    color: var(--text-main);
+    border-color: var(--border-soft);
+}
+
+:root[data-theme="dark"] .quick-entry-mode-tab {
+    background: var(--surface-muted);
 }
 
 :root[data-theme="dark"] .settings-info-block {
@@ -2958,6 +3298,9 @@ body.auth-panel-open {
     .form-popup.is-open,
     .settings-overlay:not([hidden]),
     .settings-panel:not([hidden]) .settings-shell,
+    .quick-entry-overlay:not([hidden]),
+    .quick-entry-panel:not([hidden]) .quick-entry-shell,
+    .quick-entry-section,
     .user-menu:not([hidden]),
     .cookie-banner,
     .cookie-banner.is-dismissing {
@@ -3011,6 +3354,40 @@ body.auth-panel-open {
         align-items: center;
         justify-content: center;
         text-align: center;
+    }
+
+    .quick-entry-panel {
+        inset: 0;
+    }
+
+    .quick-entry-shell {
+        width: 100%;
+        height: 100%;
+        max-height: none;
+        border-radius: 0;
+        grid-template-columns: 1fr;
+    }
+
+    .quick-entry-tabs {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        border-right: 0;
+        border-bottom: 1px solid rgba(38, 38, 38, 0.1);
+    }
+
+    #quick-entry-content-body {
+        padding: 0 1rem 1rem;
+    }
+
+    .quick-entry-form {
+        grid-template-columns: 1fr;
+    }
+
+    .quick-entry-actions {
+        justify-content: stretch;
+    }
+
+    .quick-entry-submit-button {
+        width: 100%;
     }
 }
 

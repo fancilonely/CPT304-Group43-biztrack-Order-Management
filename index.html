@@ -173,12 +173,13 @@
             <div class="workspace-grid">
                 <section class="workspace-card quick-actions-card" aria-labelledby="quick-actions-title">
                     <h4 id="quick-actions-title" data-i18n="quickActions">Quick Actions</h4>
-                    <p class="workspace-card-helper" data-i18n="quickActionsDesc">Quickly add new business records from the dashboard.</p>
                     <div class="quick-action-buttons">
                         <a class="quick-action-button" href="./products.html?action=add" data-i18n="addProduct">Add Product</a>
+                        <a class="quick-action-button" href="./inventory.html?action=add" data-i18n="addStock">Add Stock</a>
                         <a class="quick-action-button" href="./orders.html?action=add" data-i18n="addOrder">Add Order</a>
                         <a class="quick-action-button" href="./finances.html?action=add" data-i18n="addExpense">Add Expense</a>
                     </div>
+                    <button type="button" class="quick-action-button quick-action-button--primary" id="quick-business-entry-trigger" data-i18n="quickBusinessEntry">Quick Business Entry</button>
                 </section>
                 <section class="workspace-card recent-activity-card" aria-labelledby="recent-activity-title">
                     <h4 id="recent-activity-title" data-i18n="recentActivity">Recent Activity</h4>
@@ -221,5 +222,6 @@
     <script src="./user-menu.js"></script>
     <script src="./sidebar.js"></script>
     <script src="./script.js"></script>
+    <script src="./quick-entry.js"></script>
 </body>
 </html>
