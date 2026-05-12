@@ -341,20 +341,20 @@ body {
         flex-basis var(--sidebar-transition);
 }
 
-.main-content > :is(.card-container, .dashboard-workspace, .charts-container, .table-wrapper, .guide-container, .about-container, .privacy-page) {
+.page-enter {
     animation: biztrackRiseIn 1.5s cubic-bezier(0.22, 1, 0.36, 1) both;
     will-change: opacity, transform;
 }
 
-.main-content > :is(.card-container, .dashboard-workspace, .charts-container, .table-wrapper, .guide-container, .about-container, .privacy-page):nth-child(2) {
+.main-content > .page-enter:nth-child(2) {
     animation-delay: 0ms;
 }
 
-.main-content > :is(.card-container, .dashboard-workspace, .charts-container, .table-wrapper, .guide-container, .about-container, .privacy-page):nth-child(3) {
+.main-content > .page-enter:nth-child(3) {
     animation-delay: 60ms;
 }
 
-.main-content > :is(.card-container, .dashboard-workspace, .charts-container, .table-wrapper, .guide-container, .about-container, .privacy-page):nth-child(4) {
+.main-content > .page-enter:nth-child(4) {
     animation-delay: 100ms;
 }
 
@@ -2697,7 +2697,7 @@ body.auth-panel-open {
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .main-content > :is(.card-container, .dashboard-workspace, .charts-container, .table-wrapper, .guide-container, .about-container, .privacy-page),
+    .page-enter,
     .settings-overlay:not([hidden]),
     .settings-panel:not([hidden]) .settings-shell,
     .user-menu:not([hidden]) {
