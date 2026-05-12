@@ -1,4 +1,4 @@
-const FORM_MOTION_DURATION = 720;
+const FORM_MOTION_DURATION = 560;
 
 function getFormShell(form) {
     return form.closest(".form-popup");
