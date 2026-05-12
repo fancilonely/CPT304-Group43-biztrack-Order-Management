@@ -64,6 +64,11 @@
 html,
 body {
     min-height: 100%;
+    scrollbar-gutter: stable;
+}
+
+html {
+    overflow-y: scroll;
 }
 
 body {
@@ -332,9 +337,11 @@ body {
     background-color: var(--app-bg);
     flex: 1 1 auto;
     width: auto;
+    max-width: 100%;
     min-width: 0;
     padding: 1rem;
     overflow-x: hidden;
+    box-sizing: border-box;
     transition:
         margin-left var(--sidebar-transition),
         width var(--sidebar-transition),
@@ -380,6 +387,7 @@ body.sidebar-collapsed .main-content {
     padding: 10px 2rem;
     margin-bottom: 1rem;
     height: 70px;
+    box-sizing: border-box;
 }
 
 .header-title {
