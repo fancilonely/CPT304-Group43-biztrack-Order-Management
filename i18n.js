@@ -573,6 +573,34 @@ Object.assign(translations.en, {
   deleteAppliedOrderModalWarning: "This order has already updated inventory. Deleting it will not restore stock automatically.",
 });
 
+Object.assign(translations.en, {
+  settings: "Settings",
+  settingsCenter: "Settings Center",
+  preferences: "Preferences",
+  dataStorage: "Data & Storage",
+  privacySettings: "Privacy Settings",
+  storageMode: "Storage Mode",
+  browserStorage: "Browser Storage",
+  browserStorageDesc: "Business data is stored in this browser.",
+  dataStorageDesc: "Manage BizTrack data stored in this browser.",
+  storedDataDesc: "Products, inventory, orders, expenses, language preference, theme preference, and cookie choice are stored in this browser.",
+  clearBusinessData: "Clear Business Data",
+  clearBusinessDataDesc: "Clear saved products, inventory, orders, and expenses from this browser.",
+  confirmClearBusinessData: "Clear saved products, inventory, orders, and expenses from this browser?",
+  businessDataCleared: "Business data has been cleared. Demo data will be restored on reload.",
+  userSettings: "Settings Center",
+  languagePreference: "Language Preference",
+  accountMode: "Storage Mode",
+  accountModeDesc: "Business data is stored in this browser.",
+  cookieChoiceDesc: "Reset cookie choice.",
+  clearLocalBusinessData: "Clear Business Data",
+  clearLocalBusinessDataWarning: "Clear saved products, inventory, orders, and expenses from this browser.",
+  confirmClearLocalBusinessData: "Clear saved products, inventory, orders, and expenses from this browser?",
+  localBusinessDataCleared: "Business data has been cleared. Demo data will be restored on reload.",
+  privacySettingsGuide: "To manage cookie consent or browser-stored business data, open the Settings panel at the bottom of the sidebar and choose Data & Storage.",
+  privacyStoredDataText: "BizTrack stores products, inventory, orders, expenses, language preference, theme preference, and cookie consent choice in your browser.",
+});
+
 Object.assign(translations.zh, {
   login: "登录",
   logout: "退出登录",
@@ -684,6 +712,35 @@ Object.assign(translations.zh, {
   deleteCannotUndo: "\u6b64\u64cd\u4f5c\u65e0\u6cd5\u64a4\u9500\u3002",
   delete: "\u5220\u9664",
   deleteAppliedOrderModalWarning: "\u8be5\u8ba2\u5355\u5df2\u7ecf\u66f4\u65b0\u5e93\u5b58\uff0c\u5220\u9664\u5b83\u4e0d\u4f1a\u81ea\u52a8\u6062\u590d\u5e93\u5b58\u3002",
+});
+
+Object.assign(translations.zh, {
+  settings: "\u8bbe\u7f6e",
+  settingsCenter: "\u8bbe\u7f6e\u4e2d\u5fc3",
+  preferences: "\u504f\u597d\u8bbe\u7f6e",
+  dataStorage: "\u6570\u636e\u4e0e\u5b58\u50a8",
+  privacySettings: "\u9690\u79c1\u8bbe\u7f6e",
+  storageMode: "\u5b58\u50a8\u6a21\u5f0f",
+  browserStorage: "\u6d4f\u89c8\u5668\u5b58\u50a8",
+  browserStorageDesc: "\u4e1a\u52a1\u6570\u636e\u4fdd\u5b58\u5728\u5f53\u524d\u6d4f\u89c8\u5668\u4e2d\u3002",
+  dataStorageDesc: "\u7ba1\u7406\u4fdd\u5b58\u5728\u5f53\u524d\u6d4f\u89c8\u5668\u4e2d\u7684 BizTrack \u6570\u636e\u3002",
+  storedDataDesc: "\u4ea7\u54c1\u3001\u5e93\u5b58\u3001\u8ba2\u5355\u3001\u652f\u51fa\u3001\u8bed\u8a00\u504f\u597d\u3001\u4e3b\u9898\u504f\u597d\u548c Cookie \u9009\u62e9\u4f1a\u4fdd\u5b58\u5728\u5f53\u524d\u6d4f\u89c8\u5668\u4e2d\u3002",
+  clearBusinessData: "\u6e05\u9664\u4e1a\u52a1\u6570\u636e",
+  clearBusinessDataDesc: "\u6e05\u9664\u5f53\u524d\u6d4f\u89c8\u5668\u4e2d\u4fdd\u5b58\u7684\u4ea7\u54c1\u3001\u5e93\u5b58\u3001\u8ba2\u5355\u548c\u652f\u51fa\u3002",
+  confirmClearBusinessData: "\u662f\u5426\u6e05\u9664\u5f53\u524d\u6d4f\u89c8\u5668\u4e2d\u4fdd\u5b58\u7684\u4ea7\u54c1\u3001\u5e93\u5b58\u3001\u8ba2\u5355\u548c\u652f\u51fa\uff1f",
+  businessDataCleared: "\u4e1a\u52a1\u6570\u636e\u5df2\u6e05\u9664\uff0c\u5237\u65b0\u540e\u5c06\u6062\u590d\u793a\u4f8b\u6570\u636e\u3002",
+  userSettings: "\u8bbe\u7f6e\u4e2d\u5fc3",
+  languagePreference: "\u8bed\u8a00\u504f\u597d",
+  accountMode: "\u5b58\u50a8\u6a21\u5f0f",
+  accountModeDesc: "\u4e1a\u52a1\u6570\u636e\u4fdd\u5b58\u5728\u5f53\u524d\u6d4f\u89c8\u5668\u4e2d\u3002",
+  cookieChoiceDesc: "\u91cd\u7f6e Cookie \u9009\u62e9\u3002",
+  clearLocalBusinessDataShort: "\u6e05\u9664",
+  clearLocalBusinessData: "\u6e05\u9664\u4e1a\u52a1\u6570\u636e",
+  clearLocalBusinessDataWarning: "\u6e05\u9664\u5f53\u524d\u6d4f\u89c8\u5668\u4e2d\u4fdd\u5b58\u7684\u4ea7\u54c1\u3001\u5e93\u5b58\u3001\u8ba2\u5355\u548c\u652f\u51fa\u3002",
+  confirmClearLocalBusinessData: "\u662f\u5426\u6e05\u9664\u5f53\u524d\u6d4f\u89c8\u5668\u4e2d\u4fdd\u5b58\u7684\u4ea7\u54c1\u3001\u5e93\u5b58\u3001\u8ba2\u5355\u548c\u652f\u51fa\uff1f",
+  localBusinessDataCleared: "\u4e1a\u52a1\u6570\u636e\u5df2\u6e05\u9664\uff0c\u5237\u65b0\u540e\u5c06\u6062\u590d\u793a\u4f8b\u6570\u636e\u3002",
+  privacySettingsGuide: "\u5982\u9700\u7ba1\u7406 Cookie \u540c\u610f\u6216\u4fdd\u5b58\u5728\u6d4f\u89c8\u5668\u4e2d\u7684\u4e1a\u52a1\u6570\u636e\uff0c\u8bf7\u6253\u5f00\u4fa7\u8fb9\u680f\u5e95\u90e8\u7684\u8bbe\u7f6e\u9762\u677f\uff0c\u5e76\u9009\u62e9\u201c\u6570\u636e\u4e0e\u5b58\u50a8\u201d\u3002",
+  privacyStoredDataText: "\u5728\u5f53\u524d\u6d4f\u89c8\u5668\u4e2d\uff0cBizTrack \u4f1a\u4fdd\u5b58\u4ea7\u54c1\u3001\u5e93\u5b58\u3001\u8ba2\u5355\u3001\u652f\u51fa\u3001\u8bed\u8a00\u504f\u597d\u3001\u4e3b\u9898\u504f\u597d\u548c Cookie \u540c\u610f\u9009\u62e9\u3002",
 });
 
 const valueTranslationKeys = {
