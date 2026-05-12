@@ -316,6 +316,15 @@ function bindInventoryProductSelection() {
     productSelect.dataset.bound = "true";
 }
 
+function revealForm(form) {
+    form.removeAttribute("inert");
+    form.removeAttribute("aria-hidden");
+
+    window.requestAnimationFrame(() => {
+        form.classList.add("is-open");
+    });
+}
+
 function openForm() {
     const form = document.getElementById("inventory-form");
 
@@ -330,9 +339,7 @@ function openForm() {
     setInventoryFieldEditability({ isEditing: false });
     resetSubmitButtonMode();
     updateInventoryStatusField();
-    form.classList.add("is-open");
-    form.removeAttribute("inert");
-    form.removeAttribute("aria-hidden");
+    revealForm(form);
 }
 
 function closeForm() {
@@ -668,9 +675,7 @@ function editRow(inventoryID) {
     updateInventoryStatusField();
 
     const form = document.getElementById("inventory-form");
-    form.classList.add("is-open");
-    form.removeAttribute("inert");
-    form.removeAttribute("aria-hidden");
+    revealForm(form);
 }
 
 function appendTextCell(row, value, className) {

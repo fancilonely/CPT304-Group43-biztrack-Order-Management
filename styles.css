@@ -13,49 +13,63 @@
     --sidebar-expanded-width: clamp(218px, 20vw, 240px);
     --motion-soft: cubic-bezier(0.07, 0.53, 0.65, 0.95);
     --motion-duration-main: 1.5s;
-    --motion-duration-form: 620ms;
-    --motion-duration-panel: 420ms;
+    --motion-duration-form: 720ms;
+    --motion-duration-cookie-in: 620ms;
+    --motion-duration-cookie-out: 420ms;
+    --motion-duration-panel: 520ms;
     --motion-duration-sidebar: 520ms;
-    --motion-duration-toggle: 380ms;
+    --motion-duration-toggle: 420ms;
     --sidebar-duration: 300ms;
     --sidebar-easing: cubic-bezier(0.25, 0.46, 0.45, 0.94);
     --sidebar-transition: var(--sidebar-duration) var(--sidebar-easing);
     --form-slide-duration: var(--motion-duration-form);
     --form-fade-duration: var(--motion-duration-form);
     --form-slide-easing: var(--motion-soft);
+    --page-bg: #313131;
     --app-bg: #313131;
     --sidebar-bg: #262626;
     --sidebar-text: #ffffff;
+    --surface-soft: #fff8f4;
+    --surface-muted: #f4ede9;
     --surface-bg: #ffffff;
     --panel-bg: #fff5ee;
     --panel-bg-strong: #fffaf6;
     --text-main: #262626;
     --text-muted: #6b7280;
+    --border-soft: rgba(38, 38, 38, 0.1);
     --header-bg: #ffffff;
 }
 
 :root[data-theme="light"] {
+    --page-bg: #f7f3ef;
     --app-bg: #f7f3ef;
     --sidebar-bg: #fff5ee;
     --sidebar-text: #262626;
+    --surface-soft: #fff8f2;
+    --surface-muted: #f7f1ec;
     --surface-bg: #ffffff;
     --panel-bg: #fff8f2;
     --panel-bg-strong: #fffdf9;
     --text-main: #262626;
     --text-muted: #6b7280;
+    --border-soft: rgba(38, 38, 38, 0.1);
     --header-bg: #ffffff;
 }
 
 :root[data-theme="dark"] {
-    --app-bg: #313131;
+    --page-bg: #23201f;
+    --app-bg: #23201f;
     --sidebar-bg: #262626;
     --sidebar-text: #ffffff;
-    --surface-bg: #ffffff;
-    --panel-bg: #fff5ee;
-    --panel-bg-strong: #fffaf6;
-    --text-main: #262626;
-    --text-muted: #6b7280;
-    --header-bg: #ffffff;
+    --surface-bg: #302927;
+    --surface-soft: #342d2a;
+    --surface-muted: #3a322f;
+    --panel-bg: #342d2a;
+    --panel-bg-strong: #3a322f;
+    --text-main: #fffaf6;
+    --text-muted: #d7c8c1;
+    --border-soft: rgba(255, 250, 246, 0.12);
+    --header-bg: #302927;
 }
 
 * {
@@ -83,7 +97,7 @@ body {
     min-width: 0;
     overflow-x: hidden;
     overflow-y: auto;
-    background-color: var(--app-bg);
+    background-color: var(--page-bg, var(--app-bg));
     color: var(--text-main);
 }
 
@@ -118,6 +132,30 @@ body {
     to {
         opacity: 1;
         transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes biztrackCookieSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes biztrackCookieSlideOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(24px);
     }
 }
 
@@ -342,7 +380,7 @@ body {
 
 .main-content {
     position: relative;
-    background-color: var(--app-bg);
+    background-color: var(--page-bg, var(--app-bg));
     flex: 1 1 auto;
     width: 100%;
     max-width: 100%;
@@ -361,7 +399,7 @@ body {
 }
 
 .page-enter {
-    animation: biztrackRiseIn var(--motion-duration-main) cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: biztrackRiseIn var(--motion-duration-main) var(--motion-soft) both;
     will-change: opacity, transform;
 }
 
@@ -546,12 +584,11 @@ body.sidebar-collapsed .main-content {
     max-width: 100%;
     max-height: 0;
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-14px);
     margin-top: 0;
     padding: 0;
-    background-color: white;
-    border: solid lightgrey;
-    border-width: 0;
+    background-color: var(--surface-bg);
+    border: 1px solid transparent;
     border-radius: 3px;
     overflow: hidden;
     overflow-x: hidden;
@@ -561,16 +598,19 @@ body.sidebar-collapsed .main-content {
     transition:
         max-height var(--form-slide-duration) var(--form-slide-easing),
         opacity var(--form-fade-duration) var(--form-slide-easing),
-        transform var(--form-slide-duration) var(--form-slide-easing);
+        transform var(--form-slide-duration) var(--form-slide-easing),
+        border-color var(--form-slide-duration) var(--form-slide-easing),
+        box-shadow var(--form-slide-duration) var(--form-slide-easing);
 }
 
 .form-container.is-open {
     max-height: 1600px;
     opacity: 1;
     transform: translateY(0);
-    margin-top: 5px;
+    margin-top: 0;
     padding: 1rem;
-    border-width: 3px;
+    border-color: var(--border-soft);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.12);
     pointer-events: auto;
 }
 
@@ -1731,7 +1771,7 @@ ol {
 }
 
 .user-menu:not([hidden]) {
-    animation: biztrackPanelRiseIn 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: biztrackPanelRiseIn var(--motion-duration-panel) var(--motion-soft) both;
     transform-origin: bottom left;
     will-change: opacity, transform;
 }
@@ -1848,7 +1888,7 @@ body.auth-panel-open {
 }
 
 .settings-overlay:not([hidden]) {
-    animation: biztrackOverlayFadeIn 220ms ease-out both;
+    animation: biztrackOverlayFadeIn var(--motion-duration-panel) var(--motion-soft) both;
     will-change: opacity;
 }
 
@@ -1879,7 +1919,7 @@ body.auth-panel-open {
 }
 
 .settings-panel:not([hidden]) .settings-shell {
-    animation: biztrackPanelRiseIn 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: biztrackPanelRiseIn var(--motion-duration-panel) var(--motion-soft) both;
     will-change: opacity, transform;
 }
 
@@ -2030,7 +2070,7 @@ body.auth-panel-open {
     background: var(--orange-color);
     box-shadow: 0 6px 14px rgba(228, 146, 115, 0.35);
     transition:
-        transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+        transform var(--motion-duration-toggle) var(--motion-soft),
         background-color 180ms ease,
         box-shadow 180ms ease;
 }
@@ -2528,6 +2568,12 @@ body.auth-panel-open {
     border-radius: 18px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.32);
     z-index: 1100;
+    animation: biztrackCookieSlideIn var(--motion-duration-cookie-in) var(--motion-soft) both;
+    will-change: opacity, transform;
+}
+
+.cookie-banner.is-dismissing {
+    animation: biztrackCookieSlideOut var(--motion-duration-cookie-out) var(--motion-soft) both;
 }
 
 .cookie-banner__content {
@@ -2720,14 +2766,159 @@ body.auth-panel-open {
     text-underline-offset: 0.18rem;
 }
 
+:root[data-theme="dark"] .header-wrapper,
+:root[data-theme="dark"] .table-wrapper,
+:root[data-theme="dark"] .card-container,
+:root[data-theme="dark"] .dashboard-workspace,
+:root[data-theme="dark"] .charts-container,
+:root[data-theme="dark"] .workspace-card,
+:root[data-theme="dark"] .inventory-summary-card,
+:root[data-theme="dark"] .orders-summary-card,
+:root[data-theme="dark"] .form-container,
+:root[data-theme="dark"] .form-popup,
+:root[data-theme="dark"] .settings-shell,
+:root[data-theme="dark"] .user-menu,
+:root[data-theme="dark"] .about-container,
+:root[data-theme="dark"] .privacy-page,
+:root[data-theme="dark"] .guide-container,
+:root[data-theme="dark"] .charts-card,
+:root[data-theme="dark"] .recent-activity-list li,
+:root[data-theme="dark"] .status-overview-item,
+:root[data-theme="dark"] .status-overview-empty {
+    background: var(--surface-bg);
+    color: var(--text-main);
+    border-color: var(--border-soft);
+}
+
+:root[data-theme="dark"] .workspace-card,
+:root[data-theme="dark"] .charts-card,
+:root[data-theme="dark"] .inventory-summary-card,
+:root[data-theme="dark"] .orders-summary-card,
+:root[data-theme="dark"] .form-container,
+:root[data-theme="dark"] .settings-shell,
+:root[data-theme="dark"] .user-menu {
+    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.28);
+}
+
+:root[data-theme="dark"] .header-title,
+:root[data-theme="dark"] .header-title h2,
+:root[data-theme="dark"] .main-title,
+:root[data-theme="dark"] .settings-panel-header h2,
+:root[data-theme="dark"] .settings-section h3,
+:root[data-theme="dark"] .settings-row strong,
+:root[data-theme="dark"] .settings-tab,
+:root[data-theme="dark"] .settings-segment-button,
+:root[data-theme="dark"] .user-menu-item,
+:root[data-theme="dark"] .user-menu-item i,
+:root[data-theme="dark"] .workspace-card h4,
+:root[data-theme="dark"] .workspace-card-helper,
+:root[data-theme="dark"] .status-overview-label,
+:root[data-theme="dark"] .status-overview-value,
+:root[data-theme="dark"] .inventory-summary-card span,
+:root[data-theme="dark"] .inventory-summary-card strong,
+:root[data-theme="dark"] .orders-summary-card span,
+:root[data-theme="dark"] .orders-summary-card strong,
+:root[data-theme="dark"] .about-container p,
+:root[data-theme="dark"] .about-container li,
+:root[data-theme="dark"] .guide-container p,
+:root[data-theme="dark"] .guide-container li,
+:root[data-theme="dark"] .privacy-page p,
+:root[data-theme="dark"] .privacy-page h3,
+:root[data-theme="dark"] .recent-activity-list li,
+:root[data-theme="dark"] .table-container,
+:root[data-theme="dark"] td {
+    color: var(--text-main);
+}
+
+:root[data-theme="dark"] .workspace-card-helper,
+:root[data-theme="dark"] .inventory-cell-note,
+:root[data-theme="dark"] .status-overview-label,
+:root[data-theme="dark"] .inventory-summary-card span,
+:root[data-theme="dark"] .orders-summary-card span,
+:root[data-theme="dark"] .settings-row p,
+:root[data-theme="dark"] .settings-section > p {
+    color: var(--text-muted);
+}
+
+:root[data-theme="dark"] .search-box,
+:root[data-theme="dark"] .search-box input,
+:root[data-theme="dark"] input,
+:root[data-theme="dark"] select,
+:root[data-theme="dark"] textarea {
+    background: var(--surface-muted);
+    color: var(--text-main);
+    border-color: rgba(255, 250, 246, 0.14);
+}
+
+:root[data-theme="dark"] .search-box i,
+:root[data-theme="dark"] .search-box input::placeholder,
+:root[data-theme="dark"] input::placeholder,
+:root[data-theme="dark"] textarea::placeholder {
+    color: #b9aaa3;
+}
+
+:root[data-theme="dark"] .form-container input[type=text]:focus,
+:root[data-theme="dark"] .form-container input[type=date]:focus,
+:root[data-theme="dark"] .form-container input[type=number]:focus,
+:root[data-theme="dark"] .form-container select:focus {
+    background: var(--surface-soft);
+}
+
+:root[data-theme="dark"] table {
+    color: var(--text-main);
+}
+
+:root[data-theme="dark"] thead,
+:root[data-theme="dark"] th {
+    background: #1f1d1c;
+    color: #fffaf6;
+}
+
+:root[data-theme="dark"] tbody {
+    background: #302927;
+}
+
+:root[data-theme="dark"] tbody tr:nth-child(odd) {
+    background: #3a3431;
+}
+
+:root[data-theme="dark"] tbody tr:nth-child(even) {
+    background: #2f2927;
+}
+
+:root[data-theme="dark"] td {
+    border-color: rgba(255, 250, 246, 0.08);
+}
+
+:root[data-theme="dark"] .privacy-actions .cookie-button--policy,
+:root[data-theme="dark"] .privacy-actions a.cookie-button--policy {
+    background: var(--surface-muted);
+    color: #fffaf6;
+}
+
+:root[data-theme="dark"] .header-language-toggle.language-toggle {
+    background: var(--surface-muted);
+    border-color: rgba(255, 250, 246, 0.18);
+    color: var(--text-main);
+}
+
+:root[data-theme="dark"] .header-language-toggle:hover,
+:root[data-theme="dark"] .header-language-toggle:focus-visible {
+    background: var(--surface-soft);
+    color: var(--text-main);
+}
+
 @media (prefers-reduced-motion: reduce) {
     .page-enter,
     .form-popup,
     .form-container,
     .form-container.is-open,
+    .form-popup.is-open,
     .settings-overlay:not([hidden]),
     .settings-panel:not([hidden]) .settings-shell,
-    .user-menu:not([hidden]) {
+    .user-menu:not([hidden]),
+    .cookie-banner,
+    .cookie-banner.is-dismissing {
         animation: none !important;
         transition: none !important;
         transform: none !important;

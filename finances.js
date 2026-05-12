@@ -1,3 +1,12 @@
+function revealForm(form) {
+    form.removeAttribute("inert");
+    form.removeAttribute("aria-hidden");
+
+    window.requestAnimationFrame(() => {
+        form.classList.add("is-open");
+    });
+}
+
 function openForm() {
     const form = document.getElementById("transaction-form");
 
@@ -8,9 +17,7 @@ function openForm() {
 
     form.reset();
     resetSubmitButtonMode();
-    form.classList.add("is-open");
-    form.removeAttribute("inert");
-    form.removeAttribute("aria-hidden");
+    revealForm(form);
 }
 
 function closeForm() {
@@ -428,9 +435,7 @@ function editRow(trID) {
     setSubmitButtonMode("update", trID);
 
     const form = document.getElementById("transaction-form");
-    form.classList.add("is-open");
-    form.removeAttribute("inert");
-    form.removeAttribute("aria-hidden");
+    revealForm(form);
 }
   
 function deleteTransaction(trID) {

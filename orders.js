@@ -1,3 +1,12 @@
+function revealForm(form) {
+    form.removeAttribute("inert");
+    form.removeAttribute("aria-hidden");
+
+    window.requestAnimationFrame(() => {
+        form.classList.add("is-open");
+    });
+}
+
 function openForm() {
     const form = document.getElementById("order-form");
 
@@ -9,9 +18,7 @@ function openForm() {
     form.reset();
     populateOrderProductOptions();
     resetSubmitButtonMode();
-    form.classList.add("is-open");
-    form.removeAttribute("inert");
-    form.removeAttribute("aria-hidden");
+    revealForm(form);
 }
 
 function closeForm() {
@@ -860,9 +867,7 @@ function editRow(orderID) {
     setSubmitButtonMode("update", orderID);
 
     const form = document.getElementById("order-form");
-    form.classList.add("is-open");
-    form.removeAttribute("inert");
-    form.removeAttribute("aria-hidden");
+    revealForm(form);
 }
 
 function deleteOrder(orderID) {
