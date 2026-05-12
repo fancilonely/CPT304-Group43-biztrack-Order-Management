@@ -238,6 +238,11 @@ function applyTheme(theme, { persist = false } = {}) {
   }
 
   updatePreferenceControls();
+  document.dispatchEvent(
+    new CustomEvent("themeChanged", {
+      detail: { theme: normalizedTheme },
+    }),
+  );
 }
 
 function hideSettingsFeedback() {
