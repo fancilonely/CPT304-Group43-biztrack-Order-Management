@@ -2132,12 +2132,14 @@ body.auth-panel-open {
     position: relative;
     isolation: isolate;
     flex: 0 0 auto;
-    display: inline-grid;
-    grid-template-columns: repeat(2, minmax(48px, 1fr));
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: center;
-    min-height: 44px;
+    min-width: 150px;
+    height: 48px;
     padding: 4px;
     border-radius: 999px;
+    box-sizing: border-box;
     background: rgba(36, 123, 160, 0.08);
     border: 1px solid rgba(36, 123, 160, 0.14);
     overflow: hidden;
@@ -2169,15 +2171,19 @@ body.auth-panel-open {
 .settings-segment-button {
     position: relative;
     z-index: 1;
-    min-width: 58px;
-    min-height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    height: 100%;
     border: 0;
     border-radius: 999px;
-    padding: 0.45rem 0.85rem;
+    padding: 0;
     background: transparent;
     color: var(--brown-color);
-    cursor: pointer;
-    font: inherit;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
     font-weight: 800;
     pointer-events: none;
     user-select: none;
@@ -4165,7 +4171,7 @@ body.quick-entry-panel-open {
     border-radius: 14px 14px 0 0;
     padding: 0.75rem 1.35rem;
     background: #fff7f1;
-    color: #6b4f4b;
+    color: #4f3935;
     font-weight: 800;
     cursor: pointer;
     opacity: 1;
@@ -4191,7 +4197,7 @@ body.quick-entry-panel-open {
     background: #e99476;
     border-color: #e99476;
     border-bottom-color: #e99476;
-    color: #ffffff;
+    color: #4f3935;
     opacity: 1;
     box-shadow: 0 -4px 12px rgba(233, 148, 118, 0.22);
 }
@@ -4200,13 +4206,13 @@ body.quick-entry-panel-open {
     background: #1f7a5a;
     border-color: #1f7a5a;
     border-bottom-color: #1f7a5a;
-    color: #ffffff;
+    color: #16382d;
     opacity: 1;
     box-shadow: 0 -4px 12px rgba(31, 122, 90, 0.22);
 }
 
 .quick-entry-mode-tab.is-active {
-    color: #ffffff;
+    color: #4f3935;
     opacity: 1;
 }
 
@@ -4241,10 +4247,10 @@ body.quick-entry-panel-open {
 
 :root[data-theme="dark"] .quick-entry-mode-tab {
     background: rgba(255, 250, 246, 0.07);
-    color: #e2d4cc;
+    color: #fffaf6;
     border-color: rgba(255, 250, 246, 0.14);
     border-bottom-color: transparent;
-    opacity: 0.78;
+    opacity: 1;
 }
 
 :root[data-theme="dark"] .quick-entry-form-shell {
@@ -4263,7 +4269,7 @@ body.quick-entry-panel-open {
 :root[data-theme="dark"] .quick-entry-form-shell.mode-edit .quick-entry-mode-tab[data-quick-entry-mode="edit"].is-active,
 :root[data-theme="dark"] .quick-entry-mode-tab.is-active {
     background: #e99476;
-    color: #ffffff;
+    color: #fffaf6;
     border-color: #e99476;
     opacity: 1;
     box-shadow: 0 -4px 14px rgba(233, 148, 118, 0.24);
@@ -4272,7 +4278,7 @@ body.quick-entry-panel-open {
 :root[data-theme="dark"] .quick-entry-form-shell.mode-add .quick-entry-mode-tab[data-quick-entry-mode="add"].is-active {
     background: #1f7a5a;
     border-color: #1f7a5a;
-    color: #ffffff;
+    color: #fffaf6;
     opacity: 1;
     box-shadow: 0 -4px 14px rgba(31, 122, 90, 0.24);
 }
