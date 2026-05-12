@@ -172,10 +172,13 @@
       "cookie-button cookie-button--policy",
       "cookiePrivacyPolicy",
       () => {
+        if (typeof window.openBizTrackSettings === "function") {
+          window.openBizTrackSettings("privacy");
+          return;
+        }
+
         if (typeof window.openSettingsPanel === "function") {
           window.openSettingsPanel("privacy");
-        } else {
-          window.location.href = "./privacy.html";
         }
       },
     );

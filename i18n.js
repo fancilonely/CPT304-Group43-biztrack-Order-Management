@@ -215,6 +215,8 @@ const translationDefinitions = {
       privacyHelpTitle: "Need privacy information?",
       privacyHelpPrompt: "Need privacy information?",
       privacyHelpLink: "View our Privacy Policy",
+      viewPrivacyPolicy: "View our Privacy Policy",
+      openPrivacyInSettings: "Open Privacy Policy in Settings",
     },
     accessibility: {
       visitLinkedIn: "Visit Sumayyah's LinkedIn profile",
@@ -438,6 +440,8 @@ const translationDefinitions = {
       privacyHelpTitle: "需要了解隐私信息？",
       privacyHelpPrompt: "需要了解隐私信息？",
       privacyHelpLink: "查看我们的隐私政策",
+      viewPrivacyPolicy: "查看隐私政策",
+      openPrivacyInSettings: "在设置中打开隐私政策",
     },
     accessibility: {
       visitLinkedIn: "访问 Sumayyah 的 LinkedIn 主页",
@@ -745,6 +749,8 @@ Object.assign(translations.zh, {
 
 Object.assign(translations.en, {
   privacyPolicy: "Privacy Policy",
+  viewPrivacyPolicy: "View our Privacy Policy",
+  openPrivacyInSettings: "Open Privacy Policy in Settings",
   privacySettingsIntro: "This section explains how BizTrack handles browser-stored data in this coursework prototype.",
   privacyStoredInfoTitle: "What BizTrack stores",
   privacyStoredInfoDesc: "BizTrack stores products, inventory, orders, expenses, language preference, theme preference, and cookie choice.",
@@ -762,6 +768,8 @@ Object.assign(translations.en, {
 
 Object.assign(translations.zh, {
   privacyPolicy: "\u9690\u79c1\u653f\u7b56",
+  viewPrivacyPolicy: "\u67e5\u770b\u9690\u79c1\u653f\u7b56",
+  openPrivacyInSettings: "\u5728\u8bbe\u7f6e\u4e2d\u6253\u5f00\u9690\u79c1\u653f\u7b56",
   privacySettingsIntro: "\u672c\u90e8\u5206\u8bf4\u660e BizTrack \u5728\u8be5\u8bfe\u7a0b\u539f\u578b\u4e2d\u5982\u4f55\u5904\u7406\u4fdd\u5b58\u5728\u6d4f\u89c8\u5668\u4e2d\u7684\u6570\u636e\u3002",
   privacyStoredInfoTitle: "BizTrack \u5b58\u50a8\u54ea\u4e9b\u4fe1\u606f",
   privacyStoredInfoDesc: "BizTrack \u4f1a\u5b58\u50a8\u4ea7\u54c1\u3001\u5e93\u5b58\u3001\u8ba2\u5355\u3001\u652f\u51fa\u3001\u8bed\u8a00\u504f\u597d\u3001\u4e3b\u9898\u504f\u597d\u548c Cookie \u9009\u62e9\u3002",

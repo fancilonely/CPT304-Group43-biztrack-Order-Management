@@ -3146,11 +3146,31 @@ body.quick-entry-panel-open {
     font-size: 1rem;
 }
 
-.privacy-help-link a {
+.privacy-help-link a,
+.privacy-help-link .link-button {
     color: var(--blue-color);
     font-weight: 700;
     text-decoration: underline;
     text-underline-offset: 0.18rem;
+}
+
+.privacy-help-link .link-button {
+    border: 0;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+    font: inherit;
+}
+
+.privacy-help-link .link-button:hover {
+    color: #1d6482;
+}
+
+.privacy-help-link .link-button:focus-visible {
+    outline: none;
+    box-shadow:
+        0 0 0 3px var(--blue-color),
+        0 0 0 6px #ffffff;
 }
 
 :root[data-theme="dark"] .header-wrapper,

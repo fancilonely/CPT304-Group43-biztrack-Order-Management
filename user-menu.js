@@ -213,8 +213,11 @@ function getSettingsElements() {
 }
 
 function normalizePrivacyMenuItems() {
-  document.querySelectorAll('.user-menu-item[href$="privacy.html"]').forEach((item) => {
+  document.querySelectorAll('.user-menu-item[data-user-action="privacy"], .user-menu-item[href$="privacy.html"]').forEach((item) => {
     item.dataset.userAction = "privacy";
+    if (item.tagName === "A") {
+      item.removeAttribute("href");
+    }
 
     const label = item.querySelector("[data-i18n]");
     if (label) {
@@ -402,6 +405,10 @@ function openSettingsPanel(tabName) {
   });
 }
 
+function openBizTrackSettings(tab = "preferences") {
+  openSettingsPanel(tab);
+}
+
 function closeSettingsPanel(options = {}) {
   const { restoreFocus = true } = options;
   const { overlay, panel } = getSettingsElements();
@@ -564,6 +571,24 @@ function bindUserMenu() {
   toggleButton.dataset.bound = "true";
 }
 
+function bindSettingsTriggers() {
+  if (document.body.dataset.settingsTriggersBound === "true") {
+    return;
+  }
+
+  document.addEventListener("click", (event) => {
+    const trigger = event.target.closest("[data-open-settings-tab]");
+    if (!trigger) {
+      return;
+    }
+
+    event.preventDefault();
+    openBizTrackSettings(trigger.getAttribute("data-open-settings-tab"));
+  });
+
+  document.body.dataset.settingsTriggersBound = "true";
+}
+
 function refreshVisibleFeedbackTranslations() {
   const { storageFeedback } = getSettingsElements();
 
@@ -579,6 +604,7 @@ function initializeUserMenu() {
   bindPreferenceControls();
   bindSettingsPanel();
   bindUserMenu();
+  bindSettingsTriggers();
   applyTheme(getCurrentTheme(), { persist: false });
 
   if (typeof window.applyLanguage === "function" && typeof window.getCurrentLanguage === "function") {
@@ -589,6 +615,7 @@ function initializeUserMenu() {
 }
 
 window.openSettingsPanel = openSettingsPanel;
+window.openBizTrackSettings = openBizTrackSettings;
 window.closeSettingsPanel = closeSettingsPanel;
 window.switchSettingsTab = switchSettingsTab;
 window.bindSettingsPanel = bindSettingsPanel;
