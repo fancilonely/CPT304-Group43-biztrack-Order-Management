@@ -593,12 +593,44 @@ function bindLanguageToggle() {
   toggleButton.dataset.bound = "true";
 }
 
+function safeCSVValue(value) {
+  const str = String(value);
+
+  if (str === "") {
+    return '""';
+  }
+
+  if (
+    str.includes(",") ||
+    str.includes('"') ||
+    str.includes("\n") ||
+    str.includes("\r") ||
+    /^[=+\-@]/.test(str)
+  ) {
+    return `"${str.replace(/"/g, '""')}"`;
+  }
+
+  return str;
+}
+
+function safeGenerateCSV(data) {
+  if (!data || data.length === 0) {
+    return "";
+  }
+
+  const headers = Object.keys(data[0]).map(safeCSVValue).join(",");
+  const rows = data.map((row) => Object.values(row).map(safeCSVValue).join(","));
+
+  return `${headers}\n${rows.join("\n")}`;
+}
+
 window.translations = translations;
 window.getCurrentLanguage = getCurrentLanguage;
 window.getText = getText;
 window.translateValue = translateValue;
 window.setLanguage = setLanguage;
 window.toggleLanguage = toggleLanguage;
+window.safeGenerateCSV = safeGenerateCSV;
 
 document.addEventListener("DOMContentLoaded", () => {
   bindLanguageToggle();

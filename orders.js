@@ -61,69 +61,73 @@ function closeForm() {
     form.style.display = "none";
 }
 
-const ORDER_STORAGE_KEY = "bizTrackOrders";
-const DEFAULT_ORDERS = [
-    {
-        orderID: "1001",
-        orderDate: "2024-01-05",
-        itemName: "Baseball caps",
-        itemPrice: 25.00,
-        qtyBought: 2,
-        shipping: 2.50,
-        taxes: 9.00,
-        orderTotal: 61.50,
-        orderStatus: "Pending"
-    },
-    {
-        orderID: "1002",
-        orderDate: "2024-03-05",
-        itemName: "Water bottles",
-        itemPrice: 17.00,
-        qtyBought: 3,
-        shipping: 3.50,
-        taxes: 6.00,
-        orderTotal: 60.50,
-        orderStatus: "Processing"
-    },
-    {
-        orderID: "1003",
-        orderDate: "2024-02-05",
-        itemName: "Tote bags",
-        itemPrice: 20.00,
-        qtyBought: 4,
-        shipping: 2.50,
-        taxes: 2.00,
-        orderTotal: 84.50,
-        orderStatus: "Shipped"
-    },
-    {
-        orderID: "1004",
-        orderDate: "2023-01-05",
-        itemName: "Canvas prints",
-        itemPrice: 55.00,
-        qtyBought: 1,
-        shipping: 2.50,
-        taxes: 19.00,
-        orderTotal: 76.50,
-        orderStatus: "Delivered"
-    },
-    {
-        orderID: "1005",
-        orderDate: "2024-01-15",
-        itemName: "Beanies",
-        itemPrice: 15.00,
-        qtyBought: 2,
-        shipping: 3.90,
-        taxes: 4.00,
-        orderTotal: 37.90,
-        orderStatus: "Pending"
-    },
-];
-
 let orders = [];
 const orderSortState = {};
 window.onload = function () {
-    orders = loadBizTrackCollection(ORDER_STORAGE_KEY, DEFAULT_ORDERS, isBizTrackOrder);
+    const storedOrders = localStorage.getItem("bizTrackOrders");
+    if (storedOrders) {
+        orders = JSON.parse(storedOrders);
+    } else {
+        orders = [
+        {
+            orderID: "1001",
+            orderDate: "2024-01-05",
+            itemName: "Baseball caps",
+            itemPrice: 25.00,
+            qtyBought: 2,
+            shipping: 2.50,
+            taxes: 9.00,
+            orderTotal: 61.50,
+            orderStatus: "Pending"
+        },
+        {
+            orderID: "1002",
+            orderDate: "2024-03-05",
+            itemName: "Water bottles",
+            itemPrice: 17.00,
+            qtyBought: 3,
+            shipping: 3.50,
+            taxes: 6.00,
+            orderTotal: 60.50,
+            orderStatus: "Processing"
+        },
+        {
+            orderID: "1003",
+            orderDate: "2024-02-05",
+            itemName: "Tote bags",
+            itemPrice: 20.00,
+            qtyBought: 4,
+            shipping: 2.50,
+            taxes: 2.00,
+            orderTotal: 84.50,
+            orderStatus: "Shipped"
+        },
+        {
+            orderID: "1004",
+            orderDate: "2023-01-05",
+            itemName: "Canvas prints",
+            itemPrice: 55.00,
+            qtyBought: 1,
+            shipping: 2.50,
+            taxes: 19.00,
+            orderTotal: 76.50,
+            orderStatus: "Delivered"
+        },
+        {
+            orderID: "1005",
+            orderDate: "2024-01-15",
+            itemName: "Beanies",
+            itemPrice: 15.00,
+            qtyBought: 2,
+            shipping: 3.90,
+            taxes: 4.00,
+            orderTotal: 37.90,
+            orderStatus: "Pending"
+        },
+        ];
+
+        localStorage.setItem("bizTrackOrders", JSON.stringify(orders));
+    }
 
     renderOrders(orders);
     resetSubmitButtonMode();
@@ -179,28 +183,8 @@ function addOrUpdate(event) {
         const orderID = submitBtn.dataset.editingId;
         updateOrder(orderID);
     }
-
-    return value;
 }
 
-function validateOrderForm(currentID) {
-    const form = document.getElementById("order-form");
-    clearFormErrors(form);
-
-    const orderID = getTrimmedValue("order-id");
-    const orderDate = document.getElementById("order-date").value;
-    const itemName = document.getElementById("item-name").value;
-    const itemPrice = validateNumberField("item-price", 0, 10000, "Item price");
-    const qtyBought = validateIntegerField("qty-bought", 1, 100000, "Quantity bought");
-    const shipping = validateNumberField("shipping", 0, 10000, "Shipping fee");
-    const taxes = validateNumberField("taxes", 0, 10000, "Taxes");
-    const orderStatus = document.getElementById("order-status").value;
-
-    if (!/^\d{4,8}$/.test(orderID)) {
-        invalidateField(document.getElementById("order-id"), "Order ID must be 4 to 8 digits.");
-    } else if (isDuplicateID(orderID, currentID)) {
-        invalidateField(document.getElementById("order-id"), "Order ID already exists. Please use a unique ID.");
-    }
 
 function newOrder() {
   const orderID = document.getElementById("order-id").value;
@@ -218,10 +202,22 @@ function newOrder() {
     return;
   }
 
+  const order = {
+    orderID,
+    orderDate,
+    itemName,
+    itemPrice,
+    qtyBought,
+    shipping,
+    taxes,
+    orderTotal,
+    orderStatus,
+  };
+
   orders.push(order);
 
   renderOrders(orders);
-  saveBizTrackCollection(ORDER_STORAGE_KEY, orders);
+  localStorage.setItem("bizTrackOrders", JSON.stringify(orders));
 
   document.getElementById("order-form").reset();
   resetSubmitButtonMode();
@@ -364,7 +360,6 @@ function editRow(orderID) {
     document.getElementById("taxes").value = orderToEdit.taxes;
     document.getElementById("order-total").value = orderToEdit.orderTotal;
     document.getElementById("order-status").value = orderToEdit.orderStatus;
-    document.getElementById("order-form").dataset.currentOrderId = orderID;
 
     setSubmitButtonMode("update", orderID);
 
@@ -377,7 +372,7 @@ function deleteOrder(orderID) {
   if (indexToDelete !== -1) {
       orders.splice(indexToDelete, 1);
 
-      saveBizTrackCollection(ORDER_STORAGE_KEY, orders);
+      localStorage.setItem("bizTrackOrders", JSON.stringify(orders));
 
       renderOrders(orders);
   }
@@ -387,15 +382,30 @@ function updateOrder(orderID) {
     const indexToUpdate = orders.findIndex(order => order.orderID === orderID);
 
     if (indexToUpdate !== -1) {
-        const updatedOrder = validateOrderForm(orderID);
+        const itemPrice = parseFloat(document.getElementById("item-price").value);
+        const qtyBought = parseInt(document.getElementById("qty-bought").value);
+        const shipping = parseFloat(document.getElementById("shipping").value);
+        const taxes = parseFloat(document.getElementById("taxes").value);
+        const updatedOrder = {
+            orderID: document.getElementById("order-id").value,
+            orderDate: document.getElementById("order-date").value,
+            itemName: document.getElementById("item-name").value,
+            itemPrice: itemPrice,
+            qtyBought: qtyBought,
+            shipping: shipping,
+            taxes: taxes,
+            orderTotal: ((itemPrice * qtyBought) + shipping + taxes),
+            orderStatus: document.getElementById("order-status").value,
+        };
 
-        if (!updatedOrder) {
+        if (isDuplicateID(updatedOrder.orderID, orderID)) {
+            alert("Order ID already exists. Please use a unique ID.");
             return;
         }
 
         orders[indexToUpdate] = updatedOrder;
 
-        saveBizTrackCollection(ORDER_STORAGE_KEY, orders);
+        localStorage.setItem("bizTrackOrders", JSON.stringify(orders));
 
         renderOrders(orders);
 
@@ -460,39 +470,33 @@ function performSearch() {
 function exportToCSV() {
     const ordersToExport = orders.map(order => {
         return {
-            orderID: order.orderID,
-            orderDate: order.orderDate,
-            itemName: order.itemName,
-            itemPrice: order.itemPrice.toFixed(2),
-            qtyBought: order.qtyBought,
-            shipping: order.shipping.toFixed(2),
-            taxes: order.taxes.toFixed(2),
-            orderTotal: order.orderTotal.toFixed(2),
-            orderStatus: order.orderStatus,
+            [getText("orderIDShort")]: order.orderID,
+            [getText("orderDateShort")]: order.orderDate,
+            [getText("itemNameShort")]: translateValue(order.itemName),
+            [getText("itemPriceShort")]: Number(order.itemPrice).toFixed(2),
+            [getText("qty")]: order.qtyBought,
+            [getText("shippingFeeShort")]: Number(order.shipping).toFixed(2),
+            [getText("taxesShort")]: Number(order.taxes).toFixed(2),
+            [getText("orderTotalShort")]: Number(order.orderTotal).toFixed(2),
+            [getText("orderStatusShort")]: translateStatus(order.orderStatus),
         };
     });
   
-    const csvContent = generateCSV(ordersToExport);
+    const csvContent = safeGenerateCSV(ordersToExport);
   
-    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const blob = new Blob(["\ufeff" + csvContent], {
+        type: "text/csv;charset=utf-8;",
+    });
   
     const link = document.createElement('a');
     link.href = window.URL.createObjectURL(blob);
-    link.download = 'biztrack_order_table.csv';
+    link.download = 'biztrack_order_table_' + getCurrentLanguage() + '.csv';
   
     document.body.appendChild(link);
     link.click();
   
     document.body.removeChild(link);
 }
-  
-function generateCSV(data) {
-    const headers = Object.keys(data[0]).join(',');
-    const rows = data.map(order => Object.values(order).join(','));
-
-    return `${headers}\n${rows.join('\n')}`;
-}
-
 document.addEventListener("languageChanged", () => {
     renderOrders(orders);
     const submitBtn = document.getElementById("submitBtn");

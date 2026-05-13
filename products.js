@@ -62,54 +62,58 @@ function closeForm() {
 }
 
 
-const PRODUCT_STORAGE_KEY = "bizTrackProducts";
-const DEFAULT_PRODUCTS = [
-  {
-    prodID: "PD001",
-    prodName: "Baseball caps",
-    prodDesc: "Peace embroidered cap",
-    prodCat: "Hats",
-    prodPrice: 25.00,
-    prodSold: 20
-  },
-  {
-    prodID: "PD002",
-    prodName: "Water bottles",
-    prodDesc: "Floral lotus printed bottle",
-    prodCat: "Drinkware",
-    prodPrice: 48.50,
-    prodSold: 10
-  },
-  {
-    prodID: "PD003",
-    prodName: "Sweatshirts",
-    prodDesc: "Palestine sweater",
-    prodCat: "Clothing",
-    prodPrice: 17.50,
-    prodSold: 70
-  },
-  {
-    prodID: "PD004",
-    prodName: "Posters",
-    prodDesc: "Vibes printed poster",
-    prodCat: "Home decor",
-    prodPrice: 12.00,
-    prodSold: 60
-  },
-  {
-    prodID: "PD005",
-    prodName: "Pillow cases",
-    prodDesc: "Morrocan print pillow case",
-    prodCat: "Accessories",
-    prodPrice: 17.00,
-    prodSold: 40
-  },
-];
-
 let products = [];
 const productSortState = {};
 function init() {
-    products = loadBizTrackCollection(PRODUCT_STORAGE_KEY, DEFAULT_PRODUCTS, isBizTrackProduct);
+  const storedProducts = localStorage.getItem("bizTrackProducts");
+  if (storedProducts) {
+      products = JSON.parse(storedProducts);
+  } else {
+      products = [
+        {
+          prodID: "PD001",
+          prodName: "Baseball caps",
+          prodDesc: "Peace embroidered cap",
+          prodCat: "Hats",
+          prodPrice: 25.00,
+          prodSold: 20
+        },
+        {
+          prodID: "PD002",
+          prodName: "Water bottles",
+          prodDesc: "Floral lotus printed bottle",
+          prodCat: "Drinkware",
+          prodPrice: 48.50,
+          prodSold: 10
+        },
+        {
+          prodID: "PD003",
+          prodName: "Sweatshirts",
+          prodDesc: "Palestine sweater",
+          prodCat: "Clothing",
+          prodPrice: 17.50,
+          prodSold: 70
+        },
+        {
+          prodID: "PD004",
+          prodName: "Posters",
+          prodDesc: "Vibes printed poster",
+          prodCat: "Home decor",
+          prodPrice: 12.00,
+          prodSold: 60
+        },
+        {
+          prodID: "PD005",
+          prodName: "Pillow cases",
+          prodDesc: "Morrocan print pillow case",
+          prodCat: "Accessories",
+          prodPrice: 17.00,
+          prodSold: 40
+        },
+      ];
+
+      localStorage.setItem("bizTrackProducts", JSON.stringify(products));
+    }
 
     renderProducts(products);
     resetSubmitButtonMode();
@@ -170,27 +174,17 @@ function addOrUpdate(event) {
 function newProduct() {
   const prodID = document.getElementById("product-id").value;
   const prodName = document.getElementById("product-name").value;
-  const prodDesc = getTrimmedValue("product-desc");
+  const prodDesc = document.getElementById("product-desc").value;
   const prodCat = document.getElementById("product-cat").value;
-  const prodPrice = validateNumberField("product-price", 0, 10000, "Product price");
-  const prodSold = validateIntegerField("product-sold", 0, 100000, "Units sold");
+  const prodPrice = parseFloat(document.getElementById("product-price").value);
+  const prodSold = parseInt(document.getElementById("product-sold").value);
 
-  if (!/^PD\d{3}$/.test(prodID)) {
-    invalidateField(document.getElementById("product-id"), "Product ID must use the format PD001.");
-  } else if (isDuplicateID(prodID, currentID)) {
-    invalidateField(document.getElementById("product-id"), "Product ID already exists. Please use a unique ID.");
+  if (isDuplicateID(prodID, null)) {
+    alert("Product ID already exists. Please use a unique ID.");
+    return;
   }
 
-  if (prodDesc.length === 0 || prodDesc.length > 80) {
-    invalidateField(document.getElementById("product-desc"), "Product description must be 1 to 80 characters.");
-  }
-
-  if (!form.checkValidity() || prodPrice === null || prodSold === null) {
-    form.reportValidity();
-    return null;
-  }
-
-  return {
+  const product = {
     prodID,
     prodName,
     prodDesc,
@@ -198,19 +192,11 @@ function newProduct() {
     prodPrice,
     prodSold,
   };
-}
-
-function newProduct() {
-  const product = validateProductForm(null);
-
-  if (!product) {
-    return;
-  }
 
   products.push(product);
 
   renderProducts(products);
-  saveBizTrackCollection(PRODUCT_STORAGE_KEY, products);
+  localStorage.setItem("bizTrackProducts", JSON.stringify(products));
 
   document.getElementById("product-form").reset();
   resetSubmitButtonMode();
@@ -295,7 +281,6 @@ function editRow(prodID) {
   document.getElementById("product-cat").value = productToEdit.prodCat;
   document.getElementById("product-price").value = productToEdit.prodPrice;
   document.getElementById("product-sold").value = productToEdit.prodSold;
-  document.getElementById("product-form").dataset.currentProductId = prodID;
 
   setSubmitButtonMode("update", prodID);
 
@@ -308,7 +293,7 @@ function deleteProduct(prodID) {
   if (indexToDelete !== -1) {
       products.splice(indexToDelete, 1);
 
-      saveBizTrackCollection(PRODUCT_STORAGE_KEY, products);
+      localStorage.setItem("bizTrackProducts", JSON.stringify(products));
 
       renderProducts(products);
   }
@@ -318,15 +303,23 @@ function updateProduct(prodID) {
     const indexToUpdate = products.findIndex(product => product.prodID === prodID);
 
     if (indexToUpdate !== -1) {
-        const updatedProduct = validateProductForm(prodID);
+        const updatedProduct = {
+            prodID: document.getElementById("product-id").value,
+            prodName: document.getElementById("product-name").value,
+            prodDesc: document.getElementById("product-desc").value,
+            prodCat: document.getElementById("product-cat").value,
+            prodPrice: parseFloat(document.getElementById("product-price").value),
+            prodSold: parseInt(document.getElementById("product-sold").value),
+        };
 
-        if (!updatedProduct) {
+        if (isDuplicateID(updatedProduct.prodID, prodID)) {
+            alert("Product ID already exists. Please use a unique ID.");
             return;
         }
 
         products[indexToUpdate] = updatedProduct;
 
-        saveBizTrackCollection(PRODUCT_STORAGE_KEY, products);
+        localStorage.setItem("bizTrackProducts", JSON.stringify(products));
 
         renderProducts(products);
 
@@ -384,34 +377,29 @@ function performSearch() {
 function exportToCSV() {
   const productsToExport = products.map(product => {
       return {
-        prodID: product.prodID,
-        prodName: product.prodName,
-        prodDesc: product.prodDesc,
-        prodCategory: product.prodCat,
-        prodPrice: product.prodPrice.toFixed(2),
-        QtySold: product.prodSold,
+        [getText("productIDShort")]: product.prodID,
+        [getText("productName")]: translateValue(product.prodName),
+        [getText("description")]: translateValue(product.prodDesc),
+        [getText("category")]: translateValue(product.prodCat),
+        [getText("price")]: Number(product.prodPrice).toFixed(2),
+        [getText("unitsSoldShort")]: product.prodSold,
       };
   });
 
-  const csvContent = generateCSV(productsToExport);
+  const csvContent = safeGenerateCSV(productsToExport);
 
-  const blob = new Blob([csvContent], { type: 'text/csv' });
+  const blob = new Blob(["\ufeff" + csvContent], {
+    type: "text/csv;charset=utf-8;",
+  });
 
   const link = document.createElement('a');
   link.href = window.URL.createObjectURL(blob);
-  link.download = 'biztrack_product_table.csv';
+  link.download = 'biztrack_product_table_' + getCurrentLanguage() + '.csv';
 
   document.body.appendChild(link);
   link.click();
 
   document.body.removeChild(link);
-}
-
-function generateCSV(data) {
-  const headers = Object.keys(data[0]).join(',');
-  const rows = data.map(order => Object.values(order).join(','));
-
-  return `${headers}\n${rows.join('\n')}`;
 }
 
 document.addEventListener("languageChanged", () => {
