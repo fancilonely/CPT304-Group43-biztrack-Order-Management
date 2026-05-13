@@ -254,9 +254,7 @@ function newProduct() {
 
   renderProducts(products);
   localStorage.setItem("bizTrackProducts", JSON.stringify(products));
-
-  document.getElementById("product-form").reset();
-  resetSubmitButtonMode();
+  closeForm();
 }
 
 function appendTextCell(row, value, className) {
@@ -287,6 +285,97 @@ function createActionButton(label, iconClassName, clickHandler) {
 function getActionLabel(key, id) {
   const label = typeof getText === "function" ? getText(key) : key;
   return `${label} ${id}`;
+}
+
+function removeDeleteConfirmationModal() {
+  const existingModal = document.querySelector(".biztrack-modal-overlay");
+
+  if (existingModal) {
+    existingModal.remove();
+  }
+
+  delete document.body.dataset.deleteModalOpen;
+}
+
+function showDeleteConfirmation({
+  title,
+  message,
+  confirmText,
+  cancelText,
+  dangerNote,
+  onConfirm,
+}) {
+  removeDeleteConfirmationModal();
+
+  const overlay = document.createElement("div");
+  overlay.className = "biztrack-modal-overlay";
+
+  const modal = document.createElement("section");
+  modal.className = "biztrack-confirm-modal";
+  modal.setAttribute("role", "dialog");
+  modal.setAttribute("aria-modal", "true");
+
+  const titleId = `delete-confirm-title-${Date.now()}`;
+  modal.setAttribute("aria-labelledby", titleId);
+
+  const heading = document.createElement("h3");
+  heading.id = titleId;
+  heading.textContent = title;
+
+  const bodyText = document.createElement("p");
+  bodyText.textContent = message;
+  modal.append(heading, bodyText);
+
+  if (dangerNote) {
+    const warning = document.createElement("p");
+    warning.className = "confirm-warning";
+    warning.textContent = dangerNote;
+    modal.appendChild(warning);
+  }
+
+  const actions = document.createElement("div");
+  actions.className = "confirm-actions";
+
+  const cancelButton = document.createElement("button");
+  cancelButton.type = "button";
+  cancelButton.className = "btn confirm-cancel";
+  cancelButton.textContent = cancelText;
+
+  const confirmButton = document.createElement("button");
+  confirmButton.type = "button";
+  confirmButton.className = "btn confirm-delete";
+  confirmButton.textContent = confirmText;
+
+  actions.append(cancelButton, confirmButton);
+  modal.appendChild(actions);
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+  document.body.dataset.deleteModalOpen = "true";
+
+  function closeModal() {
+    document.removeEventListener("keydown", handleKeydown);
+    removeDeleteConfirmationModal();
+  }
+
+  function handleKeydown(event) {
+    if (event.key === "Escape") {
+      closeModal();
+    }
+  }
+
+  cancelButton.addEventListener("click", closeModal);
+  confirmButton.addEventListener("click", () => {
+    onConfirm();
+    closeModal();
+  });
+  overlay.addEventListener("click", (event) => {
+    if (event.target === overlay) {
+      closeModal();
+    }
+  });
+  document.addEventListener("keydown", handleKeydown);
+
+  cancelButton.focus();
 }
 
 function renderProducts(products) {
@@ -352,11 +441,18 @@ function deleteProduct(prodID) {
   const indexToDelete = products.findIndex(product => product.prodID === prodID);
 
   if (indexToDelete !== -1) {
-      products.splice(indexToDelete, 1);
-
-      localStorage.setItem("bizTrackProducts", JSON.stringify(products));
-
-      renderProducts(products);
+      showDeleteConfirmation({
+          title: getText("confirmDeletion"),
+          message: getText("deleteConfirmMessage"),
+          confirmText: getText("delete"),
+          cancelText: getText("cancel"),
+          dangerNote: getText("deleteCannotUndo"),
+          onConfirm: () => {
+              products.splice(indexToDelete, 1);
+              localStorage.setItem("bizTrackProducts", JSON.stringify(products));
+              renderProducts(products);
+          },
+      });
   }
 }
 
@@ -375,9 +471,7 @@ function updateProduct(prodID) {
         localStorage.setItem("bizTrackProducts", JSON.stringify(products));
 
         renderProducts(products);
-
-        document.getElementById("product-form").reset();
-        resetSubmitButtonMode();
+        closeForm();
     }
 }
 
