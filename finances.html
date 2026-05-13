@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="BizTrack Project by Sumayyah"/>
+    <meta property="og:description" content="A project born out of real small business challenges, now simplifying product, order, and finance management."/>
+    <meta property="og:image:secure_url" content="https://i.imgur.com/0O47fVi.jpg"/>
+    <meta property="og:url" content="https://sumusa.github.io/biztrack/"/>
+    <link rel="stylesheet" href="./styles.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link rel="icon" type="image/x-icon" href="./assets/favicon.ico">
+    <title>Expenses - BizTrack</title>
+</head>
+<body>
+    <nav id="sidebar" class="sidebar" aria-label="Primary navigation" data-i18n-aria-label="primaryNavigation">
+        <div class="logo">
+            <a href="./index.html">
+                <i class="fas fa-b"></i>
+                <span>BizTrack</span>
+            </a>
+            <button type="button" class="icon-button sidebar-close" aria-label="Close sidebar" data-i18n-aria-label="closeSidebar" onclick="closeSidebar()">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+        </div>
+        <ul class="menu">
+            <li>
+                <a href="./index.html">
+                    <i class="fa-solid fa-gauge-high"></i>
+                    <span data-i18n="dashboard">Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="./products.html">
+                    <i class="fas fa-dolly"></i>
+                    <span data-i18n="products">Products</span>
+                </a>
+            </li>
+            <li>
+                <a href="./orders.html">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span data-i18n="orders">Orders</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="./finances.html" aria-current="page">
+                    <i class="fas fa-sack-dollar"></i>
+                    <span data-i18n="expenses">Expenses</span>
+                </a>
+            </li>
+            <li>
+                <a href="./inventory.html">
+                    <i class="fa-solid fa-boxes-stacked"></i>
+                    <span data-i18n="inventory">Inventory</span>
+                </a>
+            </li>
+            <li>
+                <a href="./help.html">
+                    <i class="fas fa-question-circle"></i>
+                    <span data-i18n="help">Help</span>
+                </a>
+            </li>
+            <li>
+                <a href="./about.html">
+                    <i class="fa-solid fa-users-line"></i>
+                    <span data-i18n="about">About</span>
+                </a>
+            </li>
+        </ul>
+        <div class="sidebar-footer user-panel">
+            <button type="button" class="user-panel-button" id="user-menu-button" aria-haspopup="menu" aria-expanded="false" aria-controls="user-menu" aria-label="Open user menu" data-i18n-aria-label="openUserMenu">
+                <span class="user-avatar" aria-hidden="true">G</span>
+                <span class="user-meta">
+                    <span class="user-name" data-i18n="guestUser">Guest User</span>
+                    <span class="user-plan" data-i18n="localMode">Local Mode</span>
+                </span>
+                <i class="fa-solid fa-chevron-right user-panel-chevron" aria-hidden="true"></i>
+            </button>
+            <div class="user-menu" id="user-menu" role="menu" hidden>
+                <button type="button" class="user-menu-profile user-menu-profile-button" role="menuitem" data-user-action="account">
+                    <span class="user-avatar" aria-hidden="true">G</span>
+                    <span class="user-menu-profile-text">
+                        <strong data-i18n="guestUser">Guest User</strong>
+                        <small data-i18n="localMode">Local Mode</small>
+                    </span>
+                    <i class="fa-solid fa-chevron-right user-menu-profile-chevron" aria-hidden="true"></i>
+                </button>
+                <div class="user-menu-divider"></div>
+                <button type="button" class="user-menu-item" role="menuitem" data-user-action="preferences">
+                    <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
+                    <span data-i18n="preferences">Preferences</span>
+                </button>
+                <button type="button" class="user-menu-item" role="menuitem" data-user-action="storage">
+                    <i class="fa-solid fa-database" aria-hidden="true"></i>
+                    <span data-i18n="dataStorage">Data &amp; Storage</span>
+                </button>
+                <a class="user-menu-item" role="menuitem" href="./privacy.html">
+                    <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+                    <span data-i18n="privacySettings">Privacy Settings</span>
+                </a>
+                <div class="user-menu-divider"></div>
+                <a class="user-menu-item" role="menuitem" href="./help.html">
+                    <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
+                    <span data-i18n="help">Help</span>
+                </a>
+                <a class="user-menu-item" role="menuitem" href="./about.html">
+                    <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                    <span data-i18n="about">About</span>
+                </a>
+                <div class="user-menu-divider"></div>
+                <div id="user-menu-auth-action" class="user-menu-auth-action-container"></div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <header class="header-wrapper">
+            <button type="button" class="menu-icon" aria-label="Open sidebar" data-i18n-aria-label="openSidebar" onclick="openSidebar()">
+               <i class="fa-solid fa-bars" aria-hidden="true"></i>
+            </button>
+            <div class="header-title">
+                <!-- <span>Primary</span> -->
+                <h2 data-i18n="expenses">Expenses</h2>
+            </div>
+            <div class="user-info header-actions">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="search" id="searchInput" placeholder="Search" data-i18n-placeholder="search">
+                </div>
+                <button type="button" id="language-toggle" class="language-toggle header-language-toggle" aria-label="Switch language to Chinese" title="Switch language to Chinese" data-active="en">
+                    <span class="language-toggle-slider" aria-hidden="true"></span>
+                    <span class="language-toggle-option is-active" data-lang-option="en">EN</span>
+                    <span class="language-toggle-option" data-lang-option="zh">CN</span>
+                </button>
+                <!-- <i class="fas fa-user-alt fa-xl"></i> -->
+            </div>
+        </header>
+
+        <div class="table-wrapper">
+            <div class="product-title">
+                <h3 class="main-title" data-i18n="expenses">Expenses</h3>
+                <div class="finance-button">
+                    <button class="add-button" onclick="openForm()" data-i18n="addExpense">Add Expense</button>
+                    <button class="download-button" onclick="exportToCSV()" data-i18n="exportCSV">Export to CSV</button>
+                </div>
+            </div>
+
+            <div class="form-popup">
+                <form class="form-container" id="transaction-form" onsubmit="addOrUpdate(event)">
+                    <div class="form-columns">
+                            <input type="hidden" id="tr-id">
+                            <label for="tr-date" data-i18n="date"><b>Date: </b></label>
+                            <input type="date" id="tr-date" required>
+
+                            <label for="tr-category" data-i18n="expenseCategory"><b>Expense Category</b></label>
+                            <select name="tr-category" id="tr-category" required>
+                                <option value="Rent" data-i18n="rent">Rent</option>
+                                <option value="Order Fulfillment" data-i18n="orderFulfillment">Order Fulfillment</option>
+                                <option value="Utilities" data-i18n="utilities">Utilities</option>
+                                <option value="Supplies" data-i18n="supplies">Supplies</option>
+                                <option value="Miscellaneous" data-i18n="miscellaneous">Miscellaneous</option>
+                            </select>
+
+                            <label for="tr-amount" data-i18n="amount"><b>Amount: </b></label>
+                            <input type="number" id="tr-amount" placeholder="$0.00" min="0.01" max="10000.00" step="0.01" required>
+
+                            <label for="tr-notes" data-i18n="notes"><b>Notes: </b></label>
+                            <input type="text" id="tr-notes" placeholder="Power bill" maxlength="120" required>
+                    </div>
+                    
+                    <div class="button-col">
+                        <button type="submit" class="btn" id="submitBtn" data-i18n="add">Add</button>
+                        <button type="button" class="btn cancel" onclick="closeForm()" data-i18n="cancel">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="table-container">
+                <table id="finance-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">
+                                <button type="button" class="sort-button" onclick="sortTable('trID', this)" data-i18n="serialNumber">S/N</button>
+                            </th>
+                            <th scope="col">
+                                <button type="button" class="sort-button" onclick="sortTable('trDate', this)" data-i18n="dateShort">Date</button>
+                            </th>
+                            <th scope="col">
+                                <button type="button" class="sort-button" onclick="sortTable('trCategory', this)" data-i18n="expenseCategory">Expense Category</button>
+                            </th>
+                            <th scope="col">
+                                <button type="button" class="sort-button" onclick="sortTable('trAmount', this)" data-i18n="amountShort">Amount</button>
+                            </th>
+                            <th scope="col">
+                                <button type="button" class="sort-button" onclick="sortTable('trNotes', this)" data-i18n="notesShort">Notes</button>
+                            </th>
+                            <th scope="col" data-i18n="action">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="6">
+                                <div id="total-expenses"></div>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </main>
+    <script src="./i18n.js"></script>
+    <script src="./cookie-consent.js"></script>
+    <script src="./user-menu.js"></script>
+    <script src="./sidebar.js"></script>
+    <script src="./finances.js"></script>
+</body>
+</html>
