@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="BizTrack Project by Sumayyah"/>
+    <meta property="og:description" content="A project born out of real small business challenges, now simplifying product, order, and finance management."/>
+    <meta property="og:image:secure_url" content="https://i.imgur.com/0O47fVi.jpg"/>
+    <meta property="og:url" content="https://sumusa.github.io/biztrack/"/>
+    <link rel="stylesheet" href="styles.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link rel="icon" type="image/x-icon" href="./assets/favicon.ico">
+    <title>Dashboard - BizTrack</title>
+</head>
+<body>
+    <nav id="sidebar" class="sidebar" aria-label="Primary navigation" data-i18n-aria-label="primaryNavigation">
+        <div class="logo">
+            <a href="./index.html" aria-current="page">
+                <i class="fas fa-b"></i>
+                <span>BizTrack</span>
+            </a>
+            <button type="button" class="icon-button sidebar-close" aria-label="Close sidebar" data-i18n-aria-label="closeSidebar" onclick="closeSidebar()">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+        </div>
+        <ul class="menu">
+            <li class="active">
+                <a href="./index.html" aria-current="page">
+                    <i class="fa-solid fa-gauge-high"></i>
+                    <span data-i18n="dashboard">Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="./products.html">
+                    <i class="fas fa-dolly"></i>
+                    <span data-i18n="products">Products</span>
+                </a>
+            </li>
+            <li>
+                <a href="./orders.html">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span data-i18n="orders">Orders</span>
+                </a>
+            </li>
+            <li>
+                <a href="./finances.html">
+                    <i class="fas fa-sack-dollar"></i>
+                    <span data-i18n="expenses">Expenses</span>
+                </a>
+            </li>
+            <li>
+                <a href="./help.html">
+                    <i class="fas fa-question-circle"></i>
+                    <span data-i18n="help">Help</span>
+                </a>
+            </li>
+        </ul>
+        <div class="sidebar-footer logout">
+            <a href="./about.html" class="sidebar-footer-link">
+                <span class="developer-avatar" aria-hidden="true">
+                    <i class="fa-solid fa-users-line"></i>
+                </span>
+                <span class="developer-meta">
+                    <span class="developer-title" data-i18n="meetDeveloper">Meet the Developer</span>
+                </span>
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <header class="header-wrapper">
+            <button type="button" class="menu-icon" aria-label="Open sidebar" data-i18n-aria-label="openSidebar" onclick="openSidebar()">
+                <i class="fa-solid fa-bars" aria-hidden="true"></i>
+            </button>
+
+            <div class="header-title">
+                <!-- <span>Primary</span> -->
+                <h2 data-i18n="dashboard">Dashboard</h2>
+            </div>
+            <div class="user-info header-actions">
+                <button type="button" id="language-toggle" class="language-toggle header-language-toggle" aria-label="Switch language to Chinese" title="Switch language to Chinese">
+                    <i class="fa-solid fa-language language-icon" aria-hidden="true"></i>
+                    <span class="language-label">
+                        <span class="lang-option" data-lang-option="en">EN</span>
+                        <span class="lang-separator" aria-hidden="true">/</span>
+                        <span class="lang-option" data-lang-option="zh">CN</span>
+                    </span>
+                </button>
+                <!-- <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="search" id="searchInput" placeholder="Search">
+                </div> -->
+                <!-- <i class="fas fa-user-alt fa-xl"></i> -->
+            </div>
+        </header>
+
+        <div class="card-container">
+            <h3 class="main-title" data-i18n="summary">Summary</h3>
+            <div class="card-wrapper">
+                <a href="./orders.html" class="summary-card-link" aria-label="View revenue details on the Orders page" data-i18n-aria-label="viewRevenueDetails">
+                    <div class="payment-card">
+                        <div class="card-header">
+                            <div class="amount" id="rev-amount"></div>
+                            <i class="fas fa-sack-dollar icon" aria-hidden="true"></i>
+                        </div>
+                        <span class="card-detail">**** **** **** 5674</span>
+                    </div>
+                </a>
+
+                <a href="./finances.html" class="summary-card-link" aria-label="View expense details on the Expenses page" data-i18n-aria-label="viewExpenseDetails">
+                    <div class="payment-card">
+                        <div class="card-header">
+                            <div class="amount" id="exp-amount"></div>
+                            <i class="fas fa-credit-card icon" aria-hidden="true"></i>
+                        </div>
+                        <span class="card-detail">**** **** **** 2356</span>
+                    </div>
+                </a>
+
+                <a href="./orders.html" class="summary-card-link" aria-label="View orders on the Orders page" data-i18n-aria-label="viewOrdersDetails">
+                    <div class="payment-card">
+                        <div class="card-header">
+                            <div class="amount" id="num-orders"></div>
+                            <i class="fas fa-shopping-cart icon" aria-hidden="true"></i>
+                        </div>
+                        <span class="card-detail">**** **** **** 1047</span>
+                    </div>
+                </a>
+
+                <div class="payment-card summary-card-static" aria-label="Current balance summary" data-i18n-aria-label="currentBalanceSummary">
+                    <div class="card-header">
+                        <div class="amount" id="balance"></div>
+                        <i class="fas fa-arrow-up-right-dots icon" aria-hidden="true"></i>
+                    </div>
+                    <span class="card-detail">**** **** **** 2951</span>
+                </div>
+            </div>
+        </div>
+        <div class="charts-container">
+            <h3 class="main-title" data-i18n="analytics">Analytics</h3>
+            <div class="charts-wrapper">
+                <div class="charts-card" role="img" aria-labelledby="bar-chart-title bar-chart-desc">
+                    <span class="chart-title" id="bar-chart-title" data-i18n="salesByCategory">Sales by Product Category</span>
+                    <p class="visually-hidden" id="bar-chart-desc" data-i18n="salesChartDesc">Bar chart showing total sales grouped by product category, based on saved product data.</p>
+                    <div id="bar-chart" aria-hidden="true"></div>
+                </div>
+                <div class="charts-card" role="img" aria-labelledby="donut-chart-title donut-chart-desc">
+                    <span class="chart-title" id="donut-chart-title" data-i18n="expenses">Expenses</span>
+                    <p class="visually-hidden" id="donut-chart-desc" data-i18n="expensesChartDesc">Donut chart showing expense totals grouped by transaction category, based on saved expense data.</p>
+                    <div id="donut-chart" aria-hidden="true"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Apex Charts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.45.2/apexcharts.min.js"></script>
+    <script src="./i18n.js"></script>
+    <script src="./cookie-consent.js"></script>
+    <script src="./script.js"></script>
+</body>
+</html>
