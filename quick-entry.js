@@ -1,5 +1,4 @@
 (function () {
-  const MODULES = ["product", "inventory", "order", "expense"];
   const STORAGE_KEYS = {
     products: "bizTrackProducts",
     inventory: "bizTrackInventory",
@@ -243,10 +242,10 @@
     }
 
     document.body.insertAdjacentHTML("beforeend", `
-      <div class="quick-entry-overlay" id="quick-entry-overlay" hidden></div>
+      <div class="quick-entry-overlay" id="quick-entry-overlay" aria-hidden="true" hidden></div>
       <section class="quick-entry-panel" id="quick-entry-panel" role="dialog" aria-modal="true" aria-labelledby="quick-entry-title" tabindex="-1" hidden>
         <div class="quick-entry-shell">
-          <aside class="quick-entry-tabs" id="quick-entry-tabs"></aside>
+          <div class="quick-entry-tabs" id="quick-entry-tabs" role="tablist"></div>
           <div class="quick-entry-content">
             <div class="quick-entry-panel-header">
               <h2 id="quick-entry-title"></h2>
@@ -282,6 +281,7 @@
 
     feedbackElement.hidden = false;
     feedbackElement.className = `quick-entry-feedback is-${type}`;
+    feedbackElement.setAttribute("aria-live", type === "error" ? "assertive" : "polite");
     feedbackElement.textContent = message;
   }
 
@@ -295,6 +295,7 @@
 
     feedbackElement.hidden = true;
     feedbackElement.className = "quick-entry-feedback";
+    feedbackElement.setAttribute("aria-live", "polite");
     feedbackElement.textContent = "";
   }
 
@@ -328,30 +329,35 @@
       { key: "expense", icon: "fa-receipt" },
     ];
 
-    return tabItems.map(({ key, icon }) => `
-      <button type="button" class="quick-entry-tab${state.activeModule === key ? " is-active" : ""}" data-quick-entry-tab="${key}">
+    return tabItems.map(({ key, icon }) => {
+      const isActive = state.activeModule === key;
+
+      return `
+      <button type="button" class="quick-entry-tab${isActive ? " is-active" : ""}" data-quick-entry-tab="${key}" role="tab" aria-selected="${isActive}" aria-controls="quick-entry-content-body" tabindex="${isActive ? "0" : "-1"}">
         <i class="fa-solid ${icon}" aria-hidden="true"></i>
         <span>${escapeHTML(getTextSafe(key))}</span>
       </button>
-    `).join("");
+    `;
+    }).join("");
   }
 
   function buildModeTabsMarkup(moduleKey) {
     const activeMode = state.activeModeByModule[moduleKey];
     return `
       <div class="quick-entry-mode-tabs" role="tablist" aria-label="${escapeHTML(getTextSafe("quickBusinessEntry"))}">
-        <button type="button" class="quick-entry-mode-tab${activeMode === "edit" ? " is-active" : ""}" data-quick-entry-mode="edit">${escapeHTML(getTextSafe("edit"))}</button>
-        <button type="button" class="quick-entry-mode-tab${activeMode === "add" ? " is-active" : ""}" data-quick-entry-mode="add">${escapeHTML(getTextSafe("add"))}</button>
+        <button type="button" class="quick-entry-mode-tab${activeMode === "edit" ? " is-active" : ""}" data-quick-entry-mode="edit" role="tab" aria-selected="${activeMode === "edit"}" aria-controls="quick-entry-content-body" tabindex="${activeMode === "edit" ? "0" : "-1"}">${escapeHTML(getTextSafe("edit"))}</button>
+        <button type="button" class="quick-entry-mode-tab${activeMode === "add" ? " is-active" : ""}" data-quick-entry-mode="add" role="tab" aria-selected="${activeMode === "add"}" aria-controls="quick-entry-content-body" tabindex="${activeMode === "add" ? "0" : "-1"}">${escapeHTML(getTextSafe("add"))}</button>
       </div>
     `;
   }
 
   function buildFeedbackMarkup() {
     if (!state.feedback.message) {
-      return '<p class="quick-entry-feedback" hidden></p>';
+      return '<p class="quick-entry-feedback" role="status" aria-live="polite" aria-atomic="true" hidden></p>';
     }
 
-    return `<p class="quick-entry-feedback is-${escapeHTML(state.feedback.type)}">${escapeHTML(state.feedback.message)}</p>`;
+    const liveMode = state.feedback.type === "error" ? "assertive" : "polite";
+    return `<p class="quick-entry-feedback is-${escapeHTML(state.feedback.type)}" role="status" aria-live="${liveMode}" aria-atomic="true">${escapeHTML(state.feedback.message)}</p>`;
   }
 
   function buildOptions(items, {
@@ -731,7 +737,8 @@
   function renderQuickEntry() {
     const quickEntryElements = ensureQuickEntryElements();
     quickEntryElements.title.textContent = getTextSafe("quickBusinessEntry");
-    quickEntryElements.closeButton.setAttribute("aria-label", getTextSafe("closeSettings"));
+    quickEntryElements.closeButton.setAttribute("aria-label", getTextSafe("closeQuickEntry"));
+    quickEntryElements.tabs.setAttribute("aria-label", getTextSafe("quickBusinessEntry"));
     quickEntryElements.tabs.innerHTML = buildModuleTabsMarkup();
     renderModuleContent();
   }

@@ -788,6 +788,7 @@ Object.assign(translations.zh, {
 Object.assign(translations.en, {
   addStock: "Add Stock",
   quickBusinessEntry: "Quick Business Entry",
+  closeQuickEntry: "Close quick entry",
   product: "Product",
   order: "Order",
   expense: "Expense",
@@ -838,6 +839,7 @@ Object.assign(translations.en, {
 Object.assign(translations.zh, {
   addStock: "添加库存",
   quickBusinessEntry: "快速业务录入",
+  closeQuickEntry: "关闭快速业务录入",
   product: "产品",
   order: "订单",
   expense: "支出",
