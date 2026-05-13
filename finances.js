@@ -87,7 +87,18 @@ const DEFAULT_TRANSACTIONS = [
 let transactions = [];
 const financeSortState = {};
 
+function bindFinancePageControls() {
+    document.querySelector(".add-button")?.addEventListener("click", openForm);
+    document.querySelector(".download-button")?.addEventListener("click", exportToCSV);
+    document.querySelector("#transaction-form")?.addEventListener("submit", addOrUpdate);
+    document.querySelector(".btn.cancel")?.addEventListener("click", closeForm);
+    document.querySelectorAll("[data-sort-column]").forEach((button) => {
+        button.addEventListener("click", () => sortTable(button.dataset.sortColumn, button));
+    });
+}
+
 window.onload = function () {
+    bindFinancePageControls();
     const storedTransactions = localStorage.getItem("bizTrackTransactions");
     if (storedTransactions) {
         transactions = JSON.parse(storedTransactions);

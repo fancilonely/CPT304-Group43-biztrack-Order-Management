@@ -3,6 +3,16 @@ const inventorySortState = {};
 const INVENTORY_STORAGE_KEY = "bizTrackInventory";
 const PRODUCTS_STORAGE_KEY = "bizTrackProducts";
 
+function bindInventoryPageControls() {
+    document.querySelector(".add-button")?.addEventListener("click", openForm);
+    document.querySelector(".download-button")?.addEventListener("click", exportToCSV);
+    document.querySelector("#inventory-form")?.addEventListener("submit", addOrUpdate);
+    document.querySelector(".btn.cancel")?.addEventListener("click", closeForm);
+    document.querySelectorAll("[data-sort-column]").forEach((button) => {
+        button.addEventListener("click", () => sortTable(button.dataset.sortColumn, button));
+    });
+}
+
 function getFallbackProducts() {
     return [
         {
@@ -371,6 +381,7 @@ function closeForm() {
 }
 
 function init() {
+    bindInventoryPageControls();
     inventory = getStoredInventory().map((item) => normalizeInventoryItem(item));
     autoSyncInventoryWithProducts();
     inventory = inventory.map((item) => normalizeInventoryItem(item));
