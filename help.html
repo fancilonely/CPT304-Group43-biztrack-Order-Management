@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="BizTrack Project by Sumayyah"/>
+    <meta property="og:description" content="A project born out of real small business challenges, now simplifying product, order, and finance management."/>
+    <meta property="og:image:secure_url" content="https://i.imgur.com/0O47fVi.jpg"/>
+    <meta property="og:url" content="https://sumusa.github.io/biztrack/"/>
+    <link rel="stylesheet" href="./styles.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link rel="icon" type="image/x-icon" href="./assets/favicon.ico">
+    <title>Help - BizTrack</title>
+</head>
+<body>
+    <nav id="sidebar" class="sidebar" aria-label="Primary navigation" data-i18n-aria-label="primaryNavigation">
+        <div class="logo">
+            <a href="./index.html">
+                <i class="fas fa-b"></i>
+                <span>BizTrack</span>
+            </a>
+            <button type="button" class="icon-button sidebar-close" aria-label="Close sidebar" data-i18n-aria-label="closeSidebar" onclick="closeSidebar()">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+        </div>
+        <ul class="menu">
+            <li>
+                <a href="./index.html">
+                    <i class="fa-solid fa-gauge-high"></i>
+                    <span data-i18n="dashboard">Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="./products.html">
+                    <i class="fas fa-dolly"></i>
+                    <span data-i18n="products">Products</span>
+                </a>
+            </li>
+            <li>
+                <a href="./inventory.html">
+                    <i class="fa-solid fa-boxes-stacked"></i>
+                    <span data-i18n="inventory">Inventory</span>
+                </a>
+            </li>
+            <li>
+                <a href="./orders.html">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span data-i18n="orders">Orders</span>
+                </a>
+            </li>
+            <li>
+                <a href="./finances.html">
+                    <i class="fas fa-sack-dollar"></i>
+                    <span data-i18n="expenses">Expenses</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="./help.html" aria-current="page">
+                    <i class="fas fa-question-circle"></i>
+                    <span data-i18n="help">Help</span>
+                </a>
+            </li>
+            <li>
+                <a href="./about.html">
+                    <i class="fa-solid fa-users-line"></i>
+                    <span data-i18n="about">About</span>
+                </a>
+            </li>
+        </ul>
+        <div class="sidebar-footer user-panel">
+            <button type="button" class="user-panel-button" id="user-menu-button" aria-haspopup="menu" aria-expanded="false" aria-controls="user-menu" aria-label="Open user menu" data-i18n-aria-label="openUserMenu">
+                <span class="user-avatar" aria-hidden="true">S</span>
+                <span class="user-meta">
+                    <span class="user-name" data-i18n="settings">Settings</span>
+                    <span class="user-plan" data-i18n="preferences">Preferences</span>
+                </span>
+                <i class="fa-solid fa-chevron-right user-panel-chevron" aria-hidden="true"></i>
+            </button>
+            <div class="user-menu" id="user-menu" role="menu" hidden>
+                <button type="button" class="user-menu-item" role="menuitem" data-user-action="preferences">
+                    <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
+                    <span data-i18n="preferences">Preferences</span>
+                </button>
+                <button type="button" class="user-menu-item" role="menuitem" data-user-action="storage">
+                    <i class="fa-solid fa-database" aria-hidden="true"></i>
+                    <span data-i18n="dataStorage">Data &amp; Storage</span>
+                </button>
+                <button type="button" class="user-menu-item" role="menuitem" data-user-action="privacy">
+                    <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+                    <span data-i18n="privacyPolicy">Privacy Policy</span>
+                </button>
+                <div class="user-menu-divider"></div>
+                <a class="user-menu-item" role="menuitem" href="./help.html">
+                    <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
+                    <span data-i18n="help">Help</span>
+                </a>
+                <a class="user-menu-item" role="menuitem" href="./about.html">
+                    <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                    <span data-i18n="about">About</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <header class="header-wrapper">
+            <button type="button" class="menu-icon" aria-label="Open sidebar" data-i18n-aria-label="openSidebar" onclick="openSidebar()">
+                <i class="fa-solid fa-bars" aria-hidden="true"></i>
+            </button>
+            <div class="header-title">
+                <h2 data-i18n="usingGuide">Using BizTrack: A Quick Guide</h2>
+            </div>
+            <div class="user-info header-actions">
+                <button type="button" id="language-toggle" class="language-toggle header-language-toggle" aria-label="Switch language to Chinese" title="Switch language to Chinese" data-active="en">
+                    <span class="language-toggle-slider" aria-hidden="true"></span>
+                    <span class="language-toggle-option is-active" data-lang-option="en">EN</span>
+                    <span class="language-toggle-option" data-lang-option="zh">CN</span>
+                </button>
+            </div>
+        </header>
+
+        <div class="guide-container page-enter">
+            <section id="using-biztrack">
+                <article>
+                    <h3 class="main-title" data-i18n="whatIsBizTrack">What is BizTrack?</h3>
+                    <p data-i18n="whatIsBizTrackText">BizTrack is your go-to business management tool designed with small business owners in mind. It's an all-in-one platform that helps you effortlessly manage your products, track orders, and stay on top of your finances. Let me walk you through the basics:</p>
+                </article>
+                <article>
+                    <h3 class="main-title" data-i18n="navigatingDashboard">Navigating the Dashboard</h3>
+                    <p data-i18n="navigatingDashboardText">The Dashboard is your central hub, giving you a snapshot of your business's overall performance. Here, you'll find key metrics like total expenses, revenues, profits and the number of orders. It's your command center for a quick overview.</p>
+                </article>
+                <article>
+                <h3 class="main-title" data-i18n="expensesPage">Expenses Page</h3>
+                <ol>
+                    <li data-i18n="recordExpensesText">Record Your Expenses: Head to the Expenses page to add your business expenses. Fill in the date, choose a category, enter the amount, and jot down any notes. It's that simple.</li>
+                    <li data-i18n="editDeleteExpensesText">Edit or Delete Expenses: Made a mistake? You can easily edit or delete expense records right from the Expenses page.</li>
+                </ol>
+                </article>
+                <article>
+                <h3 class="main-title" data-i18n="ordersPage">Orders Page</h3>
+                <ol>
+                    <li data-i18n="trackOrdersText">Track Your Orders: On the Orders page, you can keep tabs on all your orders. Each entry details the product, quantity, and order status.</li>
+                    <li data-i18n="effortlessEditingText">Effortless Editing: Need to update an order status? Click the Edit button and make your changes.</li>
+                </ol>
+                </article>
+                <article>
+                <h3 class="main-title" data-i18n="addingNewEntry">Adding a New Expense, Order or Product</h3>
+                <ol>
+                    <li data-i18n="addingNewEntryStep1">Click Add Expense or the equivalent button on the order or product page.</li>
+                    <li data-i18n="addingNewEntryStep2">Fill in the product details, order details, or expense details.</li>
+                    <li data-i18n="addingNewEntryStep3">Submit the form and the new record will appear on the relevant page and dashboard.</li>
+                </ol>
+                </article>
+                <article>
+                <h3 class="main-title" data-i18n="sortingSearching">Sorting and Searching Entries/Tables</h3>
+                <ol>
+                    <li data-i18n="sortingSearchingStep1">Click a table heading to sort records by that column.</li>
+                    <li data-i18n="sortingSearchingStep2">Use the search box at the top of each page to find matching records.</li>
+                </ol>
+                </article>
+                <article>
+                <h3 class="main-title" data-i18n="exportToCSVTitle">Export to CSV</h3>
+                <p data-i18n="exportToCSVText">Click Export to CSV to download a backup of your business data.</p>
+                </article>
+                <article>
+                <h3 class="main-title" data-i18n="privacyHelpTitle">Need privacy information?</h3>
+                <p data-i18n="helpClosingText">BizTrack is designed to be intuitive, user-friendly, and adaptable to your business needs.</p>
+                <p class="privacy-help-link">
+                    <button type="button" class="link-button privacy-settings-link" data-open-settings-tab="privacy" data-i18n="viewPrivacyPolicy" data-i18n-aria-label="openPrivacyInSettings">View our Privacy Policy</button>
+                </p>
+                </article>
+            </section>
+            <section id="contact">
+                <p data-i18n="contactPrompt">Have questions, feedback, or just want to connect? Feel free to reach out!</p>
+                <ul class="contact-icon">
+                    <li>
+                        <a href="https://www.linkedin.com/in/sumayyahmusa/" target="_blank" rel="noopener noreferrer" aria-label="Visit Sumayyah's LinkedIn profile" data-i18n-aria-label="visitLinkedIn">
+                            <i class="fa-brands fa-linkedin" aria-hidden="true"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/sumusa/" target="_blank" rel="noopener noreferrer" aria-label="Visit Sumayyah's GitHub profile" data-i18n-aria-label="visitGithub">
+                            <i class="fa-brands fa-square-github" aria-hidden="true"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="mailto:info@summeesarts.com" aria-label="Send an email to Sumayyah" data-i18n-aria-label="sendEmail">
+                            <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+                        </a>
+                    </li>
+                </ul>
+            </section>
+        </div>
+    </main>
+
+
+    <script src="./i18n.js"></script>
+    <script src="./cookie-consent.js"></script>
+    <script src="./user-menu.js"></script>
+    <script src="./sidebar.js"></script>
+</body>
