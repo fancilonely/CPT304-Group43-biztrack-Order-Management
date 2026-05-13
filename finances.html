@@ -61,7 +61,7 @@
                     <i class="fa-solid fa-users-line"></i>
                 </span>
                 <span class="developer-meta">
-                    <span class="developer-title" data-i18n="meetDeveloper">Meet the Developer</span>
+                    <span class="developer-title" data-i18n="meetDeveloper">About</span>
                 </span>
             </a>
         </div>
@@ -109,7 +109,7 @@
                             <label for="tr-date" data-i18n="date"><b>Date: </b></label>
                             <input type="date" id="tr-date" required>
 
-                            <label for="tr-category" data-i18n="category"><b>Category: </b></label>
+                            <label for="tr-category" data-i18n="expenseCategory"><b>Expense Category</b></label>
                             <select name="tr-category" id="tr-category" required>
                                 <option value="Rent" data-i18n="rent">Rent</option>
                                 <option value="Order Fulfillment" data-i18n="orderFulfillment">Order Fulfillment</option>
@@ -119,10 +119,10 @@
                             </select>
 
                             <label for="tr-amount" data-i18n="amount"><b>Amount: </b></label>
-                            <input type="number" id="tr-amount" placeholder="$0.00" min="0.00" max="10000.00" step="0.01" required>
+                            <input type="number" id="tr-amount" placeholder="$0.00" min="0.01" max="10000.00" step="0.01" required>
 
                             <label for="tr-notes" data-i18n="notes"><b>Notes: </b></label>
-                            <input type="text" id="tr-notes" placeholder="Power bill" required>
+                            <input type="text" id="tr-notes" placeholder="Power bill" maxlength="120" required>
                     </div>
                     
                     <div class="button-col">

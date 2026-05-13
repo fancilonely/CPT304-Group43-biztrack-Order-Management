@@ -1,4 +1,6 @@
 
+const SIDEBAR_STATE_KEY = "bizTrackSidebarCollapsed";
+
 function openSidebar() {
     const sidebar = document.getElementById("sidebar");
     if (!sidebar) {
@@ -8,7 +10,9 @@ function openSidebar() {
     if (isMobileSidebarMode()) {
         sidebar.classList.add("is-open");
     } else {
-        document.body.classList.remove("sidebar-collapsed");
+        const isCollapsed = document.body.classList.contains("sidebar-collapsed");
+        document.body.classList.toggle("sidebar-collapsed", !isCollapsed);
+        localStorage.setItem(SIDEBAR_STATE_KEY, isCollapsed ? "false" : "true");
     }
 }
 
@@ -22,6 +26,7 @@ function closeSidebar() {
         sidebar.classList.remove("is-open");
     } else {
         document.body.classList.add("sidebar-collapsed");
+        localStorage.setItem(SIDEBAR_STATE_KEY, "true");
     }
 }
 
@@ -29,42 +34,56 @@ function isMobileSidebarMode() {
     return window.matchMedia("(max-width: 768px)").matches;
 }
 
-window.addEventListener("resize", () => {
+function applyStoredSidebarState() {
     const sidebar = document.getElementById("sidebar");
     if (!sidebar) {
         return;
     }
 
-    if (!isMobileSidebarMode()) {
+    if (isMobileSidebarMode()) {
         sidebar.classList.remove("is-open");
+        return;
     }
-});
+
+    const isCollapsed = localStorage.getItem(SIDEBAR_STATE_KEY) === "true";
+    document.body.classList.toggle("sidebar-collapsed", isCollapsed);
+    sidebar.classList.remove("is-open");
+}
+
+window.addEventListener("resize", applyStoredSidebarState);
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", applyStoredSidebarState);
+} else {
+    applyStoredSidebarState();
+}
 
 
 function openForm() {
-    var form = document.getElementById("transaction-form");
+    const form = document.getElementById("transaction-form");
 
-    if (form.style.display === "block") {
+    if (form.classList.contains("is-open")) {
         closeForm();
         return;
     }
 
     form.reset();
     resetSubmitButtonMode();
-    form.style.display = "block";
+    form.classList.add("is-open");
+    form.setAttribute("aria-hidden", "false");
 }
 
 function closeForm() {
     const form = document.getElementById("transaction-form");
     form.reset();
     resetSubmitButtonMode();
-    form.style.display = "none";
+    form.classList.remove("is-open");
+    form.setAttribute("aria-hidden", "true");
 }
 
 
 let transactions = [];
 const financeSortState = {};
-let serialNumberCounter;
 
 window.onload = function () {
     const storedTransactions = localStorage.getItem("bizTrackTransactions");
@@ -109,13 +128,12 @@ window.onload = function () {
             },
         ];
 
-        serialNumberCounter = transactions.length + 1
-  
         localStorage.setItem("bizTrackTransactions", JSON.stringify(transactions));
     }
   
     renderTransactions(transactions);
     resetSubmitButtonMode();
+    closeForm();
 }
 
 function getSubmitButtonText(mode) {
@@ -170,30 +188,90 @@ function addOrUpdate(event) {
     }
 }
 
+function isMoneyString(value, { allowZero = false } = {}) {
+    const trimmed = String(value).trim();
+    const pattern = /^\d+(\.\d{1,2})?$/;
 
-function newTransaction() {
+    if (!pattern.test(trimmed)) {
+        return false;
+    }
+
+    const numberValue = Number(trimmed);
+
+    if (!Number.isFinite(numberValue) || numberValue > 10000) {
+        return false;
+    }
+
+    return allowZero ? numberValue >= 0 : numberValue > 0;
+}
+
+function validateTransactionForm() {
     const trDate = document.getElementById("tr-date").value;
     const trCategory = document.getElementById("tr-category").value;
-    const trAmount = parseFloat(document.getElementById("tr-amount").value);
-    const trNotes = document.getElementById("tr-notes").value;
+    const rawTrAmount = document.getElementById("tr-amount").value;
+    const trNotes = document.getElementById("tr-notes").value.trim();
+    const validCategories = new Set([
+        "Rent",
+        "Order Fulfillment",
+        "Utilities",
+        "Supplies",
+        "Miscellaneous",
+    ]);
 
-    serialNumberCounter = transactions.length + 1;
-    let trID = serialNumberCounter;
+    if (!trDate) {
+        alert("Expense date is required.");
+        return null;
+    }
+
+    if (!validCategories.has(trCategory)) {
+        alert("Please choose a valid expense category.");
+        return null;
+    }
+
+    if (!isMoneyString(rawTrAmount)) {
+        alert("Expense amount must be between 0.01 and 10000.00.");
+        return null;
+    }
+
+    if (!trNotes) {
+        alert("Notes are required.");
+        return null;
+    }
+
+    if (trNotes.length > 120) {
+        alert("Notes must be 120 characters or fewer.");
+        return null;
+    }
+
+    return {
+        trDate,
+        trCategory,
+        trAmount: Number(rawTrAmount),
+        trNotes,
+    };
+}
+
+
+function newTransaction() {
+    const validatedTransaction = validateTransactionForm();
+
+    if (!validatedTransaction) {
+        return;
+    }
+
+    const trID = transactions.length > 0
+        ? Math.max(...transactions.map(transaction => Number(transaction.trID))) + 1
+        : 1;
     
     const transaction = {
       trID,
-      trDate,
-      trCategory,
-      trAmount,
-      trNotes,
+      ...validatedTransaction,
     };
     
     transactions.push(transaction);
   
     renderTransactions(transactions);
     localStorage.setItem("bizTrackTransactions", JSON.stringify(transactions));
-
-    serialNumberCounter++;
     displayExpenses();
   
     document.getElementById("transaction-form").reset();
@@ -310,7 +388,9 @@ function editRow(trID) {
   
     setSubmitButtonMode("update", trID);
 
-    document.getElementById("transaction-form").style.display = "block";
+    const form = document.getElementById("transaction-form");
+    form.classList.add("is-open");
+    form.setAttribute("aria-hidden", "false");
   }
   
 function deleteTransaction(trID) {
@@ -329,12 +409,15 @@ function deleteTransaction(trID) {
     const indexToUpdate = transactions.findIndex(transaction => transaction.trID === trID);
 
     if (indexToUpdate !== -1) {
+        const validatedTransaction = validateTransactionForm();
+
+        if (!validatedTransaction) {
+            return;
+        }
+
         const updatedTransaction = {
             trID: trID,
-            trDate: document.getElementById("tr-date").value,
-            trCategory: document.getElementById("tr-category").value,
-            trAmount: parseFloat(document.getElementById("tr-amount").value),
-            trNotes: document.getElementById("tr-notes").value,
+            ...validatedTransaction,
         };
 
         transactions[indexToUpdate] = updatedTransaction;

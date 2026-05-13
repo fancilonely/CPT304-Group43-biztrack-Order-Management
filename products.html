@@ -61,7 +61,7 @@
                     <i class="fa-solid fa-users-line"></i>
                 </span>
                 <span class="developer-meta">
-                    <span class="developer-title" data-i18n="meetDeveloper">Meet the Developer</span>
+                    <span class="developer-title" data-i18n="meetDeveloper">About</span>
                 </span>
             </a>
         </div>
@@ -98,7 +98,7 @@
                 <h3 class="main-title" data-i18n="products">Products</h3>
                 <div class="product-button">
                     <button class="add-button" onclick="openForm()" data-i18n="addProduct">Add Product</button>
-                    <button class="download-button" onclick="exportToCSV()" data-i18n="downloadCSV">Download CSV</button>
+                    <button class="download-button" onclick="exportToCSV()" data-i18n="downloadCSV">Export to CSV</button>
                 </div>
             </div>
             <div class="form-popup">
@@ -106,7 +106,7 @@
                     <div class="form-columns">
                         <div class="first-col">
                             <label for="product-id" data-i18n="productID"><b>Product ID: </b></label>
-                            <input type="text" id="product-id" placeholder="PD001" required>
+                            <input type="text" id="product-id" inputmode="numeric" pattern="[0-9]*" placeholder="001" required>
                         
                             <label for="product-name" data-i18n="productName"><b>Product Name</b></label>
                             <select name="product-name" id="product-name" required>
@@ -140,7 +140,7 @@
                             </select>
     
                             <label for="product-desc" data-i18n="productDescription"><b>Product Description:</b></label>
-                            <input type="text" id="product-desc" placeholder="Travel Mug" required>
+                            <input type="text" id="product-desc" placeholder="Describe the product" maxlength="120" required>
                         </div>
                         <div class="second-col">
                             <label for="product-cat" data-i18n="productCategory"><b>Product Category:</b></label>
@@ -154,10 +154,10 @@
                             </select>
     
                             <label for="product-price" data-i18n="productPrice"><b>Product Price:</b></label>
-                            <input type="number" id="product-price" placeholder="$0.00" min="0.00" max="10000.00" step="0.01" required>
+                            <input type="number" id="product-price" placeholder="$0.00" min="0.01" max="10000.00" step="0.01" required>
     
                             <label for="product-sold" data-i18n="unitsSold"><b>Number of Units Sold:</b></label>
-                            <input type="number" id="product-sold" placeholder="10" required>
+                            <input type="number" id="product-sold" placeholder="10" min="0" step="1" required>
                         </div>
                     </div>
                     
