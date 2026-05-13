@@ -530,6 +530,77 @@ Object.assign(translations.en, {
   cookieChoiceResetFromSettings: "Cookie choice has been reset. The banner will appear again.",
 });
 
+Object.assign(translations.en, {
+  addInventory: "Add Inventory",
+  inventoryID: "Inventory ID:",
+  inventoryIDShort: "Inventory ID",
+  inventoryCategory: "Category",
+  stockQuantity: "Stock Quantity",
+  reorderLevel: "Reorder Level",
+  supplier: "Supplier",
+  lastUpdated: "Last Updated",
+  inventoryStatus: "Status",
+  inStock: "In Stock",
+  lowStock: "Low Stock",
+  outOfStock: "Out of Stock",
+  chooseInventoryProduct: "Choose a product",
+  chooseInventoryCategory: "Choose a category",
+  editInventory: "Edit inventory",
+  deleteInventory: "Delete inventory",
+});
+
+Object.assign(translations.en, {
+  inventoryProduct: "Product",
+  inventoryAlerts: "Inventory Alerts",
+  inventoryAlertsDesc: "Stock levels that may need attention.",
+  noInventoryYet: "No inventory records yet.",
+  notEnoughStock: "Not enough stock for this order.",
+  inventoryProductExists: "An inventory record for this product already exists.",
+  inventoryRecordRequired: "A matching inventory record is required before this order can be fulfilled.",
+  fulfilledOrderLocked: "This fulfilled order has already updated inventory. Product and quantity cannot be changed.",
+  deleteAppliedOrderWarning: "This order has already updated inventory. Deleting it will not restore stock automatically. Continue?",
+});
+
+Object.assign(translations.en, {
+  updateStock: "Update Stock",
+  totalInventoryItems: "Total Items",
+  notAssigned: "Not assigned",
+  autoCreatedInventoryNote: "Auto-created from Products",
+  confirmDeletion: "Confirm deletion",
+  deleteConfirmMessage: "Are you sure you want to delete this record?",
+  deleteCannotUndo: "This action cannot be undone.",
+  delete: "Delete",
+  deleteAppliedOrderModalWarning: "This order has already updated inventory. Deleting it will not restore stock automatically.",
+});
+
+Object.assign(translations.en, {
+  settings: "Settings",
+  settingsCenter: "Settings Center",
+  preferences: "Preferences",
+  dataStorage: "Data & Storage",
+  privacySettings: "Privacy Settings",
+  storageMode: "Storage Mode",
+  browserStorage: "Browser Storage",
+  browserStorageDesc: "Business data is stored in this browser.",
+  dataStorageDesc: "Manage BizTrack data stored in this browser.",
+  storedDataDesc: "Products, inventory, orders, expenses, language preference, theme preference, and cookie choice are stored in this browser.",
+  clearBusinessData: "Clear Business Data",
+  clearBusinessDataDesc: "Clear saved products, inventory, orders, and expenses from this browser.",
+  confirmClearBusinessData: "Clear saved products, inventory, orders, and expenses from this browser?",
+  businessDataCleared: "Business data has been cleared. Demo data will be restored on reload.",
+  userSettings: "Settings Center",
+  languagePreference: "Language Preference",
+  accountMode: "Storage Mode",
+  accountModeDesc: "Business data is stored in this browser.",
+  cookieChoiceDesc: "Reset cookie choice.",
+  clearLocalBusinessData: "Clear Business Data",
+  clearLocalBusinessDataWarning: "Clear saved products, inventory, orders, and expenses from this browser.",
+  confirmClearLocalBusinessData: "Clear saved products, inventory, orders, and expenses from this browser?",
+  localBusinessDataCleared: "Business data has been cleared. Demo data will be restored on reload.",
+  privacySettingsGuide: "To manage cookie consent or browser-stored business data, open the Settings panel at the bottom of the sidebar and choose Data & Storage.",
+  privacyStoredDataText: "BizTrack stores products, inventory, orders, expenses, language preference, theme preference, and cookie consent choice in your browser.",
+});
+
 Object.assign(translations.zh, {
   login: "登录",
   logout: "退出登录",
@@ -593,6 +664,85 @@ Object.assign(translations.zh, {
   cookieChoiceResetFromSettings: "Cookie 选择已重置，提示横幅将再次出现。",
 });
 
+Object.assign(translations.zh, {
+  addInventory: "添加库存",
+  inventoryID: "库存编号：",
+  inventoryIDShort: "库存编号",
+  inventoryCategory: "类别",
+  stockQuantity: "库存数量",
+  reorderLevel: "补货阈值",
+  supplier: "供应商",
+  lastUpdated: "最后更新",
+  inventoryStatus: "状态",
+  inStock: "库存充足",
+  lowStock: "库存偏低",
+  outOfStock: "缺货",
+  chooseInventoryProduct: "请选择产品",
+  chooseInventoryCategory: "请选择类别",
+  editInventory: "编辑库存",
+  deleteInventory: "删除库存",
+});
+
+Object.assign(translations.zh, {
+  inventoryProduct: "产品",
+  inventoryAlerts: "库存提醒",
+  inventoryAlertsDesc: "需要关注的库存状态。",
+  noInventoryYet: "暂无库存记录",
+  notEnoughStock: "该订单库存不足。",
+  inventoryProductExists: "该产品已经存在库存记录。",
+  inventoryRecordRequired: "该订单发货或完成前需要先创建对应库存记录。",
+  fulfilledOrderLocked: "该已履约订单已经更新库存，不能再修改产品和数量。",
+  deleteAppliedOrderWarning: "该订单已经更新库存，删除它不会自动恢复库存。是否继续？",
+});
+
+Object.assign(translations.zh, {
+  updateStock: "更新库存",
+  totalInventoryItems: "库存项目",
+  notAssigned: "未设置",
+  autoCreatedInventoryNote: "已根据产品自动创建",
+});
+
+Object.assign(translations.zh, {
+  updateStock: "\u66f4\u65b0\u5e93\u5b58",
+  totalInventoryItems: "\u5e93\u5b58\u9879\u76ee",
+  notAssigned: "\u672a\u8bbe\u7f6e",
+  autoCreatedInventoryNote: "\u5df2\u6839\u636e\u4ea7\u54c1\u81ea\u52a8\u521b\u5efa",
+  confirmDeletion: "\u786e\u8ba4\u5220\u9664",
+  deleteConfirmMessage: "\u786e\u5b9a\u8981\u5220\u9664\u8fd9\u6761\u8bb0\u5f55\u5417\uff1f",
+  deleteCannotUndo: "\u6b64\u64cd\u4f5c\u65e0\u6cd5\u64a4\u9500\u3002",
+  delete: "\u5220\u9664",
+  deleteAppliedOrderModalWarning: "\u8be5\u8ba2\u5355\u5df2\u7ecf\u66f4\u65b0\u5e93\u5b58\uff0c\u5220\u9664\u5b83\u4e0d\u4f1a\u81ea\u52a8\u6062\u590d\u5e93\u5b58\u3002",
+});
+
+Object.assign(translations.zh, {
+  settings: "\u8bbe\u7f6e",
+  settingsCenter: "\u8bbe\u7f6e\u4e2d\u5fc3",
+  preferences: "\u504f\u597d\u8bbe\u7f6e",
+  dataStorage: "\u6570\u636e\u4e0e\u5b58\u50a8",
+  privacySettings: "\u9690\u79c1\u8bbe\u7f6e",
+  storageMode: "\u5b58\u50a8\u6a21\u5f0f",
+  browserStorage: "\u6d4f\u89c8\u5668\u5b58\u50a8",
+  browserStorageDesc: "\u4e1a\u52a1\u6570\u636e\u4fdd\u5b58\u5728\u5f53\u524d\u6d4f\u89c8\u5668\u4e2d\u3002",
+  dataStorageDesc: "\u7ba1\u7406\u4fdd\u5b58\u5728\u5f53\u524d\u6d4f\u89c8\u5668\u4e2d\u7684 BizTrack \u6570\u636e\u3002",
+  storedDataDesc: "\u4ea7\u54c1\u3001\u5e93\u5b58\u3001\u8ba2\u5355\u3001\u652f\u51fa\u3001\u8bed\u8a00\u504f\u597d\u3001\u4e3b\u9898\u504f\u597d\u548c Cookie \u9009\u62e9\u4f1a\u4fdd\u5b58\u5728\u5f53\u524d\u6d4f\u89c8\u5668\u4e2d\u3002",
+  clearBusinessData: "\u6e05\u9664\u4e1a\u52a1\u6570\u636e",
+  clearBusinessDataDesc: "\u6e05\u9664\u5f53\u524d\u6d4f\u89c8\u5668\u4e2d\u4fdd\u5b58\u7684\u4ea7\u54c1\u3001\u5e93\u5b58\u3001\u8ba2\u5355\u548c\u652f\u51fa\u3002",
+  confirmClearBusinessData: "\u662f\u5426\u6e05\u9664\u5f53\u524d\u6d4f\u89c8\u5668\u4e2d\u4fdd\u5b58\u7684\u4ea7\u54c1\u3001\u5e93\u5b58\u3001\u8ba2\u5355\u548c\u652f\u51fa\uff1f",
+  businessDataCleared: "\u4e1a\u52a1\u6570\u636e\u5df2\u6e05\u9664\uff0c\u5237\u65b0\u540e\u5c06\u6062\u590d\u793a\u4f8b\u6570\u636e\u3002",
+  userSettings: "\u8bbe\u7f6e\u4e2d\u5fc3",
+  languagePreference: "\u8bed\u8a00\u504f\u597d",
+  accountMode: "\u5b58\u50a8\u6a21\u5f0f",
+  accountModeDesc: "\u4e1a\u52a1\u6570\u636e\u4fdd\u5b58\u5728\u5f53\u524d\u6d4f\u89c8\u5668\u4e2d\u3002",
+  cookieChoiceDesc: "\u91cd\u7f6e Cookie \u9009\u62e9\u3002",
+  clearLocalBusinessDataShort: "\u6e05\u9664",
+  clearLocalBusinessData: "\u6e05\u9664\u4e1a\u52a1\u6570\u636e",
+  clearLocalBusinessDataWarning: "\u6e05\u9664\u5f53\u524d\u6d4f\u89c8\u5668\u4e2d\u4fdd\u5b58\u7684\u4ea7\u54c1\u3001\u5e93\u5b58\u3001\u8ba2\u5355\u548c\u652f\u51fa\u3002",
+  confirmClearLocalBusinessData: "\u662f\u5426\u6e05\u9664\u5f53\u524d\u6d4f\u89c8\u5668\u4e2d\u4fdd\u5b58\u7684\u4ea7\u54c1\u3001\u5e93\u5b58\u3001\u8ba2\u5355\u548c\u652f\u51fa\uff1f",
+  localBusinessDataCleared: "\u4e1a\u52a1\u6570\u636e\u5df2\u6e05\u9664\uff0c\u5237\u65b0\u540e\u5c06\u6062\u590d\u793a\u4f8b\u6570\u636e\u3002",
+  privacySettingsGuide: "\u5982\u9700\u7ba1\u7406 Cookie \u540c\u610f\u6216\u4fdd\u5b58\u5728\u6d4f\u89c8\u5668\u4e2d\u7684\u4e1a\u52a1\u6570\u636e\uff0c\u8bf7\u6253\u5f00\u4fa7\u8fb9\u680f\u5e95\u90e8\u7684\u8bbe\u7f6e\u9762\u677f\uff0c\u5e76\u9009\u62e9\u201c\u6570\u636e\u4e0e\u5b58\u50a8\u201d\u3002",
+  privacyStoredDataText: "\u5728\u5f53\u524d\u6d4f\u89c8\u5668\u4e2d\uff0cBizTrack \u4f1a\u4fdd\u5b58\u4ea7\u54c1\u3001\u5e93\u5b58\u3001\u8ba2\u5355\u3001\u652f\u51fa\u3001\u8bed\u8a00\u504f\u597d\u3001\u4e3b\u9898\u504f\u597d\u548c Cookie \u540c\u610f\u9009\u62e9\u3002",
+});
+
 const valueTranslationKeys = {
   Hats: "hats",
   Drinkware: "drinkware",
@@ -630,6 +780,12 @@ const valueTranslationKeys = {
   Shipped: "shipped",
   Delivered: "delivered",
 };
+
+Object.assign(valueTranslationKeys, {
+  "In Stock": "inStock",
+  "Low Stock": "lowStock",
+  "Out of Stock": "outOfStock",
+});
 
 const LANGUAGE_STORAGE_KEY = "bizTrackLanguage";
 

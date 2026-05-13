@@ -177,6 +177,10 @@ function getFallbackProducts() {
   ];
 }
 
+function getFallbackInventory() {
+  return [];
+}
+
 function getStoredCollection(key, fallbackItems) {
   const storedValue = localStorage.getItem(key);
   return storedValue ? JSON.parse(storedValue) : fallbackItems;
@@ -244,8 +248,13 @@ function createStatusOverviewItem(statusKey, value) {
   const item = document.createElement("div");
   const label = document.createElement("span");
   const count = document.createElement("span");
+  const statusClassMap = {
+    inStock: "in-stock",
+    lowStock: "low-stock",
+    outOfStock: "out-of-stock",
+  };
 
-  item.className = `status-overview-item ${statusKey}`;
+  item.className = `status-overview-item ${statusClassMap[statusKey] || statusKey}`;
   label.className = "status-overview-label";
   count.className = "status-overview-value";
 
@@ -254,6 +263,13 @@ function createStatusOverviewItem(statusKey, value) {
 
   item.append(label, count);
   return item;
+}
+
+function createStatusOverviewEmptyState(message) {
+  const emptyState = document.createElement("div");
+  emptyState.className = "status-overview-empty";
+  emptyState.textContent = message;
+  return emptyState;
 }
 
 function renderOrderStatusOverview() {
@@ -285,9 +301,62 @@ function renderOrderStatusOverview() {
   );
 }
 
+function renderInventoryAlertsOverview() {
+  const overview = document.getElementById("inventory-alerts-overview");
+  if (!overview) {
+    return;
+  }
+
+  const inventoryItems = getStoredCollection("bizTrackInventory", getFallbackInventory());
+
+  if (!inventoryItems.length) {
+    overview.replaceChildren(createStatusOverviewEmptyState(getText("noInventoryYet")));
+    return;
+  }
+
+  const counts = {
+    inStock: 0,
+    lowStock: 0,
+    outOfStock: 0,
+  };
+
+  inventoryItems.forEach((item) => {
+    const stockQuantity = Number(item.stockQuantity) || 0;
+    const reorderLevel = Number(item.reorderLevel) || 0;
+    let normalizedStatus = "In Stock";
+
+    if (stockQuantity === 0) {
+      normalizedStatus = "Out of Stock";
+    } else if (stockQuantity <= reorderLevel) {
+      normalizedStatus = "Low Stock";
+    }
+
+    if (normalizedStatus === "In Stock") {
+      counts.inStock += 1;
+      return;
+    }
+
+    if (normalizedStatus === "Low Stock") {
+      counts.lowStock += 1;
+      return;
+    }
+
+    if (normalizedStatus === "Out of Stock") {
+      counts.outOfStock += 1;
+    }
+  });
+
+  overview.replaceChildren(
+    createStatusOverviewItem("inStock", counts.inStock),
+    createStatusOverviewItem("lowStock", counts.lowStock),
+    createStatusOverviewItem("outOfStock", counts.outOfStock)
+  );
+}
+
 function renderDashboardWorkspace() {
   renderRecentActivity();
   renderOrderStatusOverview();
+  renderInventoryAlertsOverview();
 }
 
 function renderDashboardSummary() {
@@ -517,5 +586,6 @@ document.addEventListener("languageChanged", () => {
   renderDashboardSummary();
   renderRecentActivity();
   renderOrderStatusOverview();
+  renderInventoryAlertsOverview();
   initializeChart();
 });
