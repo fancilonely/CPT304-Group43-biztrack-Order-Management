@@ -249,6 +249,7 @@ function createStatusOverviewItem(statusKey, value) {
   const label = document.createElement("span");
   const count = document.createElement("span");
   const statusClassMap = {
+    totalInventoryItems: "inventory-total",
     inStock: "in-stock",
     lowStock: "low-stock",
     outOfStock: "out-of-stock",
@@ -347,6 +348,7 @@ function renderInventoryAlertsOverview() {
   });
 
   overview.replaceChildren(
+    createStatusOverviewItem("totalInventoryItems", inventoryItems.length),
     createStatusOverviewItem("inStock", counts.inStock),
     createStatusOverviewItem("lowStock", counts.lowStock),
     createStatusOverviewItem("outOfStock", counts.outOfStock)
@@ -357,6 +359,12 @@ function renderDashboardWorkspace() {
   renderRecentActivity();
   renderOrderStatusOverview();
   renderInventoryAlertsOverview();
+}
+
+function refreshDashboard() {
+  renderDashboardSummary();
+  renderDashboardWorkspace();
+  initializeChart();
 }
 
 function renderDashboardSummary() {
@@ -424,6 +432,33 @@ function calculateCategorySales(products) {
   return categorySales;
 }
 
+function isDarkTheme() {
+  return document.documentElement.dataset.theme === "dark";
+}
+
+function getChartTextColor() {
+  return isDarkTheme() ? "#fffaf6" : "#262626";
+}
+
+function getChartMutedColor() {
+  return isDarkTheme() ? "#e2d4cc" : "#6b7280";
+}
+
+function getChartGridColor() {
+  return isDarkTheme() ? "rgba(255, 250, 246, 0.24)" : "rgba(0, 0, 0, 0.12)";
+}
+
+function getSalesChartColors() {
+  return isDarkTheme()
+    ? ["#8fc7b7", "#d7b28f", "#9cc9df", "#d99a84", "#c7b8a8"]
+    : ["#247BA0", "#A37A74", "#249672", "#e49273", "#9AADBF"];
+}
+
+function getExpenseChartColors() {
+  return isDarkTheme()
+    ? ["#8fc7b7", "#d9a889", "#6f8fb1", "#c8b27e", "#b8837a"]
+    : undefined;
+}
 
 function initializeChart() {
   const items = getStoredCollection("bizTrackProducts", getFallbackProducts());
@@ -442,11 +477,9 @@ function initializeChart() {
         type: 'bar',
         height: 350,
         toolbar: {show: false},
+        foreColor: getChartTextColor(),
       },
-      theme: {
-        palette: 'palette9' // upto palette10
-      },
-      // colors: ['#247BA0', '#A37A74', '#249672', '#e49273', '#9AADBF'],
+      colors: getSalesChartColors(),
       plotOptions: {
         bar: {
           distributed: true,
@@ -464,21 +497,44 @@ function initializeChart() {
       fill: {
         opacity: 0.7,
       },
+      grid: {
+        borderColor: getChartGridColor(),
+      },
       xaxis: {
         categories: Object.keys(sortedCategorySales).map(category => translateProductCategory(category)),
         axisTicks: {
           show: false,
         },
+        labels: {
+          style: {
+            colors: getChartMutedColor(),
+          },
+        },
+        axisBorder: {
+          color: getChartGridColor(),
+        },
       },
       yaxis: {
+        labels: {
+          style: {
+            colors: [getChartMutedColor()],
+          },
+        },
         title: {
           text: getText("totalSalesDollars"),
+          style: {
+            color: getChartMutedColor(),
+          },
         },
         axisTicks: {
           show: false,
         },
+        axisBorder: {
+          color: getChartGridColor(),
+        },
       },
       tooltip: {
+        theme: isDarkTheme() ? "dark" : "light",
         y: {
           formatter: function (val) {
             return '$' + val.toFixed(2);
@@ -522,22 +578,21 @@ function initializeChart() {
     series: Object.values(categoryExpData),
     labels: Object.keys(categoryExpData).map(category => translateExpenseCategory(category)),
     chart: {
-      // height: 350,
       type: 'donut',
       width: '100%',
       toolbar: {
         show: false,
       },
+      foreColor: getChartTextColor(),
     },
-    theme: {
-      palette: 'palette1' // upto palette10
-    },
+    colors: getExpenseChartColors(),
     dataLabels: {
       enabled: true,
       style: {
         fontSize: '14px',
         fontFamily: 'Loto, sans-serif',
         fontWeight: 'regular',
+        colors: [getChartTextColor()],
       },
     },
     plotOptions: {
@@ -555,8 +610,12 @@ function initializeChart() {
     legend: {
       position: 'left',
       offsetY: 55,
+      labels: {
+        colors: getChartTextColor(),
+      },
     },
     tooltip: {
+      theme: isDarkTheme() ? "dark" : "light",
       y: {
         formatter: function (val) {
           return '$' + val.toFixed(2);
@@ -577,15 +636,17 @@ function initializeChart() {
 };
 
 window.addEventListener("load", () => {
-  renderDashboardSummary();
-  renderDashboardWorkspace();
-  initializeChart();
+  refreshDashboard();
 });
 
 document.addEventListener("languageChanged", () => {
-  renderDashboardSummary();
-  renderRecentActivity();
-  renderOrderStatusOverview();
-  renderInventoryAlertsOverview();
-  initializeChart();
+  refreshDashboard();
+});
+
+document.addEventListener("themeChanged", () => {
+  refreshDashboard();
+});
+
+window.addEventListener("biztrackDataChanged", () => {
+  refreshDashboard();
 });

@@ -26,6 +26,10 @@ function getSettingsPanelTemplate() {
             <i class="fa-solid fa-database" aria-hidden="true"></i>
             <span data-i18n="dataStorage">Data &amp; Storage</span>
           </button>
+          <button type="button" class="settings-tab" data-settings-tab="privacy">
+            <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+            <span data-i18n="privacyPolicy">Privacy Policy</span>
+          </button>
         </aside>
 
         <div class="settings-content">
@@ -45,11 +49,11 @@ function getSettingsPanelTemplate() {
                 <strong data-i18n="languagePreference">Language Preference</strong>
                 <p data-i18n="languagePreferenceDesc">Choose the interface language for this browser.</p>
               </div>
-              <div class="settings-segmented-control" data-segmented="language" data-active="left" role="group" aria-label="Language preference" data-i18n-aria-label="languagePreference">
+              <button type="button" class="settings-segmented-control" data-segmented="language" data-active="left" role="switch" aria-checked="false" aria-label="Language preference" data-i18n-aria-label="languagePreference">
                 <span class="segmented-slider" aria-hidden="true"></span>
-                <button type="button" class="settings-segment-button" data-language-choice="en" aria-pressed="false">EN</button>
-                <button type="button" class="settings-segment-button" data-language-choice="zh" aria-pressed="false">CN</button>
-              </div>
+                <span class="settings-segment-button" data-language-choice="en" aria-hidden="true">EN</span>
+                <span class="settings-segment-button" data-language-choice="zh" aria-hidden="true">CN</span>
+              </button>
             </div>
 
             <div class="settings-row">
@@ -57,11 +61,11 @@ function getSettingsPanelTemplate() {
                 <strong data-i18n="themePreference">Theme</strong>
                 <p data-i18n="themePreferenceDesc">Choose a light or dark BizTrack interface theme.</p>
               </div>
-              <div class="settings-segmented-control" data-segmented="theme" data-active="right" role="group" aria-label="Theme preference" data-i18n-aria-label="themePreference">
+              <button type="button" class="settings-segmented-control" data-segmented="theme" data-active="right" role="switch" aria-checked="true" aria-label="Theme preference" data-i18n-aria-label="themePreference">
                 <span class="segmented-slider" aria-hidden="true"></span>
-                <button type="button" class="settings-segment-button" data-theme-choice="light" data-i18n="lightTheme" aria-pressed="false">Light</button>
-                <button type="button" class="settings-segment-button" data-theme-choice="dark" data-i18n="darkTheme" aria-pressed="false">Dark</button>
-              </div>
+                <span class="settings-segment-button" data-theme-choice="light" data-i18n="lightTheme" aria-hidden="true">Light</span>
+                <span class="settings-segment-button" data-theme-choice="dark" data-i18n="darkTheme" aria-hidden="true">Dark</span>
+              </button>
             </div>
 
             <div class="settings-row">
@@ -108,6 +112,31 @@ function getSettingsPanelTemplate() {
             </div>
 
             <p class="settings-feedback" id="settings-storage-feedback" hidden></p>
+          </section>
+
+          <section class="settings-section" data-settings-section="privacy">
+            <h3 data-i18n="privacyPolicy">Privacy Policy</h3>
+            <p data-i18n="privacySettingsIntro">This section explains how BizTrack handles browser-stored data in this coursework prototype.</p>
+
+            <div class="settings-info-block">
+              <h4 data-i18n="privacyStoredInfoTitle">What BizTrack stores</h4>
+              <p data-i18n="privacyStoredInfoDesc">BizTrack stores products, inventory, orders, expenses, language preference, theme preference, and cookie choice.</p>
+            </div>
+
+            <div class="settings-info-block">
+              <h4 data-i18n="privacyStorageLocationTitle">Where data is stored</h4>
+              <p data-i18n="privacyStorageLocationDesc">Data is stored in this browser through localStorage. It is not synchronized to a cloud account or backend database.</p>
+            </div>
+
+            <div class="settings-info-block">
+              <h4 data-i18n="privacyCookieTitle">Cookie and preference choices</h4>
+              <p data-i18n="privacyCookieDesc">BizTrack uses browser storage to remember cookie consent and interface preferences. You can reset cookie choice in Data &amp; Storage.</p>
+            </div>
+
+            <div class="settings-info-block">
+              <h4 data-i18n="privacySafetyTitle">Security note</h4>
+              <p data-i18n="privacySafetyDesc">Because this is a frontend coursework prototype, browser-stored data should not be treated as secure cloud storage.</p>
+            </div>
           </section>
         </div>
       </div>
@@ -162,6 +191,8 @@ function getSettingsElements() {
   const storageFeedback = document.getElementById("settings-storage-feedback");
   const languageButtons = Array.from(document.querySelectorAll("[data-language-choice]"));
   const themeButtons = Array.from(document.querySelectorAll("[data-theme-choice]"));
+  const languageControls = Array.from(document.querySelectorAll("[data-segmented='language']"));
+  const themeControls = Array.from(document.querySelectorAll("[data-segmented='theme']"));
 
   settingsElements = {
     overlay,
@@ -174,9 +205,26 @@ function getSettingsElements() {
     storageFeedback,
     languageButtons,
     themeButtons,
+    languageControls,
+    themeControls,
   };
 
   return settingsElements;
+}
+
+function normalizePrivacyMenuItems() {
+  document.querySelectorAll('.user-menu-item[data-user-action="privacy"], .user-menu-item[href$="privacy.html"]').forEach((item) => {
+    item.dataset.userAction = "privacy";
+    if (item.tagName === "A") {
+      item.removeAttribute("href");
+    }
+
+    const label = item.querySelector("[data-i18n]");
+    if (label) {
+      label.dataset.i18n = "privacyPolicy";
+      label.textContent = getTextSafe("privacyPolicy");
+    }
+  });
 }
 
 function getCurrentTheme() {
@@ -193,6 +241,11 @@ function applyTheme(theme, { persist = false } = {}) {
   }
 
   updatePreferenceControls();
+  document.dispatchEvent(
+    new CustomEvent("themeChanged", {
+      detail: { theme: normalizedTheme },
+    }),
+  );
 }
 
 function hideSettingsFeedback() {
@@ -253,51 +306,51 @@ function openUserMenu() {
 }
 
 function updatePreferenceControls() {
-  const { languageButtons, themeButtons } = getSettingsElements();
+  const { languageButtons, themeButtons, languageControls, themeControls } = getSettingsElements();
   const currentLanguage = typeof window.getCurrentLanguage === "function" ? window.getCurrentLanguage() : "en";
   const currentTheme = getCurrentTheme();
-  const languageControls = document.querySelectorAll("[data-segmented='language']");
-  const themeControls = document.querySelectorAll("[data-segmented='theme']");
 
   languageControls.forEach((control) => {
     control.dataset.active = currentLanguage === "zh" ? "right" : "left";
+    control.setAttribute("aria-checked", currentLanguage === "zh" ? "true" : "false");
   });
 
   languageButtons.forEach((button) => {
     const isActive = button.dataset.languageChoice === currentLanguage;
     button.classList.toggle("is-active", isActive);
-    button.setAttribute("aria-pressed", isActive ? "true" : "false");
   });
 
   themeControls.forEach((control) => {
     control.dataset.active = currentTheme === "light" ? "left" : "right";
+    control.setAttribute("aria-checked", currentTheme === "dark" ? "true" : "false");
   });
 
   themeButtons.forEach((button) => {
     const isActive = button.dataset.themeChoice === currentTheme;
     button.classList.toggle("is-active", isActive);
-    button.setAttribute("aria-pressed", isActive ? "true" : "false");
   });
 }
 
 function bindPreferenceControls() {
-  const { panel, languageButtons, themeButtons } = getSettingsElements();
+  const { panel, languageControls, themeControls } = getSettingsElements();
 
   if (!panel || panel.dataset.preferencesBound === "true") {
     return;
   }
 
-  languageButtons.forEach((button) => {
-    button.addEventListener("click", () => {
+  languageControls.forEach((control) => {
+    control.addEventListener("click", () => {
       if (typeof window.setLanguage === "function") {
-        window.setLanguage(button.dataset.languageChoice === "zh" ? "zh" : "en");
+        const currentLanguage = typeof window.getCurrentLanguage === "function" ? window.getCurrentLanguage() : "en";
+        window.setLanguage(currentLanguage === "en" ? "zh" : "en");
       }
     });
   });
 
-  themeButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      applyTheme(button.dataset.themeChoice, { persist: true });
+  themeControls.forEach((control) => {
+    control.addEventListener("click", () => {
+      const currentTheme = getCurrentTheme();
+      applyTheme(currentTheme === "dark" ? "light" : "dark", { persist: true });
     });
   });
 
@@ -311,7 +364,7 @@ function switchSettingsTab(tabName) {
     return;
   }
 
-  const normalizedTab = tabName === "storage" ? "storage" : "preferences";
+  const normalizedTab = ["preferences", "storage", "privacy"].includes(tabName) ? tabName : "preferences";
 
   if (normalizedTab !== "storage") {
     hideSettingsFeedback();
@@ -350,6 +403,10 @@ function openSettingsPanel(tabName) {
       panel.focus();
     }
   });
+}
+
+function openBizTrackSettings(tab = "preferences") {
+  openSettingsPanel(tab);
 }
 
 function closeSettingsPanel(options = {}) {
@@ -514,6 +571,24 @@ function bindUserMenu() {
   toggleButton.dataset.bound = "true";
 }
 
+function bindSettingsTriggers() {
+  if (document.body.dataset.settingsTriggersBound === "true") {
+    return;
+  }
+
+  document.addEventListener("click", (event) => {
+    const trigger = event.target.closest("[data-open-settings-tab]");
+    if (!trigger) {
+      return;
+    }
+
+    event.preventDefault();
+    openBizTrackSettings(trigger.getAttribute("data-open-settings-tab"));
+  });
+
+  document.body.dataset.settingsTriggersBound = "true";
+}
+
 function refreshVisibleFeedbackTranslations() {
   const { storageFeedback } = getSettingsElements();
 
@@ -524,10 +599,12 @@ function refreshVisibleFeedbackTranslations() {
 
 function initializeUserMenu() {
   ensureSharedPanels();
+  normalizePrivacyMenuItems();
   setSettingsBadges();
   bindPreferenceControls();
   bindSettingsPanel();
   bindUserMenu();
+  bindSettingsTriggers();
   applyTheme(getCurrentTheme(), { persist: false });
 
   if (typeof window.applyLanguage === "function" && typeof window.getCurrentLanguage === "function") {
@@ -538,6 +615,7 @@ function initializeUserMenu() {
 }
 
 window.openSettingsPanel = openSettingsPanel;
+window.openBizTrackSettings = openBizTrackSettings;
 window.closeSettingsPanel = closeSettingsPanel;
 window.switchSettingsTab = switchSettingsTab;
 window.bindSettingsPanel = bindSettingsPanel;

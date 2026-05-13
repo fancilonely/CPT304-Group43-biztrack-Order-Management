@@ -1,7 +1,7 @@
 (function () {
   const STORAGE_KEY = "biztrack_cookie_consent";
   const CONSENT_VERSION = "1.0";
-  const PRIVACY_PAGE_URL = "./privacy.html";
+  const COOKIE_DISMISS_DURATION = 420;
 
   const fallbackText = {
     cookieBannerTitle: "Your privacy matters",
@@ -61,7 +61,6 @@
       // Fail quietly so the page still works if storage is unavailable.
     }
 
-    removeCookieBanner();
     return consent;
   }
 
@@ -71,6 +70,26 @@
     if (banner) {
       banner.remove();
     }
+  }
+
+  function dismissCookieBanner(choice) {
+    saveConsent(choice);
+
+    const banner = document.getElementById("cookie-banner");
+
+    if (!banner) {
+      return;
+    }
+
+    const prefersReducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches === true;
+    const dismissDelay = prefersReducedMotion ? 0 : COOKIE_DISMISS_DURATION;
+
+    banner.classList.add("is-dismissing");
+
+    window.setTimeout(() => {
+      banner.classList.remove("is-dismissing");
+      banner.remove();
+    }, dismissDelay);
   }
 
   function updateCookieBannerText() {
@@ -140,20 +159,29 @@
     const acceptButton = createActionButton(
       "cookie-button cookie-button--accept",
       "cookieAccept",
-      () => saveConsent("accepted"),
+      () => dismissCookieBanner("accepted"),
     );
 
     const rejectButton = createActionButton(
       "cookie-button cookie-button--reject",
       "cookieReject",
-      () => saveConsent("rejected"),
+      () => dismissCookieBanner("rejected"),
     );
 
-    const policyLink = document.createElement("a");
-    policyLink.href = PRIVACY_PAGE_URL;
-    policyLink.className = "cookie-button cookie-button--policy";
-    policyLink.dataset.cookieI18n = "cookiePrivacyPolicy";
-    policyLink.textContent = getConsentText("cookiePrivacyPolicy");
+    const policyLink = createActionButton(
+      "cookie-button cookie-button--policy",
+      "cookiePrivacyPolicy",
+      () => {
+        if (typeof window.openBizTrackSettings === "function") {
+          window.openBizTrackSettings("privacy");
+          return;
+        }
+
+        if (typeof window.openSettingsPanel === "function") {
+          window.openSettingsPanel("privacy");
+        }
+      },
+    );
 
     actions.append(acceptButton, rejectButton, policyLink);
     content.append(textWrapper, actions);
@@ -211,6 +239,7 @@
   window.getSavedConsent = getSavedConsent;
   window.hasValidSavedConsent = hasValidSavedConsent;
   window.saveConsent = saveConsent;
+  window.dismissCookieBanner = dismissCookieBanner;
   window.removeCookieBanner = removeCookieBanner;
   window.createCookieBanner = createCookieBanner;
   window.updateCookieBannerText = updateCookieBannerText;

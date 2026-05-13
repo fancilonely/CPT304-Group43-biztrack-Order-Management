@@ -1,80 +1,98 @@
+const FORM_MOTION_DURATION = 560;
+
+function getFormShell(form) {
+    return form.closest(".form-popup");
+}
+
+function revealForm(form) {
+    const formShell = getFormShell(form);
+
+    form.removeAttribute("inert");
+
+    window.requestAnimationFrame(() => {
+        formShell?.classList.add("is-open");
+    });
+}
+
 function openForm() {
     const form = document.getElementById("product-form");
+    const formShell = getFormShell(form);
 
-    if (form.classList.contains("is-open")) {
+    if (formShell?.classList.contains("is-open")) {
         closeForm();
         return;
     }
 
     form.reset();
     resetSubmitButtonMode();
-    form.classList.add("is-open");
-    form.removeAttribute("inert");
-    form.removeAttribute("aria-hidden");
+    revealForm(form);
 }
 
 function closeForm() {
     const form = document.getElementById("product-form");
+    const formShell = getFormShell(form);
+    const closeDelay = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : FORM_MOTION_DURATION;
+
     form.reset();
     resetSubmitButtonMode();
-    form.classList.remove("is-open");
-    form.setAttribute("inert", "");
-    form.removeAttribute("aria-hidden");
+    formShell?.classList.remove("is-open");
+
+    window.setTimeout(() => {
+        if (!formShell?.classList.contains("is-open")) {
+            form.setAttribute("inert", "");
+        }
+    }, closeDelay);
 }
 
+
+const PRODUCT_STORAGE_KEY = "bizTrackProducts";
+const DEFAULT_PRODUCTS = [
+  {
+    prodID: "PD001",
+    prodName: "Baseball caps",
+    prodDesc: "Peace embroidered cap",
+    prodCat: "Hats",
+    prodPrice: 25.00,
+    prodSold: 20
+  },
+  {
+    prodID: "PD002",
+    prodName: "Water bottles",
+    prodDesc: "Floral lotus printed bottle",
+    prodCat: "Drinkware",
+    prodPrice: 48.50,
+    prodSold: 10
+  },
+  {
+    prodID: "PD003",
+    prodName: "Sweatshirts",
+    prodDesc: "Palestine sweater",
+    prodCat: "Clothing",
+    prodPrice: 17.50,
+    prodSold: 70
+  },
+  {
+    prodID: "PD004",
+    prodName: "Posters",
+    prodDesc: "Vibes printed poster",
+    prodCat: "Home decor",
+    prodPrice: 12.00,
+    prodSold: 60
+  },
+  {
+    prodID: "PD005",
+    prodName: "Pillow cases",
+    prodDesc: "Morrocan print pillow case",
+    prodCat: "Accessories",
+    prodPrice: 17.00,
+    prodSold: 40
+  },
+];
 
 let products = [];
 const productSortState = {};
 function init() {
-  const storedProducts = localStorage.getItem("bizTrackProducts");
-  if (storedProducts) {
-      products = JSON.parse(storedProducts);
-  } else {
-      products = [
-        {
-          prodID: "PD001",
-          prodName: "Baseball caps",
-          prodDesc: "Peace embroidered cap",
-          prodCat: "Hats",
-          prodPrice: 25.00,
-          prodSold: 20
-        },
-        {
-          prodID: "PD002",
-          prodName: "Water bottles",
-          prodDesc: "Floral lotus printed bottle",
-          prodCat: "Drinkware",
-          prodPrice: 48.50,
-          prodSold: 10
-        },
-        {
-          prodID: "PD003",
-          prodName: "Sweatshirts",
-          prodDesc: "Palestine sweater",
-          prodCat: "Clothing",
-          prodPrice: 17.50,
-          prodSold: 70
-        },
-        {
-          prodID: "PD004",
-          prodName: "Posters",
-          prodDesc: "Vibes printed poster",
-          prodCat: "Home decor",
-          prodPrice: 12.00,
-          prodSold: 60
-        },
-        {
-          prodID: "PD005",
-          prodName: "Pillow cases",
-          prodDesc: "Morrocan print pillow case",
-          prodCat: "Accessories",
-          prodPrice: 17.00,
-          prodSold: 40
-        },
-      ];
-
-      localStorage.setItem("bizTrackProducts", JSON.stringify(products));
-    }
+    products = loadBizTrackCollection(PRODUCT_STORAGE_KEY, DEFAULT_PRODUCTS, isBizTrackProduct);
 
     renderProducts(products);
     resetSubmitButtonMode();
@@ -428,13 +446,12 @@ function editRow(prodID) {
   document.getElementById("product-cat").value = productToEdit.prodCat;
   document.getElementById("product-price").value = productToEdit.prodPrice;
   document.getElementById("product-sold").value = productToEdit.prodSold;
+  document.getElementById("product-form").dataset.currentProductId = prodID;
 
   setSubmitButtonMode("update", prodID);
 
   const form = document.getElementById("product-form");
-  form.classList.add("is-open");
-  form.removeAttribute("inert");
-  form.removeAttribute("aria-hidden");
+  revealForm(form);
 }
 
 function deleteProduct(prodID) {
@@ -468,7 +485,7 @@ function updateProduct(prodID) {
 
         products[indexToUpdate] = updatedProduct;
 
-        localStorage.setItem("bizTrackProducts", JSON.stringify(products));
+        saveBizTrackCollection(PRODUCT_STORAGE_KEY, products);
 
         renderProducts(products);
         closeForm();

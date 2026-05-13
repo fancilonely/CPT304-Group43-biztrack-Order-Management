@@ -77,15 +77,6 @@
                 <i class="fa-solid fa-chevron-right user-panel-chevron" aria-hidden="true"></i>
             </button>
             <div class="user-menu" id="user-menu" role="menu" hidden>
-                <button type="button" class="user-menu-profile user-menu-profile-button" role="menuitem" data-user-action="preferences">
-                    <span class="user-avatar" aria-hidden="true">S</span>
-                    <span class="user-menu-profile-text">
-                        <strong data-i18n="settingsCenter">Settings Center</strong>
-                        <small data-i18n="preferences">Preferences</small>
-                    </span>
-                    <i class="fa-solid fa-chevron-right user-menu-profile-chevron" aria-hidden="true"></i>
-                </button>
-                <div class="user-menu-divider"></div>
                 <button type="button" class="user-menu-item" role="menuitem" data-user-action="preferences">
                     <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
                     <span data-i18n="preferences">Preferences</span>
@@ -94,10 +85,10 @@
                     <i class="fa-solid fa-database" aria-hidden="true"></i>
                     <span data-i18n="dataStorage">Data &amp; Storage</span>
                 </button>
-                <a class="user-menu-item" role="menuitem" href="./privacy.html">
+                <button type="button" class="user-menu-item" role="menuitem" data-user-action="privacy">
                     <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
-                    <span data-i18n="privacySettings">Privacy Settings</span>
-                </a>
+                    <span data-i18n="privacyPolicy">Privacy Policy</span>
+                </button>
                 <div class="user-menu-divider"></div>
                 <a class="user-menu-item" role="menuitem" href="./help.html">
                     <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
@@ -134,7 +125,7 @@
             </div>
         </header>
 
-        <div class="table-wrapper">
+        <div class="table-wrapper page-enter">
             <div class="product-title">
                 <h3 class="main-title" data-i18n="expenses">Expenses</h3>
                 <div class="finance-button">
@@ -144,7 +135,7 @@
             </div>
 
             <div class="form-popup">
-                <form class="form-container" id="transaction-form" onsubmit="addOrUpdate(event)">
+                <form class="form-container" id="transaction-form" inert onsubmit="addOrUpdate(event)">
                     <div class="form-columns">
                             <input type="hidden" id="tr-id">
                             <label for="tr-date" data-i18n="date"><b>Date: </b></label>
@@ -209,6 +200,7 @@
         </div>
     </main>
     <script src="./i18n.js"></script>
+    <script src="./storage.js"></script>
     <script src="./cookie-consent.js"></script>
     <script src="./user-menu.js"></script>
     <script src="./sidebar.js"></script>

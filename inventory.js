@@ -316,10 +316,27 @@ function bindInventoryProductSelection() {
     productSelect.dataset.bound = "true";
 }
 
+const FORM_MOTION_DURATION = 560;
+
+function getFormShell(form) {
+    return form.closest(".form-popup");
+}
+
+function revealForm(form) {
+    const formShell = getFormShell(form);
+
+    form.removeAttribute("inert");
+
+    window.requestAnimationFrame(() => {
+        formShell?.classList.add("is-open");
+    });
+}
+
 function openForm() {
     const form = document.getElementById("inventory-form");
+    const formShell = getFormShell(form);
 
-    if (form.classList.contains("is-open")) {
+    if (formShell?.classList.contains("is-open")) {
         closeForm();
         return;
     }
@@ -330,22 +347,27 @@ function openForm() {
     setInventoryFieldEditability({ isEditing: false });
     resetSubmitButtonMode();
     updateInventoryStatusField();
-    form.classList.add("is-open");
-    form.removeAttribute("inert");
-    form.removeAttribute("aria-hidden");
+    revealForm(form);
 }
 
 function closeForm() {
     const form = document.getElementById("inventory-form");
+    const formShell = getFormShell(form);
+    const closeDelay = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : FORM_MOTION_DURATION;
+
     form.reset();
     populateInventoryProductOptions();
     syncCategoryFromSelectedProduct();
     setInventoryFieldEditability({ isEditing: false });
     resetSubmitButtonMode();
     updateInventoryStatusField();
-    form.classList.remove("is-open");
-    form.setAttribute("inert", "");
-    form.removeAttribute("aria-hidden");
+    formShell?.classList.remove("is-open");
+
+    window.setTimeout(() => {
+        if (!formShell?.classList.contains("is-open")) {
+            form.setAttribute("inert", "");
+        }
+    }, closeDelay);
 }
 
 function init() {
@@ -668,9 +690,7 @@ function editRow(inventoryID) {
     updateInventoryStatusField();
 
     const form = document.getElementById("inventory-form");
-    form.classList.add("is-open");
-    form.removeAttribute("inert");
-    form.removeAttribute("aria-hidden");
+    revealForm(form);
 }
 
 function appendTextCell(row, value, className) {

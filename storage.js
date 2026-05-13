@@ -75,6 +75,18 @@ function isBizTrackTransaction(item) {
         && isNonEmptyBizTrackString(item.trNotes);
 }
 
+function isBizTrackInventoryItem(item) {
+    return isPlainBizTrackObject(item)
+        && isNonEmptyBizTrackString(item.inventoryID)
+        && isNonEmptyBizTrackString(item.productName)
+        && isNonEmptyBizTrackString(item.category)
+        && Number.isInteger(item.stockQuantity)
+        && Number.isInteger(item.reorderLevel)
+        && isNonEmptyBizTrackString(item.supplier)
+        && isNonEmptyBizTrackString(item.lastUpdated)
+        && isNonEmptyBizTrackString(item.status);
+}
+
 function saveBizTrackCollection(key, data) {
     try {
         localStorage.setItem(key, JSON.stringify(data));
