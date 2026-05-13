@@ -1,7 +1,24 @@
+const FORM_MOTION_DURATION = 560;
+
+function getFormShell(form) {
+    return form.closest(".form-popup");
+}
+
+function revealForm(form) {
+    const formShell = getFormShell(form);
+
+    form.removeAttribute("inert");
+
+    window.requestAnimationFrame(() => {
+        formShell?.classList.add("is-open");
+    });
+}
+
 function openForm() {
     const form = document.getElementById("order-form");
+    const formShell = getFormShell(form);
 
-    if (form.classList.contains("is-open")) {
+    if (formShell?.classList.contains("is-open")) {
         closeForm();
         return;
     }
@@ -9,19 +26,24 @@ function openForm() {
     form.reset();
     populateOrderProductOptions();
     resetSubmitButtonMode();
-    form.classList.add("is-open");
-    form.removeAttribute("inert");
-    form.removeAttribute("aria-hidden");
+    revealForm(form);
 }
 
 function closeForm() {
     const form = document.getElementById("order-form");
+    const formShell = getFormShell(form);
+    const closeDelay = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : FORM_MOTION_DURATION;
+
     form.reset();
     populateOrderProductOptions();
     resetSubmitButtonMode();
-    form.classList.remove("is-open");
-    form.setAttribute("inert", "");
-    form.removeAttribute("aria-hidden");
+    formShell?.classList.remove("is-open");
+
+    window.setTimeout(() => {
+        if (!formShell?.classList.contains("is-open")) {
+            form.setAttribute("inert", "");
+        }
+    }, closeDelay);
 }
 
 let orders = [];
@@ -388,6 +410,8 @@ function addOrUpdate(event) {
     } else if (mode === "update") {
         updateOrder(submitBtn.dataset.editingId);
     }
+
+    return value;
 }
 
 function isPositiveIntegerString(value) {
@@ -856,13 +880,12 @@ function editRow(orderID) {
     document.getElementById("taxes").value = orderToEdit.taxes;
     document.getElementById("order-total").value = orderToEdit.orderTotal;
     document.getElementById("order-status").value = orderToEdit.orderStatus;
+    document.getElementById("order-form").dataset.currentOrderId = orderID;
 
     setSubmitButtonMode("update", orderID);
 
     const form = document.getElementById("order-form");
-    form.classList.add("is-open");
-    form.removeAttribute("inert");
-    form.removeAttribute("aria-hidden");
+    revealForm(form);
 }
 
 function deleteOrder(orderID) {

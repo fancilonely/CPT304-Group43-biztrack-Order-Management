@@ -1,27 +1,88 @@
+const FORM_MOTION_DURATION = 560;
+
+function getFormShell(form) {
+    return form.closest(".form-popup");
+}
+
+function revealForm(form) {
+    const formShell = getFormShell(form);
+
+    form.removeAttribute("inert");
+
+    window.requestAnimationFrame(() => {
+        formShell?.classList.add("is-open");
+    });
+}
+
 function openForm() {
     const form = document.getElementById("transaction-form");
+    const formShell = getFormShell(form);
 
-    if (form.classList.contains("is-open")) {
+    if (formShell?.classList.contains("is-open")) {
         closeForm();
         return;
     }
 
     form.reset();
     resetSubmitButtonMode();
-    form.classList.add("is-open");
-    form.removeAttribute("inert");
-    form.removeAttribute("aria-hidden");
+    revealForm(form);
 }
 
 function closeForm() {
     const form = document.getElementById("transaction-form");
+    const formShell = getFormShell(form);
+    const closeDelay = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : FORM_MOTION_DURATION;
+
     form.reset();
     resetSubmitButtonMode();
-    form.classList.remove("is-open");
-    form.setAttribute("inert", "");
-    form.removeAttribute("aria-hidden");
+    formShell?.classList.remove("is-open");
+
+    window.setTimeout(() => {
+        if (!formShell?.classList.contains("is-open")) {
+            form.setAttribute("inert", "");
+        }
+    }, closeDelay);
 }
 
+
+const TRANSACTION_STORAGE_KEY = "bizTrackTransactions";
+const DEFAULT_TRANSACTIONS = [
+    {
+        trID: 1,
+        trDate: "2024-01-05",
+        trCategory: "Rent",
+        trAmount: 100.00,
+        trNotes: "January Rent"
+    },
+    {
+        trID: 2,
+        trDate: "2024-01-15",
+        trCategory: "Order Fulfillment",
+        trAmount: 35.00,
+        trNotes: "Order #1005"
+    },
+    {
+        trID: 3,
+        trDate: "2024-01-08",
+        trCategory: "Utilities",
+        trAmount: 120.00,
+        trNotes: "Internet"
+    },
+    {
+        trID: 4,
+        trDate: "2024-02-05",
+        trCategory: "Supplies",
+        trAmount: 180.00,
+        trNotes: "Embroidery Machine"
+    },
+    {
+        trID: 5,
+        trDate: "2024-01-25",
+        trCategory: "Miscellaneous",
+        trAmount: 20.00,
+        trNotes: "Pizza"
+    },
+];
 
 let transactions = [];
 const financeSortState = {};
@@ -428,9 +489,7 @@ function editRow(trID) {
     setSubmitButtonMode("update", trID);
 
     const form = document.getElementById("transaction-form");
-    form.classList.add("is-open");
-    form.removeAttribute("inert");
-    form.removeAttribute("aria-hidden");
+    revealForm(form);
 }
   
 function deleteTransaction(trID) {
@@ -469,7 +528,7 @@ function deleteTransaction(trID) {
 
         transactions[indexToUpdate] = updatedTransaction;
 
-        localStorage.setItem("bizTrackTransactions", JSON.stringify(transactions));
+        saveBizTrackCollection(TRANSACTION_STORAGE_KEY, transactions);
 
         renderTransactions(transactions);
         closeForm();

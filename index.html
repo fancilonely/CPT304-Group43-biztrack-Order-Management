@@ -77,15 +77,6 @@
                 <i class="fa-solid fa-chevron-right user-panel-chevron" aria-hidden="true"></i>
             </button>
             <div class="user-menu" id="user-menu" role="menu" hidden>
-                <button type="button" class="user-menu-profile user-menu-profile-button" role="menuitem" data-user-action="preferences">
-                    <span class="user-avatar" aria-hidden="true">S</span>
-                    <span class="user-menu-profile-text">
-                        <strong data-i18n="settingsCenter">Settings Center</strong>
-                        <small data-i18n="preferences">Preferences</small>
-                    </span>
-                    <i class="fa-solid fa-chevron-right user-menu-profile-chevron" aria-hidden="true"></i>
-                </button>
-                <div class="user-menu-divider"></div>
                 <button type="button" class="user-menu-item" role="menuitem" data-user-action="preferences">
                     <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
                     <span data-i18n="preferences">Preferences</span>
@@ -94,10 +85,10 @@
                     <i class="fa-solid fa-database" aria-hidden="true"></i>
                     <span data-i18n="dataStorage">Data &amp; Storage</span>
                 </button>
-                <a class="user-menu-item" role="menuitem" href="./privacy.html">
+                <button type="button" class="user-menu-item" role="menuitem" data-user-action="privacy">
                     <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
-                    <span data-i18n="privacySettings">Privacy Settings</span>
-                </a>
+                    <span data-i18n="privacyPolicy">Privacy Policy</span>
+                </button>
                 <div class="user-menu-divider"></div>
                 <a class="user-menu-item" role="menuitem" href="./help.html">
                     <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
@@ -135,7 +126,7 @@
             </div>
         </header>
 
-        <div class="card-container">
+        <div class="card-container page-enter">
             <h3 class="main-title" data-i18n="summary">Summary</h3>
             <div class="card-wrapper">
                 <a href="./orders.html" class="summary-card-link" aria-label="View revenue details on the Orders page" data-i18n-aria-label="viewRevenueDetails">
@@ -177,17 +168,19 @@
                 </div>
             </div>
         </div>
-        <div class="dashboard-workspace">
+        <div class="dashboard-workspace page-enter">
             <h3 class="main-title" data-i18n="businessWorkspace">Business Workspace</h3>
             <div class="workspace-grid">
                 <section class="workspace-card quick-actions-card" aria-labelledby="quick-actions-title">
                     <h4 id="quick-actions-title" data-i18n="quickActions">Quick Actions</h4>
-                    <p class="workspace-card-helper" data-i18n="quickActionsDesc">Quickly add new business records from the dashboard.</p>
+                    <p class="workspace-card-helper quick-actions-helper" data-i18n="quickActionsDesc">Quickly create or update key business records from the dashboard.</p>
                     <div class="quick-action-buttons">
                         <a class="quick-action-button" href="./products.html?action=add" data-i18n="addProduct">Add Product</a>
+                        <a class="quick-action-button" href="./inventory.html?action=add" data-i18n="addStock">Add Stock</a>
                         <a class="quick-action-button" href="./orders.html?action=add" data-i18n="addOrder">Add Order</a>
                         <a class="quick-action-button" href="./finances.html?action=add" data-i18n="addExpense">Add Expense</a>
                     </div>
+                    <button type="button" class="quick-action-button quick-action-button--primary" id="quick-business-entry-trigger" data-i18n="quickBusinessEntry">Quick Business Entry</button>
                 </section>
                 <section class="workspace-card recent-activity-card" aria-labelledby="recent-activity-title">
                     <h4 id="recent-activity-title" data-i18n="recentActivity">Recent Activity</h4>
@@ -206,7 +199,7 @@
                 </section>
             </div>
         </div>
-        <div class="charts-container">
+        <div class="charts-container page-enter">
             <h3 class="main-title" data-i18n="analytics">Analytics</h3>
             <div class="charts-wrapper">
                 <div class="charts-card" role="img" aria-labelledby="bar-chart-title bar-chart-desc">
@@ -226,9 +219,11 @@
     <!-- Apex Charts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.45.2/apexcharts.min.js"></script>
     <script src="./i18n.js"></script>
+    <script src="./storage.js"></script>
     <script src="./cookie-consent.js"></script>
     <script src="./user-menu.js"></script>
     <script src="./sidebar.js"></script>
     <script src="./script.js"></script>
+    <script src="./quick-entry.js"></script>
 </body>
 </html>
