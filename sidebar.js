@@ -49,6 +49,9 @@ function applyStoredSidebarState() {
   sidebar.classList.remove("is-open");
 }
 
+window.openSidebar = openSidebar;
+window.closeSidebar = closeSidebar;
+
 window.addEventListener("resize", applyStoredSidebarState);
 
 if (document.readyState === "loading") {
