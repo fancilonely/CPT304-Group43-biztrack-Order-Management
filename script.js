@@ -217,6 +217,11 @@ function renderRecentActivity() {
     return;
   }
 
+  if (typeof window.renderActivityLogList === "function") {
+    window.renderActivityLogList(list, { limit: 5 });
+    return;
+  }
+
   const products = getStoredCollection("bizTrackProducts", getFallbackProducts());
   const orders = getStoredCollection("bizTrackOrders", getFallbackOrders());
   const expenses = getStoredCollection("bizTrackTransactions", getFallbackTransactions());
@@ -649,4 +654,8 @@ document.addEventListener("themeChanged", () => {
 
 window.addEventListener("biztrackDataChanged", () => {
   refreshDashboard();
+});
+
+window.addEventListener("biztrackActivityChanged", () => {
+  renderRecentActivity();
 });

@@ -472,6 +472,52 @@ const translations = Object.fromEntries(
 );
 
 Object.assign(translations.en, {
+  recentActivityDesc: "Latest actions recorded in this browser.",
+  noActivityYet: "No activity recorded yet",
+  activityProductCreated: "Product added",
+  activityProductUpdated: "Product updated",
+  activityProductDeleted: "Product deleted",
+  activityProductExported: "Product CSV exported",
+  activityOrderCreated: "Order added",
+  activityOrderUpdated: "Order updated",
+  activityOrderDeleted: "Order deleted",
+  activityOrderExported: "Order CSV exported",
+  activityInventoryCreated: "Inventory item added",
+  activityInventoryUpdated: "Inventory item updated",
+  activityInventoryDeleted: "Inventory item deleted",
+  activityInventoryExported: "Inventory CSV exported",
+  activityExpenseCreated: "Expense added",
+  activityExpenseUpdated: "Expense updated",
+  activityExpenseDeleted: "Expense deleted",
+  activityExpenseExported: "Expense CSV exported",
+  activityCookieReset: "Cookie choice reset",
+  activityBusinessDataCleared: "Business data cleared",
+});
+
+Object.assign(translations.zh, {
+  recentActivityDesc: "\u6700\u8fd1\u5728\u6b64\u6d4f\u89c8\u5668\u4e2d\u8bb0\u5f55\u7684\u64cd\u4f5c\u3002",
+  noActivityYet: "\u6682\u65e0\u64cd\u4f5c\u8bb0\u5f55",
+  activityProductCreated: "\u4ea7\u54c1\u5df2\u6dfb\u52a0",
+  activityProductUpdated: "\u4ea7\u54c1\u5df2\u66f4\u65b0",
+  activityProductDeleted: "\u4ea7\u54c1\u5df2\u5220\u9664",
+  activityProductExported: "\u4ea7\u54c1 CSV \u5df2\u5bfc\u51fa",
+  activityOrderCreated: "\u8ba2\u5355\u5df2\u6dfb\u52a0",
+  activityOrderUpdated: "\u8ba2\u5355\u5df2\u66f4\u65b0",
+  activityOrderDeleted: "\u8ba2\u5355\u5df2\u5220\u9664",
+  activityOrderExported: "\u8ba2\u5355 CSV \u5df2\u5bfc\u51fa",
+  activityInventoryCreated: "\u5e93\u5b58\u9879\u5df2\u6dfb\u52a0",
+  activityInventoryUpdated: "\u5e93\u5b58\u9879\u5df2\u66f4\u65b0",
+  activityInventoryDeleted: "\u5e93\u5b58\u9879\u5df2\u5220\u9664",
+  activityInventoryExported: "\u5e93\u5b58 CSV \u5df2\u5bfc\u51fa",
+  activityExpenseCreated: "\u652f\u51fa\u5df2\u6dfb\u52a0",
+  activityExpenseUpdated: "\u652f\u51fa\u5df2\u66f4\u65b0",
+  activityExpenseDeleted: "\u652f\u51fa\u5df2\u5220\u9664",
+  activityExpenseExported: "\u652f\u51fa CSV \u5df2\u5bfc\u51fa",
+  activityCookieReset: "Cookie \u9009\u62e9\u5df2\u91cd\u7f6e",
+  activityBusinessDataCleared: "\u4e1a\u52a1\u6570\u636e\u5df2\u6e05\u9664",
+});
+
+Object.assign(translations.en, {
   login: "Login",
   logout: "Log out",
   createLocalAccount: "Create Local Account",
@@ -587,7 +633,7 @@ Object.assign(translations.en, {
   browserStorage: "Browser Storage",
   browserStorageDesc: "Business data is stored in this browser.",
   dataStorageDesc: "Manage BizTrack data stored in this browser.",
-  storedDataDesc: "Products, inventory, orders, expenses, language preference, theme preference, and cookie choice are stored in this browser.",
+  storedDataDesc: "Products, inventory, orders, expenses, activity log, language preference, theme preference, and cookie choice are stored in this browser.",
   clearBusinessData: "Clear Business Data",
   clearBusinessDataDesc: "Clear saved products, inventory, orders, and expenses from this browser.",
   confirmClearBusinessData: "Clear saved products, inventory, orders, and expenses from this browser?",
@@ -602,7 +648,7 @@ Object.assign(translations.en, {
   confirmClearLocalBusinessData: "Clear saved products, inventory, orders, and expenses from this browser?",
   localBusinessDataCleared: "Business data has been cleared. Demo data will be restored on reload.",
   privacySettingsGuide: "To manage cookie consent or browser-stored business data, open the Settings panel at the bottom of the sidebar and choose Data & Storage.",
-  privacyStoredDataText: "BizTrack stores products, inventory, orders, expenses, language preference, theme preference, and cookie consent choice in your browser.",
+  privacyStoredDataText: "BizTrack stores products, inventory, orders, expenses, activity log, language preference, theme preference, and cookie consent choice in your browser.",
 });
 
 Object.assign(translations.zh, {
@@ -728,7 +774,7 @@ Object.assign(translations.zh, {
   browserStorage: "\u6d4f\u89c8\u5668\u5b58\u50a8",
   browserStorageDesc: "\u4e1a\u52a1\u6570\u636e\u4fdd\u5b58\u5728\u5f53\u524d\u6d4f\u89c8\u5668\u4e2d\u3002",
   dataStorageDesc: "\u7ba1\u7406\u4fdd\u5b58\u5728\u5f53\u524d\u6d4f\u89c8\u5668\u4e2d\u7684 BizTrack \u6570\u636e\u3002",
-  storedDataDesc: "\u4ea7\u54c1\u3001\u5e93\u5b58\u3001\u8ba2\u5355\u3001\u652f\u51fa\u3001\u8bed\u8a00\u504f\u597d\u3001\u4e3b\u9898\u504f\u597d\u548c Cookie \u9009\u62e9\u4f1a\u4fdd\u5b58\u5728\u5f53\u524d\u6d4f\u89c8\u5668\u4e2d\u3002",
+  storedDataDesc: "\u4ea7\u54c1\u3001\u5e93\u5b58\u3001\u8ba2\u5355\u3001\u652f\u51fa\u3001\u6d3b\u52a8\u65e5\u5fd7\u3001\u8bed\u8a00\u504f\u597d\u3001\u4e3b\u9898\u504f\u597d\u548c Cookie \u9009\u62e9\u4f1a\u4fdd\u5b58\u5728\u5f53\u524d\u6d4f\u89c8\u5668\u4e2d\u3002",
   clearBusinessData: "\u6e05\u9664\u4e1a\u52a1\u6570\u636e",
   clearBusinessDataDesc: "\u6e05\u9664\u5f53\u524d\u6d4f\u89c8\u5668\u4e2d\u4fdd\u5b58\u7684\u4ea7\u54c1\u3001\u5e93\u5b58\u3001\u8ba2\u5355\u548c\u652f\u51fa\u3002",
   confirmClearBusinessData: "\u662f\u5426\u6e05\u9664\u5f53\u524d\u6d4f\u89c8\u5668\u4e2d\u4fdd\u5b58\u7684\u4ea7\u54c1\u3001\u5e93\u5b58\u3001\u8ba2\u5355\u548c\u652f\u51fa\uff1f",
@@ -744,7 +790,7 @@ Object.assign(translations.zh, {
   confirmClearLocalBusinessData: "\u662f\u5426\u6e05\u9664\u5f53\u524d\u6d4f\u89c8\u5668\u4e2d\u4fdd\u5b58\u7684\u4ea7\u54c1\u3001\u5e93\u5b58\u3001\u8ba2\u5355\u548c\u652f\u51fa\uff1f",
   localBusinessDataCleared: "\u4e1a\u52a1\u6570\u636e\u5df2\u6e05\u9664\uff0c\u5237\u65b0\u540e\u5c06\u6062\u590d\u793a\u4f8b\u6570\u636e\u3002",
   privacySettingsGuide: "\u5982\u9700\u7ba1\u7406 Cookie \u540c\u610f\u6216\u4fdd\u5b58\u5728\u6d4f\u89c8\u5668\u4e2d\u7684\u4e1a\u52a1\u6570\u636e\uff0c\u8bf7\u6253\u5f00\u4fa7\u8fb9\u680f\u5e95\u90e8\u7684\u8bbe\u7f6e\u9762\u677f\uff0c\u5e76\u9009\u62e9\u201c\u6570\u636e\u4e0e\u5b58\u50a8\u201d\u3002",
-  privacyStoredDataText: "\u5728\u5f53\u524d\u6d4f\u89c8\u5668\u4e2d\uff0cBizTrack \u4f1a\u4fdd\u5b58\u4ea7\u54c1\u3001\u5e93\u5b58\u3001\u8ba2\u5355\u3001\u652f\u51fa\u3001\u8bed\u8a00\u504f\u597d\u3001\u4e3b\u9898\u504f\u597d\u548c Cookie \u540c\u610f\u9009\u62e9\u3002",
+  privacyStoredDataText: "\u5728\u5f53\u524d\u6d4f\u89c8\u5668\u4e2d\uff0cBizTrack \u4f1a\u4fdd\u5b58\u4ea7\u54c1\u3001\u5e93\u5b58\u3001\u8ba2\u5355\u3001\u652f\u51fa\u3001\u6d3b\u52a8\u65e5\u5fd7\u3001\u8bed\u8a00\u504f\u597d\u3001\u4e3b\u9898\u504f\u597d\u548c Cookie \u540c\u610f\u9009\u62e9\u3002",
 });
 
 Object.assign(translations.en, {
@@ -753,7 +799,7 @@ Object.assign(translations.en, {
   openPrivacyInSettings: "Open Privacy Policy in Settings",
   privacySettingsIntro: "This section explains how BizTrack handles browser-stored data in this coursework prototype.",
   privacyStoredInfoTitle: "What BizTrack stores",
-  privacyStoredInfoDesc: "BizTrack stores products, inventory, orders, expenses, language preference, theme preference, and cookie choice.",
+  privacyStoredInfoDesc: "BizTrack stores products, inventory, orders, expenses, activity log, language preference, theme preference, and cookie choice.",
   privacyStorageLocationTitle: "Where data is stored",
   privacyStorageLocationDesc: "Data is stored in this browser through localStorage. It is not synchronized to a cloud account or backend database.",
   privacyCookieTitle: "Cookie and preference choices",
@@ -772,7 +818,7 @@ Object.assign(translations.zh, {
   openPrivacyInSettings: "\u5728\u8bbe\u7f6e\u4e2d\u6253\u5f00\u9690\u79c1\u653f\u7b56",
   privacySettingsIntro: "\u672c\u90e8\u5206\u8bf4\u660e BizTrack \u5728\u8be5\u8bfe\u7a0b\u539f\u578b\u4e2d\u5982\u4f55\u5904\u7406\u4fdd\u5b58\u5728\u6d4f\u89c8\u5668\u4e2d\u7684\u6570\u636e\u3002",
   privacyStoredInfoTitle: "BizTrack \u5b58\u50a8\u54ea\u4e9b\u4fe1\u606f",
-  privacyStoredInfoDesc: "BizTrack \u4f1a\u5b58\u50a8\u4ea7\u54c1\u3001\u5e93\u5b58\u3001\u8ba2\u5355\u3001\u652f\u51fa\u3001\u8bed\u8a00\u504f\u597d\u3001\u4e3b\u9898\u504f\u597d\u548c Cookie \u9009\u62e9\u3002",
+  privacyStoredInfoDesc: "BizTrack \u4f1a\u5b58\u50a8\u4ea7\u54c1\u3001\u5e93\u5b58\u3001\u8ba2\u5355\u3001\u652f\u51fa\u3001\u6d3b\u52a8\u65e5\u5fd7\u3001\u8bed\u8a00\u504f\u597d\u3001\u4e3b\u9898\u504f\u597d\u548c Cookie \u9009\u62e9\u3002",
   privacyStorageLocationTitle: "\u6570\u636e\u4fdd\u5b58\u5728\u54ea\u91cc",
   privacyStorageLocationDesc: "\u6570\u636e\u901a\u8fc7 localStorage \u4fdd\u5b58\u5728\u5f53\u524d\u6d4f\u89c8\u5668\u4e2d\uff0c\u4e0d\u4f1a\u540c\u6b65\u5230\u4e91\u7aef\u8d26\u6237\u6216\u540e\u7aef\u6570\u636e\u5e93\u3002",
   privacyCookieTitle: "Cookie \u4e0e\u504f\u597d\u9009\u62e9",

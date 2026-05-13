@@ -969,6 +969,45 @@ label {
     font-size: 0.95rem;
 }
 
+.activity-log-item {
+    display: grid;
+    gap: 0.28rem;
+}
+
+.activity-log-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    color: #6a5b58;
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.activity-log-module {
+    text-transform: uppercase;
+}
+
+.activity-log-time {
+    white-space: nowrap;
+}
+
+.activity-log-action {
+    color: var(--dark-red);
+    line-height: 1.25;
+}
+
+.activity-log-detail {
+    color: #4f403d;
+    font-size: 0.9rem;
+    line-height: 1.35;
+}
+
+.activity-log-empty {
+    color: #5f514e;
+    font-weight: 700;
+}
+
 .status-overview-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
