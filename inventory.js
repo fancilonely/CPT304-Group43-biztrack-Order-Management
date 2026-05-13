@@ -3,6 +3,19 @@ const inventorySortState = {};
 const INVENTORY_STORAGE_KEY = "bizTrackInventory";
 const PRODUCTS_STORAGE_KEY = "bizTrackProducts";
 
+function recordInventoryActivity(actionKey, item) {
+    if (typeof window.recordActivity !== "function" || !item) {
+        return;
+    }
+
+    window.recordActivity({
+        moduleKey: "inventory",
+        actionKey,
+        entityId: item.inventoryID,
+        entityName: item.productName,
+    });
+}
+
 function getFallbackProducts() {
     return [
         {
@@ -623,6 +636,7 @@ function newInventoryItem() {
     persistInventory();
     renderInventory(inventory);
     renderInventorySummary();
+    recordInventoryActivity("activityInventoryCreated", newItem);
     closeForm();
 }
 
@@ -643,6 +657,7 @@ function updateInventoryItem(inventoryID) {
     persistInventory();
     renderInventory(inventory);
     renderInventorySummary();
+    recordInventoryActivity("activityInventoryUpdated", updatedItem);
     closeForm();
 }
 
@@ -660,10 +675,12 @@ function deleteInventoryItem(inventoryID) {
         cancelText: getText("cancel"),
         dangerNote: getText("deleteCannotUndo"),
         onConfirm: () => {
+            const deletedItem = inventory[indexToDelete];
             inventory.splice(indexToDelete, 1);
             persistInventory();
             renderInventory(inventory);
             renderInventorySummary();
+            recordInventoryActivity("activityInventoryDeleted", deletedItem);
         },
     });
 }
@@ -988,6 +1005,13 @@ function exportToCSV() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    if (typeof window.recordActivity === "function") {
+        window.recordActivity({
+            moduleKey: "inventory",
+            actionKey: "activityInventoryExported",
+            entityName: `${inventory.length} rows`,
+        });
+    }
 }
 
 document.getElementById("searchInput").addEventListener("keyup", (event) => {

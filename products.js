@@ -91,6 +91,20 @@ const DEFAULT_PRODUCTS = [
 
 let products = [];
 const productSortState = {};
+
+function recordProductActivity(actionKey, product) {
+  if (typeof window.recordActivity !== "function" || !product) {
+    return;
+  }
+
+  window.recordActivity({
+    moduleKey: "products",
+    actionKey,
+    entityId: product.prodID,
+    entityName: product.prodName,
+  });
+}
+
 function init() {
     products = loadBizTrackCollection(PRODUCT_STORAGE_KEY, DEFAULT_PRODUCTS, isBizTrackProduct);
 
@@ -272,6 +286,7 @@ function newProduct() {
 
   renderProducts(products);
   localStorage.setItem("bizTrackProducts", JSON.stringify(products));
+  recordProductActivity("activityProductCreated", product);
   closeForm();
 }
 
@@ -465,9 +480,11 @@ function deleteProduct(prodID) {
           cancelText: getText("cancel"),
           dangerNote: getText("deleteCannotUndo"),
           onConfirm: () => {
+              const deletedProduct = products[indexToDelete];
               products.splice(indexToDelete, 1);
               localStorage.setItem("bizTrackProducts", JSON.stringify(products));
               renderProducts(products);
+              recordProductActivity("activityProductDeleted", deletedProduct);
           },
       });
   }
@@ -488,6 +505,7 @@ function updateProduct(prodID) {
         saveBizTrackCollection(PRODUCT_STORAGE_KEY, products);
 
         renderProducts(products);
+        recordProductActivity("activityProductUpdated", updatedProduct);
         closeForm();
     }
 }
@@ -564,6 +582,13 @@ function exportToCSV() {
   link.click();
 
   document.body.removeChild(link);
+  if (typeof window.recordActivity === "function") {
+    window.recordActivity({
+      moduleKey: "products",
+      actionKey: "activityProductExported",
+      entityName: `${products.length} rows`,
+    });
+  }
 }
 
 document.addEventListener("languageChanged", () => {

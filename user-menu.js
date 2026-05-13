@@ -432,6 +432,13 @@ function handleResetCookieChoice() {
     window.resetCookieChoice();
   }
 
+  if (typeof window.recordActivity === "function") {
+    window.recordActivity({
+      moduleKey: "settings",
+      actionKey: "activityCookieReset",
+    });
+  }
+
   showSettingsFeedback("cookieChoiceResetFromSettings");
 }
 
@@ -451,6 +458,12 @@ function handleClearBusinessData() {
   });
 
   showSettingsFeedback("businessDataCleared");
+  if (typeof window.recordActivity === "function") {
+    window.recordActivity({
+      moduleKey: "settings",
+      actionKey: "activityBusinessDataCleared",
+    });
+  }
   window.setTimeout(() => {
     window.location.reload();
   }, 700);

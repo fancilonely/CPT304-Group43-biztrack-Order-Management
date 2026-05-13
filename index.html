@@ -185,7 +185,7 @@
                 <section class="workspace-card recent-activity-card" aria-labelledby="recent-activity-title">
                     <h4 id="recent-activity-title" data-i18n="recentActivity">Recent Activity</h4>
                     <p class="workspace-card-helper" data-i18n="recentActivityDesc">Latest saved records from local browser data.</p>
-                    <ul class="recent-activity-list" id="recent-activity-list"></ul>
+                    <ul class="recent-activity-list" id="recent-activity-list" aria-live="polite"></ul>
                 </section>
                 <section class="workspace-card order-status-card" aria-labelledby="order-status-overview-title">
                     <h4 id="order-status-overview-title" data-i18n="orderStatusOverview">Order Status Overview</h4>
@@ -220,6 +220,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.45.2/apexcharts.min.js"></script>
     <script src="./i18n.js"></script>
     <script src="./storage.js"></script>
+    <script src="./activity-log.js"></script>
     <script src="./cookie-consent.js"></script>
     <script src="./user-menu.js"></script>
     <script src="./sidebar.js"></script>

@@ -815,6 +815,12 @@
     window.dispatchEvent(new Event("biztrackDataChanged"));
   }
 
+  function recordQuickEntryActivity(activity) {
+    if (typeof window.recordActivity === "function") {
+      window.recordActivity(activity);
+    }
+  }
+
   function syncInventoryWithProductSave(product, inventoryItems) {
     const existingInventory = findInventoryRecordByProduct(inventoryItems, product);
 
@@ -927,6 +933,12 @@
     syncInventoryWithProductSave(product, inventoryItems);
     saveCollection(STORAGE_KEYS.products, products);
     saveCollection(STORAGE_KEYS.inventory, inventoryItems);
+    recordQuickEntryActivity({
+      moduleKey: "products",
+      actionKey: mode === "edit" ? "activityProductUpdated" : "activityProductCreated",
+      entityId: product.prodID,
+      entityName: product.prodName,
+    });
     dispatchDashboardRefresh();
     setFeedback(getTextSafe(mode === "edit" ? "recordUpdated" : "productSaved"), "success");
   }
@@ -1022,6 +1034,12 @@
     }
 
     saveCollection(STORAGE_KEYS.inventory, inventoryItems);
+    recordQuickEntryActivity({
+      moduleKey: "inventory",
+      actionKey: mode === "edit" ? "activityInventoryUpdated" : "activityInventoryCreated",
+      entityId: payload.inventoryID,
+      entityName: payload.productName,
+    });
     dispatchDashboardRefresh();
     setFeedback(getTextSafe(mode === "edit" ? "recordUpdated" : "inventorySaved"), "success");
   }
@@ -1175,6 +1193,13 @@
 
     saveCollection(STORAGE_KEYS.orders, orders);
     saveCollection(STORAGE_KEYS.inventory, inventoryResult.inventoryItems);
+    recordQuickEntryActivity({
+      moduleKey: "orders",
+      actionKey: mode === "edit" ? "activityOrderUpdated" : "activityOrderCreated",
+      entityId: `#${nextOrder.orderID}`,
+      entityName: nextOrder.itemName,
+      amount: Number(nextOrder.orderTotal),
+    });
     dispatchDashboardRefresh();
     setFeedback(getTextSafe(mode === "edit" ? "recordUpdated" : "orderSaved"), "success");
   }
@@ -1236,17 +1261,27 @@
     }
 
     const payload = validation.value;
+    let savedExpense;
 
     if (mode === "edit") {
       const index = transactions.findIndex((transaction) => String(transaction.trID) === String(previousExpense.trID));
-      transactions[index] = { ...payload, trID: previousExpense.trID };
+      savedExpense = { ...payload, trID: previousExpense.trID };
+      transactions[index] = savedExpense;
     } else {
       const trID = getNextTransactionID(transactions);
-      transactions.push({ ...payload, trID });
+      savedExpense = { ...payload, trID };
+      transactions.push(savedExpense);
       state.selectedRecordByModule.expense = String(trID);
     }
 
     saveCollection(STORAGE_KEYS.transactions, transactions);
+    recordQuickEntryActivity({
+      moduleKey: "expenses",
+      actionKey: mode === "edit" ? "activityExpenseUpdated" : "activityExpenseCreated",
+      entityId: `#${savedExpense.trID}`,
+      entityName: savedExpense.trNotes,
+      amount: Number(savedExpense.trAmount),
+    });
     dispatchDashboardRefresh();
     setFeedback(getTextSafe(mode === "edit" ? "recordUpdated" : "expenseSaved"), "success");
   }

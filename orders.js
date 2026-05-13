@@ -52,6 +52,20 @@ const ORDER_STORAGE_KEY = "bizTrackOrders";
 const PRODUCT_STORAGE_KEY = "bizTrackProducts";
 const INVENTORY_STORAGE_KEY = "bizTrackInventory";
 
+function recordOrderActivity(actionKey, order) {
+    if (typeof window.recordActivity !== "function" || !order) {
+        return;
+    }
+
+    window.recordActivity({
+        moduleKey: "orders",
+        actionKey,
+        entityId: `#${order.orderID}`,
+        entityName: order.itemName,
+        amount: Number(order.orderTotal),
+    });
+}
+
 function getFallbackProducts() {
     return [
         {
@@ -609,6 +623,7 @@ function newOrder() {
     orders.push(finalOrder);
     renderOrders(orders);
     persistOrders();
+    recordOrderActivity("activityOrderCreated", finalOrder);
     closeForm();
 }
 
@@ -904,9 +919,11 @@ function deleteOrder(orderID) {
             ? getText("deleteAppliedOrderModalWarning")
             : getText("deleteCannotUndo"),
         onConfirm: () => {
+            const deletedOrder = orders[indexToDelete];
             orders.splice(indexToDelete, 1);
             persistOrders();
             renderOrders(orders);
+            recordOrderActivity("activityOrderDeleted", deletedOrder);
         },
     });
 }
@@ -933,6 +950,7 @@ function updateOrder(orderID) {
     orders[indexToUpdate] = finalOrder;
     persistOrders();
     renderOrders(orders);
+    recordOrderActivity("activityOrderUpdated", finalOrder);
     closeForm();
 }
 
@@ -1010,6 +1028,13 @@ function exportToCSV() {
     link.click();
 
     document.body.removeChild(link);
+    if (typeof window.recordActivity === "function") {
+        window.recordActivity({
+            moduleKey: "orders",
+            actionKey: "activityOrderExported",
+            entityName: `${orders.length} rows`,
+        });
+    }
 }
 
 document.addEventListener("languageChanged", () => {
