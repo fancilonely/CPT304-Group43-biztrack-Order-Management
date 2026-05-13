@@ -1,0 +1,22 @@
+{
+  "name": "step9",
+  "version": "1.0.0",
+  "description": "BizTrack is a web app born from my experience running a small business. It’s a tool designed to simplify managing products, orders, and expenses seamlessly. As a small business owner, I created BizTrack to simplify the complexities of managing products, orders, and expenses. The inspiration for this project came from the challenges I faced in my own business. I wanted to develop a solution that could benefit “myself” and others in a similar situation.",
+  "main": "cookie-consent.js",
+  "scripts": {
+  "test": "jest",
+  "test:coverage": "jest --coverage"
+},
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@ssh.github.com:443/fancilonely/CPT304-Group43-biztrack-Order-Management.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "jest": "^30.4.2",
+    "jest-environment-jsdom": "^30.4.1"
+  }
+}
