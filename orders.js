@@ -52,6 +52,16 @@ const ORDER_STORAGE_KEY = "bizTrackOrders";
 const PRODUCT_STORAGE_KEY = "bizTrackProducts";
 const INVENTORY_STORAGE_KEY = "bizTrackInventory";
 
+function bindOrderPageControls() {
+    document.querySelector(".add-button")?.addEventListener("click", openForm);
+    document.querySelector(".download-button")?.addEventListener("click", exportToCSV);
+    document.querySelector("#order-form")?.addEventListener("submit", addOrUpdate);
+    document.querySelector(".btn.cancel")?.addEventListener("click", closeForm);
+    document.querySelectorAll("[data-sort-column]").forEach((button) => {
+        button.addEventListener("click", () => sortTable(button.dataset.sortColumn, button));
+    });
+}
+
 function getFallbackProducts() {
     return [
         {
@@ -332,6 +342,8 @@ function normalizeOrder(order) {
 
 function init() {
     const storedOrders = localStorage.getItem(ORDER_STORAGE_KEY);
+
+    bindOrderPageControls();
 
     if (storedOrders) {
         try {

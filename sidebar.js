@@ -49,13 +49,27 @@ function applyStoredSidebarState() {
   sidebar.classList.remove("is-open");
 }
 
+function bindSidebarControls() {
+  document.querySelectorAll(".menu-icon").forEach((button) => {
+    button.addEventListener("click", openSidebar);
+  });
+
+  document.querySelectorAll(".sidebar-close").forEach((button) => {
+    button.addEventListener("click", closeSidebar);
+  });
+}
+
 window.openSidebar = openSidebar;
 window.closeSidebar = closeSidebar;
 
 window.addEventListener("resize", applyStoredSidebarState);
 
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", applyStoredSidebarState);
+  document.addEventListener("DOMContentLoaded", () => {
+    bindSidebarControls();
+    applyStoredSidebarState();
+  });
 } else {
+  bindSidebarControls();
   applyStoredSidebarState();
 }

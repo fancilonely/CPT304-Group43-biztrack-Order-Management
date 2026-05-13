@@ -91,9 +91,21 @@ const DEFAULT_PRODUCTS = [
 
 let products = [];
 const productSortState = {};
+
+function bindProductPageControls() {
+  document.querySelector(".add-button")?.addEventListener("click", openForm);
+  document.querySelector(".download-button")?.addEventListener("click", exportToCSV);
+  document.querySelector("#product-form")?.addEventListener("submit", addOrUpdate);
+  document.querySelector(".btn.cancel")?.addEventListener("click", closeForm);
+  document.querySelectorAll("[data-sort-column]").forEach((button) => {
+    button.addEventListener("click", () => sortTable(button.dataset.sortColumn, button));
+  });
+}
+
 function init() {
     products = loadBizTrackCollection(PRODUCT_STORAGE_KEY, DEFAULT_PRODUCTS, isBizTrackProduct);
 
+    bindProductPageControls();
     renderProducts(products);
     resetSubmitButtonMode();
     closeForm();
