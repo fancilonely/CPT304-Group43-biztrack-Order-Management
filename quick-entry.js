@@ -80,6 +80,17 @@
   }
 
   function getStoredCollection(key, fallbackItems) {
+    const validators = {
+      [STORAGE_KEYS.products]: window.isBizTrackProduct,
+      [STORAGE_KEYS.inventory]: window.isBizTrackInventoryItem,
+      [STORAGE_KEYS.orders]: window.isBizTrackOrder,
+      [STORAGE_KEYS.transactions]: window.isBizTrackTransaction,
+    };
+
+    if (typeof window.loadBizTrackCollection === "function") {
+      return window.loadBizTrackCollection(key, fallbackItems, validators[key]);
+    }
+
     const storedValue = localStorage.getItem(key);
 
     if (!storedValue) {
@@ -95,6 +106,11 @@
   }
 
   function saveCollection(key, items) {
+    if (typeof window.saveBizTrackCollection === "function") {
+      window.saveBizTrackCollection(key, items);
+      return;
+    }
+
     localStorage.setItem(key, JSON.stringify(items));
   }
 

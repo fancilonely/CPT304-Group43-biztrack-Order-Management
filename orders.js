@@ -46,65 +46,6 @@ function closeForm() {
     }, closeDelay);
 }
 
-const ORDER_STORAGE_KEY = "bizTrackOrders";
-const DEFAULT_ORDERS = [
-    {
-        orderID: "1001",
-        orderDate: "2024-01-05",
-        itemName: "Baseball caps",
-        itemPrice: 25.00,
-        qtyBought: 2,
-        shipping: 2.50,
-        taxes: 9.00,
-        orderTotal: 61.50,
-        orderStatus: "Pending"
-    },
-    {
-        orderID: "1002",
-        orderDate: "2024-03-05",
-        itemName: "Water bottles",
-        itemPrice: 17.00,
-        qtyBought: 3,
-        shipping: 3.50,
-        taxes: 6.00,
-        orderTotal: 60.50,
-        orderStatus: "Processing"
-    },
-    {
-        orderID: "1003",
-        orderDate: "2024-02-05",
-        itemName: "Tote bags",
-        itemPrice: 20.00,
-        qtyBought: 4,
-        shipping: 2.50,
-        taxes: 2.00,
-        orderTotal: 84.50,
-        orderStatus: "Shipped"
-    },
-    {
-        orderID: "1004",
-        orderDate: "2023-01-05",
-        itemName: "Canvas prints",
-        itemPrice: 55.00,
-        qtyBought: 1,
-        shipping: 2.50,
-        taxes: 19.00,
-        orderTotal: 76.50,
-        orderStatus: "Delivered"
-    },
-    {
-        orderID: "1005",
-        orderDate: "2024-01-15",
-        itemName: "Beanies",
-        itemPrice: 15.00,
-        qtyBought: 2,
-        shipping: 3.90,
-        taxes: 4.00,
-        orderTotal: 37.90,
-        orderStatus: "Pending"
-    },
-];
-
 let orders = [];
 const orderSortState = {};
 const ORDER_STORAGE_KEY = "bizTrackOrders";
