@@ -61,7 +61,7 @@ function getSettingsPanelTemplate() {
                 <strong data-i18n="themePreference">Theme</strong>
                 <p data-i18n="themePreferenceDesc">Choose a light or dark BizTrack interface theme.</p>
               </div>
-              <button type="button" class="settings-segmented-control" data-segmented="theme" data-active="right" role="switch" aria-checked="true" aria-label="Theme preference" data-i18n-aria-label="themePreference">
+              <button type="button" class="settings-segmented-control" data-segmented="theme" data-active="left" role="switch" aria-checked="false" aria-label="Theme preference" data-i18n-aria-label="themePreference">
                 <span class="segmented-slider" aria-hidden="true"></span>
                 <span class="settings-segment-button" data-theme-choice="light" data-i18n="lightTheme" aria-hidden="true">Light</span>
                 <span class="settings-segment-button" data-theme-choice="dark" data-i18n="darkTheme" aria-hidden="true">Dark</span>
@@ -229,7 +229,7 @@ function normalizePrivacyMenuItems() {
 
 function getCurrentTheme() {
   const storedTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
-  return storedTheme === "light" || storedTheme === "dark" ? storedTheme : "dark";
+  return storedTheme === "light" || storedTheme === "dark" ? storedTheme : "light";
 }
 
 function applyTheme(theme, { persist = false } = {}) {
