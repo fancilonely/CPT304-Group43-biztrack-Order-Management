@@ -2046,7 +2046,14 @@ body.auth-panel-open {
 .settings-tab:hover,
 .settings-tab.is-active {
     background: var(--orange-color);
-    color: var(--white-color);
+    color: #3a1f17;
+}
+
+.settings-tab:hover span,
+.settings-tab:hover i,
+.settings-tab.is-active span,
+.settings-tab.is-active i {
+    color: #3a1f17;
 }
 
 .settings-tab:focus-visible,
@@ -3265,6 +3272,13 @@ body.quick-entry-panel-open {
     color: var(--text-main);
 }
 
+:root[data-theme="dark"] .settings-tab:hover span,
+:root[data-theme="dark"] .settings-tab:hover i,
+:root[data-theme="dark"] .settings-tab.is-active span,
+:root[data-theme="dark"] .settings-tab.is-active i {
+    color: #3a1f17;
+}
+
 :root[data-theme="dark"] .muted,
 :root[data-theme="dark"] .text-muted,
 :root[data-theme="dark"] .workspace-card p,
@@ -3354,6 +3368,11 @@ body.quick-entry-panel-open {
 :root[data-theme="dark"] .table-container,
 :root[data-theme="dark"] td {
     color: var(--text-main);
+}
+
+:root[data-theme="dark"] .settings-tab:hover,
+:root[data-theme="dark"] .settings-tab.is-active {
+    color: #3a1f17;
 }
 
 :root[data-theme="dark"] .workspace-card-helper,
