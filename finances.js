@@ -97,6 +97,20 @@ function bindFinancePageControls() {
     });
 }
 
+function recordExpenseActivity(actionKey, transaction) {
+    if (typeof window.recordActivity !== "function" || !transaction) {
+        return;
+    }
+
+    window.recordActivity({
+        moduleKey: "expenses",
+        actionKey,
+        entityId: `#${transaction.trID}`,
+        entityName: transaction.trNotes,
+        amount: Number(transaction.trAmount),
+    });
+}
+
 window.onload = function () {
     bindFinancePageControls();
     const storedTransactions = localStorage.getItem("bizTrackTransactions");
@@ -295,6 +309,7 @@ function newTransaction() {
     renderTransactions(transactions);
     localStorage.setItem("bizTrackTransactions", JSON.stringify(transactions));
     displayExpenses();
+    recordExpenseActivity("activityExpenseCreated", transaction);
     closeForm();
 }
 
@@ -514,9 +529,11 @@ function deleteTransaction(trID) {
             cancelText: getText("cancel"),
             dangerNote: getText("deleteCannotUndo"),
             onConfirm: () => {
+                const deletedTransaction = transactions[indexToDelete];
                 transactions.splice(indexToDelete, 1);
                 localStorage.setItem("bizTrackTransactions", JSON.stringify(transactions));
                 renderTransactions(transactions);
+                recordExpenseActivity("activityExpenseDeleted", deletedTransaction);
             },
         });
     }
@@ -542,6 +559,7 @@ function deleteTransaction(trID) {
         saveBizTrackCollection(TRANSACTION_STORAGE_KEY, transactions);
 
         renderTransactions(transactions);
+        recordExpenseActivity("activityExpenseUpdated", updatedTransaction);
         closeForm();
     }
 }
@@ -620,6 +638,13 @@ function exportToCSV() {
     link.click();
   
     document.body.removeChild(link);
+    if (typeof window.recordActivity === "function") {
+        window.recordActivity({
+            moduleKey: "expenses",
+            actionKey: "activityExpenseExported",
+            entityName: `${transactions.length} rows`,
+        });
+    }
 }
 document.addEventListener("languageChanged", () => {
     renderTransactions(transactions);
