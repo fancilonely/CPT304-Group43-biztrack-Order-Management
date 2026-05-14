@@ -5,6 +5,24 @@
     orders: "bizTrackOrders",
     transactions: "bizTrackTransactions",
   };
+  const PRODUCT_CATALOG = [
+    { prodName: "Baseball caps", prodCat: "Hats" },
+    { prodName: "Snapbacks", prodCat: "Hats" },
+    { prodName: "Beanies", prodCat: "Hats" },
+    { prodName: "Bucket hats", prodCat: "Hats" },
+    { prodName: "Mugs", prodCat: "Drinkware" },
+    { prodName: "Water bottles", prodCat: "Drinkware" },
+    { prodName: "Tumblers", prodCat: "Drinkware" },
+    { prodName: "T-shirts", prodCat: "Clothing" },
+    { prodName: "Sweatshirts", prodCat: "Clothing" },
+    { prodName: "Hoodies", prodCat: "Clothing" },
+    { prodName: "Pillow cases", prodCat: "Accessories" },
+    { prodName: "Tote bags", prodCat: "Accessories" },
+    { prodName: "Stickers", prodCat: "Accessories" },
+    { prodName: "Posters", prodCat: "Home decor" },
+    { prodName: "Framed posters", prodCat: "Home decor" },
+    { prodName: "Canvas prints", prodCat: "Home decor" },
+  ];
   const PRODUCT_CATEGORIES = ["Hats", "Drinkware", "Clothing", "Accessories", "Home decor"];
   const EXPENSE_CATEGORIES = ["Rent", "Order Fulfillment", "Utilities", "Supplies", "Miscellaneous"];
   const ORDER_STATUSES = ["Pending", "Processing", "Shipped", "Delivered"];
@@ -226,6 +244,18 @@
     }) || null;
   }
 
+  function getCatalogEntryByName(productName) {
+    return PRODUCT_CATALOG.find((product) => product.prodName === productName) || null;
+  }
+
+  function getProductOptionsByCategory(categoryValue = "") {
+    if (!categoryValue) {
+      return PRODUCT_CATALOG;
+    }
+
+    return PRODUCT_CATALOG.filter((product) => product.prodCat === categoryValue);
+  }
+
   function findInventoryRecordByProduct(inventoryItems, product) {
     return inventoryItems.find((item) => {
       if (product.prodID && item.productID) {
@@ -421,6 +451,15 @@
     const selectedId = state.selectedRecordByModule.product;
     const selectedProduct = products.find((product) => product.prodID === selectedId) || null;
     const formProduct = selectedProduct || { prodID: "", prodName: "", prodDesc: "", prodCat: "", prodPrice: "", prodSold: "" };
+    const matchedCatalogProduct = getCatalogEntryByName(formProduct.prodName);
+    const effectiveCategory = matchedCatalogProduct?.prodCat || formProduct.prodCat || "";
+    const productNameOptions = buildOptions(getProductOptionsByCategory(effectiveCategory), {
+      placeholderKey: "chooseProduct",
+      valueKey: "prodName",
+      labelKey: "prodName",
+      selectedValue: formProduct.prodName,
+      useTranslatedValue: true,
+    });
 
     return `
       <section class="quick-entry-section is-active">
@@ -450,11 +489,11 @@
             </div>
             <div class="quick-entry-field">
               <label for="qe-product-name">${escapeHTML(getTextSafe("productName"))}</label>
-              <input id="qe-product-name" name="productName" type="text" maxlength="80" value="${escapeHTML(formProduct.prodName)}">
+              <select id="qe-product-name" name="productName">${productNameOptions}</select>
             </div>
             <div class="quick-entry-field">
               <label for="qe-product-category">${escapeHTML(getTextSafe("productCategory"))}</label>
-              <select id="qe-product-category" name="productCategory">${buildCategoryOptions(formProduct.prodCat)}</select>
+              <select id="qe-product-category" name="productCategory">${buildCategoryOptions(effectiveCategory)}</select>
             </div>
             <div class="quick-entry-field">
               <label for="qe-product-price">${escapeHTML(getTextSafe("productPrice"))}</label>
@@ -730,6 +769,11 @@
     }
 
     bindDynamicEvents();
+    if (state.activeModule === "product") {
+      const currentCategory = document.getElementById("qe-product-category")?.value || "";
+      const currentProductName = document.getElementById("qe-product-name")?.value || "";
+      syncQuickEntryProductSelects(currentCategory, currentProductName);
+    }
     updateOrderTotalField();
     syncInventoryCategoryField();
   }
@@ -793,6 +837,60 @@
     totalField.value = `$${total.toFixed(2)}`;
   }
 
+  function populateQuickEntryProductNameOptions(selectedCategory = "", selectedProductName = "") {
+    const productNameSelect = document.getElementById("qe-product-name");
+
+    if (!productNameSelect) {
+      return;
+    }
+
+    productNameSelect.innerHTML = buildOptions(getProductOptionsByCategory(selectedCategory), {
+      placeholderKey: "chooseProduct",
+      valueKey: "prodName",
+      labelKey: "prodName",
+      selectedValue: selectedProductName,
+      useTranslatedValue: true,
+    });
+  }
+
+  function syncQuickEntryProductSelects(selectedCategory = "", selectedProductName = "") {
+    const categorySelect = document.getElementById("qe-product-category");
+    const matchedProduct = getCatalogEntryByName(selectedProductName);
+    const effectiveCategory = matchedProduct?.prodCat || selectedCategory || "";
+
+    if (categorySelect) {
+      categorySelect.value = effectiveCategory;
+    }
+
+    populateQuickEntryProductNameOptions(effectiveCategory, selectedProductName);
+  }
+
+  function handleQuickEntryProductCategoryChange() {
+    const categorySelect = document.getElementById("qe-product-category");
+
+    if (!categorySelect) {
+      return;
+    }
+
+    populateQuickEntryProductNameOptions(categorySelect.value, "");
+  }
+
+  function handleQuickEntryProductNameChange() {
+    const productNameSelect = document.getElementById("qe-product-name");
+
+    if (!productNameSelect) {
+      return;
+    }
+
+    const matchedProduct = getCatalogEntryByName(productNameSelect.value);
+
+    if (!matchedProduct) {
+      return;
+    }
+
+    syncQuickEntryProductSelects(matchedProduct.prodCat, matchedProduct.prodName);
+  }
+
   function switchModule(moduleKey) {
     state.activeModule = moduleKey;
     clearFeedback();
@@ -843,13 +941,15 @@
 
   function validateProductPayload(currentID) {
     const rawProductID = document.getElementById("qe-product-id")?.value || "";
-    const prodName = document.getElementById("qe-product-name")?.value.trim() || "";
-    const prodCat = document.getElementById("qe-product-category")?.value || "";
+    const prodName = document.getElementById("qe-product-name")?.value || "";
+    const selectedCategory = document.getElementById("qe-product-category")?.value || "";
     const prodDesc = document.getElementById("qe-product-description")?.value.trim() || "";
     const rawProdPrice = document.getElementById("qe-product-price")?.value || "";
     const rawProdSold = document.getElementById("qe-product-sold")?.value || "";
     const products = getProducts();
     const prodID = currentID || normalizeProductID(rawProductID);
+    const matchedProduct = getCatalogEntryByName(prodName);
+    const prodCat = matchedProduct?.prodCat || selectedCategory;
 
     if (!prodID) {
       return { error: getTextSafe("productIdInvalid") };
@@ -1293,6 +1393,18 @@
     if (orderProductSelect && orderProductSelect.dataset.bound !== "true") {
       orderProductSelect.addEventListener("change", updateOrderPriceFromSelection);
       orderProductSelect.dataset.bound = "true";
+    }
+
+    const quickEntryProductCategorySelect = document.getElementById("qe-product-category");
+    if (quickEntryProductCategorySelect && quickEntryProductCategorySelect.dataset.bound !== "true") {
+      quickEntryProductCategorySelect.addEventListener("change", handleQuickEntryProductCategoryChange);
+      quickEntryProductCategorySelect.dataset.bound = "true";
+    }
+
+    const quickEntryProductNameSelect = document.getElementById("qe-product-name");
+    if (quickEntryProductNameSelect && quickEntryProductNameSelect.dataset.bound !== "true") {
+      quickEntryProductNameSelect.addEventListener("change", handleQuickEntryProductNameChange);
+      quickEntryProductNameSelect.dataset.bound = "true";
     }
 
     ["qe-order-price", "qe-order-qty", "qe-order-shipping", "qe-order-taxes"].forEach((id) => {

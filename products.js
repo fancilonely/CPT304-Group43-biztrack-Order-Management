@@ -25,6 +25,7 @@ function openForm() {
 
     form.reset();
     resetSubmitButtonMode();
+    syncProductFormSelects();
     revealForm(form);
 }
 
@@ -35,6 +36,7 @@ function closeForm() {
 
     form.reset();
     resetSubmitButtonMode();
+    syncProductFormSelects();
     formShell?.classList.remove("is-open");
 
     window.setTimeout(() => {
@@ -46,6 +48,24 @@ function closeForm() {
 
 
 const PRODUCT_STORAGE_KEY = "bizTrackProducts";
+const PRODUCT_CATALOG = [
+  { prodName: "Baseball caps", prodCat: "Hats" },
+  { prodName: "Snapbacks", prodCat: "Hats" },
+  { prodName: "Beanies", prodCat: "Hats" },
+  { prodName: "Bucket hats", prodCat: "Hats" },
+  { prodName: "Mugs", prodCat: "Drinkware" },
+  { prodName: "Water bottles", prodCat: "Drinkware" },
+  { prodName: "Tumblers", prodCat: "Drinkware" },
+  { prodName: "T-shirts", prodCat: "Clothing" },
+  { prodName: "Sweatshirts", prodCat: "Clothing" },
+  { prodName: "Hoodies", prodCat: "Clothing" },
+  { prodName: "Pillow cases", prodCat: "Accessories" },
+  { prodName: "Tote bags", prodCat: "Accessories" },
+  { prodName: "Stickers", prodCat: "Accessories" },
+  { prodName: "Posters", prodCat: "Home decor" },
+  { prodName: "Framed posters", prodCat: "Home decor" },
+  { prodName: "Canvas prints", prodCat: "Home decor" },
+];
 const DEFAULT_PRODUCTS = [
   {
     prodID: "PD001",
@@ -92,11 +112,119 @@ const DEFAULT_PRODUCTS = [
 let products = [];
 const productSortState = {};
 
+function getProductCategorySelect() {
+  return document.getElementById("product-cat");
+}
+
+function getProductNameSelect() {
+  return document.getElementById("product-name");
+}
+
+function getProductCatalogEntry(productName) {
+  return PRODUCT_CATALOG.find((product) => product.prodName === productName) || null;
+}
+
+function getProductOptionsByCategory(categoryValue = "") {
+  if (!categoryValue) {
+    return PRODUCT_CATALOG;
+  }
+
+  return PRODUCT_CATALOG.filter((product) => product.prodCat === categoryValue);
+}
+
+function createProductPlaceholderOption() {
+  const placeholderOption = document.createElement("option");
+  placeholderOption.value = "";
+  placeholderOption.disabled = true;
+  placeholderOption.hidden = true;
+  placeholderOption.textContent = typeof getText === "function" ? getText("chooseProduct") : "Choose a product";
+  return placeholderOption;
+}
+
+function populateProductNameOptions(selectedCategory = "", selectedProductName = "") {
+  const productNameSelect = getProductNameSelect();
+
+  if (!productNameSelect) {
+    return;
+  }
+
+  const availableProducts = getProductOptionsByCategory(selectedCategory);
+  const fragment = document.createDocumentFragment();
+  fragment.appendChild(createProductPlaceholderOption());
+
+  availableProducts.forEach((product) => {
+    const option = document.createElement("option");
+    option.value = product.prodName;
+    option.textContent = typeof translateValue === "function"
+      ? translateValue(product.prodName)
+      : product.prodName;
+    fragment.appendChild(option);
+  });
+
+  productNameSelect.replaceChildren(fragment);
+  productNameSelect.value = availableProducts.some((product) => product.prodName === selectedProductName)
+    ? selectedProductName
+    : "";
+}
+
+function syncProductCategoryFromName(selectedProductName) {
+  const productCategorySelect = getProductCategorySelect();
+  const productMatch = getProductCatalogEntry(selectedProductName);
+
+  if (!productCategorySelect || !productMatch) {
+    return;
+  }
+
+  productCategorySelect.value = productMatch.prodCat;
+}
+
+function handleProductCategoryChange() {
+  const productCategorySelect = getProductCategorySelect();
+
+  if (!productCategorySelect) {
+    return;
+  }
+
+  populateProductNameOptions(productCategorySelect.value, "");
+}
+
+function handleProductNameChange() {
+  const productNameSelect = getProductNameSelect();
+
+  if (!productNameSelect) {
+    return;
+  }
+
+  const selectedProductName = productNameSelect.value;
+  const productMatch = getProductCatalogEntry(selectedProductName);
+
+  if (!productMatch) {
+    return;
+  }
+
+  syncProductCategoryFromName(selectedProductName);
+  populateProductNameOptions(productMatch.prodCat, selectedProductName);
+}
+
+function syncProductFormSelects(selectedCategory = "", selectedProductName = "") {
+  const productCategorySelect = getProductCategorySelect();
+  const catalogMatch = getProductCatalogEntry(selectedProductName);
+  const effectiveCategory = catalogMatch?.prodCat || selectedCategory;
+
+  if (productCategorySelect) {
+    productCategorySelect.value = effectiveCategory || "";
+  }
+
+  populateProductNameOptions(effectiveCategory, selectedProductName);
+}
+
 function bindProductPageControls() {
   document.querySelector(".add-button")?.addEventListener("click", openForm);
   document.querySelector(".download-button")?.addEventListener("click", exportToCSV);
   document.querySelector("#product-form")?.addEventListener("submit", addOrUpdate);
   document.querySelector(".btn.cancel")?.addEventListener("click", closeForm);
+  getProductCategorySelect()?.addEventListener("change", handleProductCategoryChange);
+  getProductNameSelect()?.addEventListener("change", handleProductNameChange);
   document.querySelectorAll("[data-sort-column]").forEach((button) => {
     button.addEventListener("click", () => sortTable(button.dataset.sortColumn, button));
   });
@@ -106,6 +234,7 @@ function init() {
     products = loadBizTrackCollection(PRODUCT_STORAGE_KEY, DEFAULT_PRODUCTS, isBizTrackProduct);
 
     bindProductPageControls();
+    syncProductFormSelects();
     renderProducts(products);
     resetSubmitButtonMode();
     closeForm();
@@ -217,9 +346,11 @@ function validateProductForm(currentID) {
   const rawProductID = document.getElementById("product-id").value;
   const prodName = document.getElementById("product-name").value;
   const prodDesc = document.getElementById("product-desc").value.trim();
-  const prodCat = document.getElementById("product-cat").value;
+  const selectedCategory = document.getElementById("product-cat").value;
   const rawProdPrice = document.getElementById("product-price").value;
   const rawProdSold = document.getElementById("product-sold").value;
+  const productMatch = getProductCatalogEntry(prodName);
+  const prodCat = productMatch?.prodCat || selectedCategory;
 
   const prodID = normalizeProductID(rawProductID);
 
@@ -453,9 +584,8 @@ function editRow(prodID) {
   const numericProductID = String(productToEdit.prodID).replace(/^PD0*/, "") || "0";
 
   document.getElementById("product-id").value = numericProductID;
-  document.getElementById("product-name").value = productToEdit.prodName;
   document.getElementById("product-desc").value = productToEdit.prodDesc;
-  document.getElementById("product-cat").value = productToEdit.prodCat;
+  syncProductFormSelects(productToEdit.prodCat, productToEdit.prodName);
   document.getElementById("product-price").value = productToEdit.prodPrice;
   document.getElementById("product-sold").value = productToEdit.prodSold;
   document.getElementById("product-form").dataset.currentProductId = prodID;
@@ -579,6 +709,10 @@ function exportToCSV() {
 }
 
 document.addEventListener("languageChanged", () => {
+  const currentCategory = getProductCategorySelect()?.value || "";
+  const currentProductName = getProductNameSelect()?.value || "";
+
+  syncProductFormSelects(currentCategory, currentProductName);
   renderProducts(products);
   const submitBtn = document.getElementById("submitBtn");
 

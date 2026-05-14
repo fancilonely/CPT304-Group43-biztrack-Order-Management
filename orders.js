@@ -422,8 +422,6 @@ function addOrUpdate(event) {
     } else if (mode === "update") {
         updateOrder(submitBtn.dataset.editingId);
     }
-
-    return value;
 }
 
 function isPositiveIntegerString(value) {
