@@ -3774,38 +3774,40 @@ body.quick-entry-panel-open {
 }
 
 /* Accessibility contrast fix for sidebar navigation states */
+/* Accessibility contrast fix for sidebar navigation states */
 .sidebar .menu li.active,
-.sidebar .menu li.active a {
+.sidebar .menu li.active > a,
+.sidebar .menu a[aria-current="page"] {
     background: #9f472f;
 }
 
 .sidebar .menu li:hover,
-.sidebar .menu li:hover a,
+.sidebar .menu li:hover > a,
 .sidebar .menu li:focus-within,
-.sidebar .menu li:focus-within a,
-.sidebar .menu li.active:hover,
-.sidebar .menu li.active:hover a,
-.sidebar .menu li.active:focus-within,
-.sidebar .menu li.active:focus-within a {
+.sidebar .menu li:focus-within > a {
     background: #8a3d29;
 }
 
-.sidebar .menu li.active a,
-.sidebar .menu li.active a span,
-.sidebar .menu li.active a i,
-.sidebar .menu li:hover a,
-.sidebar .menu li:hover a span,
-.sidebar .menu li:hover a i,
-.sidebar .menu li:focus-within a,
-.sidebar .menu li:focus-within a span,
-.sidebar .menu li:focus-within a i {
+.sidebar .menu li.active > a,
+.sidebar .menu li.active > a span,
+.sidebar .menu li.active > a i,
+.sidebar .menu a[aria-current="page"],
+.sidebar .menu a[aria-current="page"] span,
+.sidebar .menu a[aria-current="page"] i,
+.sidebar .menu li:hover > a,
+.sidebar .menu li:hover > a span,
+.sidebar .menu li:hover > a i,
+.sidebar .menu li:focus-within > a,
+.sidebar .menu li:focus-within > a span,
+.sidebar .menu li:focus-within > a i {
     color: #ffffff;
     opacity: 1;
 }
 
-:root[data-theme="light"] .sidebar .menu li:not(.active) a,
-:root[data-theme="light"] .sidebar .menu li:not(.active) a span,
-:root[data-theme="light"] .sidebar .menu li:not(.active) a i {
+/* Keep normal non-active light-mode items dark, but do not override hover/focus states. */
+:root[data-theme="light"] .sidebar .menu li:not(.active):not(:hover):not(:focus-within) a,
+:root[data-theme="light"] .sidebar .menu li:not(.active):not(:hover):not(:focus-within) a span,
+:root[data-theme="light"] .sidebar .menu li:not(.active):not(:hover):not(:focus-within) a i {
     color: #262626;
 }
 
